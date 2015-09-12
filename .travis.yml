@@ -1,0 +1,6 @@
+language: c++
+
+notifications:
+  email: false
+
+script: cd build && cmake . && make && ./tests
