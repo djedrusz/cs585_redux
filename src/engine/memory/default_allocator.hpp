@@ -9,13 +9,13 @@
 #define INCLUDED_DEFAULT_ALLOCATOR
 
 #include <cstdio> // Delete later.
-#include "allocator.hpp"
+#include "iallocator.hpp"
 
 namespace StevensDev {
 	namespace sgdm { // Stevens Game Development Memory.
 		/* The default allocator for containers. */
 		template<typename T>
-		class DefaultAllocator : public Allocator<T> {
+		class DefaultAllocator : public IAllocator<T> {
 			private:
 			public:
 				/* Function(s). */

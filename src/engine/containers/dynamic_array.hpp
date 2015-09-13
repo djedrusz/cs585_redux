@@ -12,10 +12,10 @@
 #include "../memory/default_allocator.hpp"
 
 #define DYNAMIC_ARRAY_DEFAULT_CAPACITY 10 // The default capacity.
-#define DYNAMIC_ARRAY_GROW_RATIO 1.5 // The ratio at which the array grows.
+#define DYNAMIC_ARRAY_GROW_RATIO 1.6 // The ratio at which the array grows. Modelled after Chris Taylor's explanation of the golden ratio.
 #define DYNAMIC_ARRAY_MINIMUM_CAPACITY 10 // The minimum capacity.
 #define DYNAMIC_ARRAY_SHRINK_THRESHOLD_RATIO 0.25 // The threshold at which the array shrinks.
-#define DYNAMIC_ARRAY_SHRINK_RATIO 0.5 // The ratio at which the array shrinks.
+#define DYNAMIC_ARRAY_SHRINK_RATIO 0.5 // The ratio at which the array shrinks. The shrink ratio is greater than the threshold so that a grow does not immediately follow a shrink.
 
 namespace StevensDev {
 	namespace sgdc { // Stevens Game Development Containers.
@@ -24,7 +24,7 @@ namespace StevensDev {
 		class DynamicArray {
 			private:
 				/* Data member(s). */
-				sgdm::Allocator<T>* allocator; // The allocator->
+				sgdm::IAllocator<T>* allocator; // The allocator->
 				T* array; // The underlying array.
 				unsigned int capacity; // The current maximum number of elements.
 				unsigned int size; // The current number of elements.
@@ -33,7 +33,7 @@ namespace StevensDev {
 				void shrink(); // Decrease the capacity of the array.
 			public:
 				/* Constructor(s). */
-				DynamicArray(sgdm::Allocator<T>* allocator = new sgdm::DefaultAllocator<T>, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY); // Constructor with optional specified allocator and capacity.
+				DynamicArray(sgdm::IAllocator<T>* allocator = new sgdm::DefaultAllocator<T>, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY); // Constructor with optional specified allocator and capacity.
 				DynamicArray(const DynamicArray<T>& dynamicArray); // Copy constructor.
 				/* Destructor(s). */
 				~DynamicArray(); // Default destructor.
@@ -83,7 +83,7 @@ namespace StevensDev {
 
 		/* Constructor with specified allocator and inital capacity. */
 		template<typename T>
-		DynamicArray<T>::DynamicArray(sgdm::Allocator<T>* allocator, unsigned int capacity)
+		DynamicArray<T>::DynamicArray(sgdm::IAllocator<T>* allocator, unsigned int capacity)
 		:	allocator(allocator),
 			array(allocator->allocate(capacity)),
 			capacity(capacity),
