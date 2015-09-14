@@ -10,8 +10,8 @@
 
 /* Test allocation of a default allocator. */
 TEST(DefaultAllocator, Allocation) {
-	StevensDev::sgdm DefaultAllocator<int> defaultAllocator;
+	StevensDev::sgdm::DefaultAllocator<int> defaultAllocator;
 	int* memoryBlock = defaultAllocator.allocate(10);
-	EXPECT_EQ(memoryBlock, !NULL);
+	EXPECT_TRUE(memoryBlock != NULL);
 	defaultAllocator.deallocate(memoryBlock, 10);
 }
