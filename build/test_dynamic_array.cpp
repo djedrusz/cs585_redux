@@ -173,6 +173,14 @@ TEST(DynamicArray, SubscriptGet) {
 	}
 }
 
+/* Test the set subscript operator of a dynamic array. */
+TEST(DynamicArray, SubscriptSet) {
+	StevensDev::sgdc::DynamicArray<int> tester;
+	tester.append(2);
+	tester[2] = 5;
+	EXPECT_EQ(tester[2], 5);
+}
+
 /* Test destructor. */
 TEST(DynamicArray, Destructor) {
 	delete TEST_DYNAMIC_ARRAY_dynamicArray;

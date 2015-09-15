@@ -30,9 +30,9 @@ namespace StevensDev {
         			/* Function(s). */
         			T* allocate(unsigned int count); // Allocate the specified amount of memory and return a pointer to the newly formed memory block.
         			void deallocate(T* memoryBlock, unsigned int count); // Deallocate the specified amount of memory from the memory block.
-        			const unsigned int getAllocations(); // Return the number of allocations.
-        			const unsigned int getDeallocations(); // Return the number of deallocations.
-        			const unsigned int getOutstandingAllocations(); // Return the number of outstanding allocations.
+        			const unsigned int getAllocations() const; // Return the number of allocations.
+        			const unsigned int getDeallocations() const; // Return the number of deallocations.
+        			const unsigned int getOutstandingAllocations() const; // Return the number of outstanding allocations.
         			static const unsigned int getTotalAllocations(); // Return the number of allocations across all "CountingAllocator" intances.
         			static const unsigned int getTotalDeallocations(); // Return the number of deallocations across all "CountingAllocator" instances.
         			static const unsigned int getTotalOutstandingAllocations(); // Return the number of outstanding allocations across all "CountingAllocator" instances.
@@ -92,19 +92,19 @@ namespace StevensDev {
 
                 /* Return the number of allocations. */
                 template<typename T>
-                const unsigned int CountingAllocator<T>::getAllocations() {
+                const unsigned int CountingAllocator<T>::getAllocations() const {
                         return allocations;
                 }
 
                 /* Return the number of deallocations. */
                 template<typename T>
-                const unsigned int CountingAllocator<T>::getDeallocations() {
+                const unsigned int CountingAllocator<T>::getDeallocations() const {
                         return deallocations;
                 }
 
                 /* Return the number of outstanding allocations. */
                 template<typename T>
-                const unsigned int CountingAllocator<T>::getOutstandingAllocations() {
+                const unsigned int CountingAllocator<T>::getOutstandingAllocations() const {
                         return allocations - deallocations;
                 }
 

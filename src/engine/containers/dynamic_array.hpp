@@ -39,7 +39,8 @@ namespace StevensDev {
 				~DynamicArray(); // Default destructor.
 				/* Operator(s). */
 				DynamicArray<T>& operator = (const DynamicArray<T>& dynamicArray); // Copy assignment operator.
-				T& operator [] (unsigned int index); // Subscript.
+				T& operator [] (unsigned int index); // Subscript set.
+				const T& operator [] (unsigned int index) const; // Subscript get.
 				/* Function(s). */
 				void prepend(const T& element); // Prepend an element.
 				void append(const T& element); // Append an element.
@@ -49,7 +50,7 @@ namespace StevensDev {
 				T remove(unsigned int index); // Remove and return the element at the specified index.
 				void set(unsigned int index, const T& element); // Set the element at the specified index.
 				const T& get(unsigned int index); // Return the element at the specified index.
-				const unsigned int getSize(); // Return the size.
+				const unsigned int getSize() const; // Return the size.
 		};
 
 	    /* Increase the capacity of the array. */
@@ -122,9 +123,15 @@ namespace StevensDev {
 			}
 		}
 
-		/* Subscript. */
+		/* Subscript set. */
 		template<typename T>
 		T& DynamicArray<T>::operator [] (unsigned int index) {
+			return array[index];
+		}
+
+		/* Subscript get. */
+		template<typename T>
+		const T& DynamicArray<T>::operator [] (unsigned int index) const {
 			return array[index];
 		}
 
@@ -206,7 +213,7 @@ namespace StevensDev {
 
 		/* Return the size. */
 		template<typename T>
-		const unsigned int DynamicArray<T>::getSize() {
+		const unsigned int DynamicArray<T>::getSize() const {
 			return size;
 		}
 	}
