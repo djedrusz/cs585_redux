@@ -20,11 +20,11 @@
 namespace StevensDev {
 	namespace sgdc { // Stevens Game Development Containers.
 		/* An array which grows and shrinks dynamically. */
-		template<typename T>
+		template< typename T >
 		class DynamicArray {
 			private:
 				/* Data member(s). */
-				sgdm::IAllocator<T>* allocator; // The allocator->
+				sgdm::IAllocator< T >* allocator; // The allocator->
 				T* array; // The underlying array.
 				unsigned int capacity; // The current maximum number of elements.
 				unsigned int size; // The current number of elements.
@@ -33,12 +33,12 @@ namespace StevensDev {
 				void shrink(); // Decrease the capacity of the array.
 			public:
 				/* Constructor(s). */
-				DynamicArray(sgdm::IAllocator<T>* allocator = new sgdm::DefaultAllocator<T>, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY); // Constructor with optional specified allocator and capacity.
-				DynamicArray(const DynamicArray<T>& dynamicArray); // Copy constructor.
+				DynamicArray(sgdm::IAllocator< T >* allocator = new sgdm::DefaultAllocator< T >, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY); // Constructor with optional specified allocator and capacity.
+				DynamicArray(const DynamicArray< T >& dynamicArray); // Copy constructor.
 				/* Destructor(s). */
 				~DynamicArray(); // Default destructor.
 				/* Operator(s). */
-				DynamicArray<T>& operator = (const DynamicArray<T>& dynamicArray); // Copy assignment operator.
+				DynamicArray< T >& operator = (const DynamicArray< T >& dynamicArray); // Copy assignment operator.
 				T& operator [] (unsigned int index); // Subscript set.
 				const T& operator [] (unsigned int index) const; // Subscript get.
 				/* Function(s). */
@@ -54,9 +54,9 @@ namespace StevensDev {
 		};
 
 	    /* Increase the capacity of the array. */
-	    template<typename T>
-	    void DynamicArray<T>::grow() {
-	    	if (size >= capacity) {
+	    template< typename T >
+	    void DynamicArray< T >::grow() {
+	    	if (size  >= capacity) {
 	            unsigned int newCapacity = (unsigned int)(capacity * DYNAMIC_ARRAY_GROW_RATIO);
 	            T* newArray = allocator->allocate(newCapacity);
 	            memcpy(newArray, array, size * sizeof(T));
@@ -67,11 +67,11 @@ namespace StevensDev {
 	    }
 
 	    /* Decrease the capacity of the array. */
-	    template<typename T>
-	    void DynamicArray<T>::shrink() {
+	    template< typename T >
+	    void DynamicArray< T >::shrink() {
 	    	if (size <= capacity * DYNAMIC_ARRAY_SHRINK_THRESHOLD_RATIO) {
 		        unsigned int newCapacity = (unsigned int)(capacity * DYNAMIC_ARRAY_SHRINK_RATIO);
-		        if (newCapacity < DYNAMIC_ARRAY_MINIMUM_CAPACITY) {
+		        if (newCapacity <  DYNAMIC_ARRAY_MINIMUM_CAPACITY) {
 		        	newCapacity = DYNAMIC_ARRAY_MINIMUM_CAPACITY;
 		        }
 		        T* newArray = allocator->allocate(newCapacity);
@@ -83,8 +83,8 @@ namespace StevensDev {
 	    }
 
 		/* Constructor with specified allocator and inital capacity. */
-		template<typename T>
-		DynamicArray<T>::DynamicArray(sgdm::IAllocator<T>* allocator, unsigned int capacity)
+		template< typename T >
+		DynamicArray< T >::DynamicArray(sgdm::IAllocator< T >* allocator, unsigned int capacity)
 		:	allocator(allocator),
 			array(allocator->allocate(capacity)),
 			capacity(capacity),
@@ -92,8 +92,8 @@ namespace StevensDev {
 		}
 
 		/* Copy constructor. */
-		template<typename T>
-		DynamicArray<T>::DynamicArray(const DynamicArray& dynamicArray)
+		template< typename T >
+		DynamicArray< T >::DynamicArray(const DynamicArray& dynamicArray)
 		:	allocator(dynamicArray.allocator),
 			capacity(dynamicArray.capacity),
 			size(dynamicArray.size) {
@@ -103,16 +103,15 @@ namespace StevensDev {
 		}
 
 		/* Default destructor. */
-		template<typename T>
-		DynamicArray<T>::~DynamicArray() {
+		template< typename T >
+		DynamicArray< T >::~DynamicArray() {
 			allocator->deallocate(array, capacity);
 		}
 
 		/* Copy assignment operator. */
-		template<typename T>
-		DynamicArray<T>& DynamicArray<T>::operator = (const DynamicArray<T>& dynamicArray) {
-			/* Avoid self-assignment. */
-			if (this != &dynamicArray) {
+		template< typename T >
+		DynamicArray< T >& DynamicArray< T >::operator = (const DynamicArray< T >& dynamicArray) {
+			if (this != &dynamicArray) { // Avoid self-assignment.
 				allocator->deallocate(array, dynamicArray.capacity); // Clean up old data.
 
 				allocator = dynamicArray.allocator;
@@ -124,20 +123,20 @@ namespace StevensDev {
 		}
 
 		/* Subscript set. */
-		template<typename T>
-		T& DynamicArray<T>::operator [] (unsigned int index) {
+		template< typename T >
+		T& DynamicArray< T >::operator [] (unsigned int index) {
 			return array[index];
 		}
 
 		/* Subscript get. */
-		template<typename T>
-		const T& DynamicArray<T>::operator [] (unsigned int index) const {
+		template< typename T >
+		const T& DynamicArray< T >::operator [] (unsigned int index) const {
 			return array[index];
 		}
 
 		/* Prepend an element. */
-		template<typename T>
-		void DynamicArray<T>::prepend(const T& element) {
+		template< typename T >
+		void DynamicArray< T >::prepend(const T& element) {
 			grow();
 
 			memmove(&array[1], array, size * sizeof(T));
@@ -146,8 +145,8 @@ namespace StevensDev {
 		}
 
 		/* Append an element. */
-		template<typename T>
-		void DynamicArray<T>::append(const T& element) {
+		template< typename T >
+		void DynamicArray< T >::append(const T& element) {
 			grow();
 
 			array[size] = element;
@@ -155,8 +154,8 @@ namespace StevensDev {
 		}
 
 		/* Insert an element at the specified index. */
-		template<typename T>
-		void DynamicArray<T>::insert(unsigned int index, const T& element) {
+		template< typename T >
+		void DynamicArray< T >::insert(unsigned int index, const T& element) {
 			grow();
 			
 			memmove(&array[index + 1], &array[index], (size - index) * sizeof(T));
@@ -165,8 +164,8 @@ namespace StevensDev {
 		}
 
 		/* Remove and return the first element. */
-		template<typename T>
-		T DynamicArray<T>::pull() {
+		template< typename T >
+		T DynamicArray< T >::pull() {
 			T element = array[0];
 			memmove(array, &array[1], (size - 1) * sizeof(T));
 			size--;
@@ -177,8 +176,8 @@ namespace StevensDev {
 		}
 
 		/* Remove and return the last element. */
-		template<typename T>
-		T DynamicArray<T>::push() {
+		template< typename T >
+		T DynamicArray< T >::push() {
 			T element = array[size - 1];
 			size--;
 
@@ -188,8 +187,8 @@ namespace StevensDev {
 		}
 
 		/* Remove and return the element at the specified index. */
-		template<typename T>
-		T DynamicArray<T>::remove(unsigned int index) {
+		template< typename T >
+		T DynamicArray< T >::remove(unsigned int index) {
 			T element = array[index];
 			memmove(&array[index], &array[index + 1], (size - index) * sizeof(T));
 			size--;
@@ -200,20 +199,20 @@ namespace StevensDev {
 		}
 
 		/* Set the element at the specified index. */
-		template<typename T>
-		void DynamicArray<T>::set(unsigned int index, const T& element) {
+		template< typename T >
+		void DynamicArray< T >::set(unsigned int index, const T& element) {
 			array[index] = element;
 		}
 
 		/* Return the element at the specified index. */
-		template<typename T>
-		const T& DynamicArray<T>::get(unsigned int index) {
+		template< typename T >
+		const T& DynamicArray< T >::get(unsigned int index) {
 			return array[index];
 		}
 
 		/* Return the size. */
-		template<typename T>
-		const unsigned int DynamicArray<T>::getSize() const {
+		template< typename T >
+		const unsigned int DynamicArray< T >::getSize() const {
 			return size;
 		}
 	}

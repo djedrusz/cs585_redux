@@ -11,7 +11,7 @@
 namespace StevensDev{
 	namespace sgdm { // Stevens Game Development Memory.
 		/* The "IAllocator" interface. */
-		template<typename T>
+		template< typename T >
 		class IAllocator {
 			private:
 			public:

@@ -13,8 +13,8 @@
 namespace StevensDev {
         namespace sgdm { // Stevens Game Development Memory.
         	/* An allocator which counts allocations and deallocations for each instance, and all instances. */
-        	template<typename T>
-        	class CountingAllocator : public DefaultAllocator<T> {
+        	template< typename T >
+        	class CountingAllocator : public DefaultAllocator< T > {
         		private:
         			/* Data member(s). */
         			unsigned int allocations; // The number of allocations.
@@ -24,9 +24,9 @@ namespace StevensDev {
         		public:
         			/* Constructor(s). */
         			CountingAllocator(); // Default constructor.
-        			CountingAllocator(const CountingAllocator<T>& countingAllocator); // Copy contructor.
+        			CountingAllocator(const CountingAllocator< T >& countingAllocator); // Copy contructor.
         			/* Operators. */
-        			CountingAllocator<T>& operator = (const CountingAllocator<T>& countingAllocator); // Copy assignment operator.
+        			CountingAllocator< T >& operator = (const CountingAllocator< T >& countingAllocator); // Copy assignment operator.
         			/* Function(s). */
         			T* allocate(unsigned int count); // Allocate the specified amount of memory and return a pointer to the newly formed memory block.
         			void deallocate(T* memoryBlock, unsigned int count); // Deallocate the specified amount of memory from the memory block.
@@ -39,30 +39,30 @@ namespace StevensDev {
         	};
 
         	/* Initialize the static "CountingAllocator" data members. */
-                template<typename T>
-                unsigned int CountingAllocator<T>::totalAllocations = 0;
-                template<typename T>
-                unsigned int  CountingAllocator<T>::totalDeallocations = 0;
+                template< typename T >
+                unsigned int CountingAllocator< T >::totalAllocations = 0;
+                template< typename T >
+                unsigned int  CountingAllocator< T >::totalDeallocations = 0;
 
                 /* Default constructor. */
-                template<typename T>
-                CountingAllocator<T>::CountingAllocator() 
+                template< typename T >
+                CountingAllocator< T >::CountingAllocator() 
                 :       allocations(0),
                         deallocations(0) {
                         ;
                 }
 
                 /* Copy constructor. */
-                template<typename T>
-                CountingAllocator<T>::CountingAllocator(const CountingAllocator<T>& countingAllocator) 
+                template< typename T >
+                CountingAllocator< T >::CountingAllocator(const CountingAllocator< T >& countingAllocator) 
                 :       allocations(countingAllocator.allocations),
                         deallocations(countingAllocator.deallocations) {
                         ;
                 }
 
                 /* Copy assignment operator. */
-                template<typename T>
-                CountingAllocator<T>& CountingAllocator<T>::operator = (const CountingAllocator<T>& countingAllocator) {
+                template< typename T >
+                CountingAllocator< T >& CountingAllocator< T >::operator = (const CountingAllocator< T >& countingAllocator) {
                         /* Avoid self-assignment. */
                         if (*this != countingAllocator) {
                                 allocations = countingAllocator.allocations;
@@ -73,8 +73,8 @@ namespace StevensDev {
                 }
 
                 /* Allocate the specified amount of memory and return a pointer to the newly allocated memory block. */
-                template<typename T>
-                T* CountingAllocator<T>::allocate(unsigned int count) {
+                template< typename T >
+                T* CountingAllocator< T >::allocate(unsigned int count) {
                         allocations += count;
                         totalAllocations += count;
 
@@ -82,8 +82,8 @@ namespace StevensDev {
                 }
 
         	/* Deallocate the specified amount of memory from the specified memory block. */
-                template<typename T>
-                void CountingAllocator<T>::deallocate(T* memoryBlock, unsigned int count) {
+                template< typename T >
+                void CountingAllocator< T >::deallocate(T* memoryBlock, unsigned int count) {
                         deallocations += count;
                         totalDeallocations += count;
 
@@ -91,38 +91,38 @@ namespace StevensDev {
                 }
 
                 /* Return the number of allocations. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getAllocations() const {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getAllocations() const {
                         return allocations;
                 }
 
                 /* Return the number of deallocations. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getDeallocations() const {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getDeallocations() const {
                         return deallocations;
                 }
 
                 /* Return the number of outstanding allocations. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getOutstandingAllocations() const {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getOutstandingAllocations() const {
                         return allocations - deallocations;
                 }
 
         	/* Return the number of allocations across all "CountingAllocator" instances. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getTotalAllocations() {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getTotalAllocations() {
                         return totalAllocations;
                 }
 
                 /* Return the number of deallocations across all "CountingAllocator" instances. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getTotalDeallocations() {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getTotalDeallocations() {
                         return totalDeallocations;
                 }
 
                 /* Return the number of outstanding allocations across all "CountingAllocator" instances. */
-                template<typename T>
-                const unsigned int CountingAllocator<T>::getTotalOutstandingAllocations() {
+                template< typename T >
+                const unsigned int CountingAllocator< T >::getTotalOutstandingAllocations() {
                         return totalAllocations - totalDeallocations;
                 }
         }
