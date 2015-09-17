@@ -31,10 +31,12 @@ namespace StevensDev {
 				/* Data member(s). */
 				sgdm::IAllocator< MapNode< T > >* allocator; // The allocator.
 				MapNode< T >* root; // The root node.
-				//DynamicArray< const std::string& > keys; // The keys.
-				//DynamicArray< T > values; // The values.
+				//DynamicArray< const char* > keys; // The keys.
+				DynamicArray< T > values; // The values.
 				/* Function(s). */
+				MapNode< T >* copyMapNode(MapNode< T >* mapNode); // Return a copy of a map node.
 				void deallocateMapNode(MapNode< T >* mapNode); // Deallocate a map node.
+				void deallocateMap(); // Deallocate the map.
 				void print(MapNode< T >* mapNode, unsigned int depth); // Print out a map node.
 			public:
 				/* Constructor(s). */
@@ -51,10 +53,23 @@ namespace StevensDev {
 				T remove(const std::string& key); // Remove the value with the specified key.
 				bool has(const std::string& key) const; // Return whether or not there exists a value at the specified key.
 				T& get(const std::string& key) const; // Return the value at the specified key.
-				const DynamicArray< T >& getKeys() const; // Return the keys.
+				//const DynamicArray< const char* >& getKeys() const; // Return the keys.
 				const DynamicArray< T >& getValues() const; // Return the values.
 				void print(); // Print out the map.
 		};
+
+		/* Return a copy of a map node. */
+		template< typename T >
+		MapNode< T >* Map< T >::copyMapNode(MapNode< T >* mapNode) {
+			MapNode< T >* newMapNode = allocator->allocate(1);
+			newMapNode->hasValue = mapNode->hasValue;
+			newMapNode->value = mapNode->value;
+			for (unsigned int i = 0; i < MAP_NODE_NUM_CHILDREN; i++) {
+				newMapNode->children[i] = copyMapNode(mapNode->children[i]);
+			}
+
+			return newMapNode;
+		}
 
 		/* Deallocate a map node. */
 		template< typename T >
@@ -67,6 +82,13 @@ namespace StevensDev {
 			}
 		}
 
+		/* Deallocate the map. */
+		template< typename T >
+		void Map< T >::deallocateMap() {
+			deallocateMapNode(root);
+			allocator->deallocate(root, 1);
+		}
+
 		/* Print out a map node. */
 		template< typename T >
 		void Map< T >::print(MapNode< T >* mapNode, unsigned int depth) {
@@ -75,7 +97,11 @@ namespace StevensDev {
 					for (unsigned int j = 0; j < depth; j++) {
 						printf("\t");
 					}
-					printf("%c/%p-%d:%i\n", 'a' + (char)i, mapNode->children[i], mapNode->children[i]->hasValue, mapNode->children[i]->value);
+					printf("%c", 'a' + (char)i);
+					if (mapNode->children[i]->hasValue) {
+						printf(":%i", mapNode->children[i]->value);
+					}
+					printf("\n");
 					print(mapNode->children[i], depth + 1);
 				}
 			}
@@ -93,22 +119,44 @@ namespace StevensDev {
 
 		/* Copy constructor. */
 		template< typename T >
-		Map< T >::Map(const Map< T >& map)
-		:	allocator(map.allocator) {
-			// TODO: Copy the entire map, not just the children.
+		Map< T >::Map(const Map< T >& map) {
+			deallocateMap();
+
+			allocator = map.allocator;
+
+			root = copyMapNode(map.root);
+
+			/* TODO: Copy keys and values. */
+		}
+
+		/* Subscript set. */
+		template< typename T >
+		T& Map< T >::operator [] (const std::string& key) {
+			get(key);
+		}
+
+		/* Subscript get. */
+		template< typename T >
+		const T& Map< T >::operator [] (const std::string& key) const {
+			get(key);
 		}
 
 		/* Default destructor. */
 		template< typename T >
 		Map< T >::~Map() {
-			deallocateMapNode(root);
-			allocator->deallocate(root, 1);
+			deallocateMap();
 		}
 
 		/* Copy assignment operator. */
 		template< typename T >
 		Map< T >& Map< T >::operator = (const Map< T >& map) {
-			// TODO: Copy the entire map, not just the children.
+			deallocateMap();
+
+			allocator = map.allocator;
+
+			root = copyMapNode(map.root);
+
+			/* TODO: Copy keys and values. */
 		}
 
 		/* TODO: Operators. */
@@ -116,32 +164,80 @@ namespace StevensDev {
 		/* Add a value with the specified key. */
 		template< typename T >
 		void Map< T >::add(const std::string& key, const T& value) {
-			printf("Adding value %i at key %s.\n", value, key.c_str());
 			if (key.length() > 0) {
 				MapNode< T >* current = root;
 				unsigned int depth = 0;
 				while (depth < key.length()) {
 					if (current->children[key[depth] - 'a'] == NULL) {
-						printf("Current node %p has no child at %c. Creating new child.\n", current, key[depth]);
 						current->children[key[depth] - 'a'] = allocator->allocate(1);
-						printf("New node has memory address %p.\n", current->children[key[depth] - 'a']);
 						current->children[key[depth] - 'a']->hasValue = false;
 						for (unsigned int i = 0; i < MAP_NODE_NUM_CHILDREN; i++) {
 							current->children[key[depth] - 'a']->children[i] = NULL;
 						}
 					}
 					current = current->children[key[depth] - 'a'];
-					printf("I am now in child %c with memory address %p.\n", key[depth], current);
-
 					depth++;
 				}
-				printf("Adding value to child with memory address %p.\n", current);
 				current->hasValue = true;
 				current->value = value;
 
-				//keys.append(key);
-				//values.append(value);children
+				//keys.append(key.c_str());
+				values.append(value);
 			}
+		}
+
+		/* Remove the value with the specified key. */
+		template< typename T >
+		T Map< T >::remove(const std::string& key) {
+			MapNode< T >* current = root;
+			unsigned int depth = 0;
+			while (depth < key.length()) {
+				current = current->children[key[depth] - 'a'];
+				depth++;
+			}
+			current->hasValue = false;
+			return current->value;
+
+			/* TODO: Remove from keys and values. */
+		}
+
+		/* Return whether or not the map contains a value at the specified key. */
+		template< typename T >
+		bool Map< T >::has(const std::string& key) const {
+			MapNode< T >* current = root;
+			unsigned int depth = 0;
+			while (depth < key.length()) {
+				if (current->children[key[depth] - 'a'] == NULL) {
+					return false;
+				}
+				current = current->children[key[depth] - 'a'];
+				depth++;
+			}
+			return current->hasValue;
+		}
+
+		/* Return the value at the specified key. */
+		template< typename T >
+		T& Map< T >::get(const std::string& key) const {
+			MapNode< T >* current = root;
+			unsigned int depth = 0;
+			while (depth < key.length()) {
+				current = current->children[key[depth] - 'a'];
+				depth++;
+			}
+			return current->value;
+		}
+
+		/* Return the keys. 
+		template< typename T >
+		const DynamicArray< const char* >& Map< T >::getKeys() const {
+			return keys;
+		}
+
+		/* Return the values. */
+		template< typename T >
+		const DynamicArray< T >& Map< T >::getValues() const {
+			return values;
 		}
 
 		/* Print the map. */
