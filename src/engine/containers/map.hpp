@@ -129,18 +129,6 @@ namespace StevensDev {
 			/* TODO: Copy keys and values. */
 		}
 
-		/* Subscript set. */
-		template< typename T >
-		T& Map< T >::operator [] (const std::string& key) {
-			get(key);
-		}
-
-		/* Subscript get. */
-		template< typename T >
-		const T& Map< T >::operator [] (const std::string& key) const {
-			get(key);
-		}
-
 		/* Default destructor. */
 		template< typename T >
 		Map< T >::~Map() {
@@ -159,7 +147,17 @@ namespace StevensDev {
 			/* TODO: Copy keys and values. */
 		}
 
-		/* TODO: Operators. */
+		/* Subscript set. */
+		template< typename T >
+		T& Map< T >::operator [] (const std::string& key) {
+			get(key);
+		}
+
+		/* Subscript get. */
+		template< typename T >
+		const T& Map< T >::operator [] (const std::string& key) const {
+			get(key);
+		}
 
 		/* Add a value with the specified key. */
 		template< typename T >

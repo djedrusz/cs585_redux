@@ -15,7 +15,8 @@
 #define DYNAMIC_ARRAY_GROW_RATIO 1.6 // The ratio at which the array grows. Modelled after Chris Taylor's explanation of the golden ratio.
 #define DYNAMIC_ARRAY_MINIMUM_CAPACITY 10 // The minimum capacity.
 #define DYNAMIC_ARRAY_SHRINK_THRESHOLD_RATIO 0.25 // The threshold at which the array shrinks.
-#define DYNAMIC_ARRAY_SHRINK_RATIO 0.5 // The ratio at which the array shrinks. The shrink ratio is greater than the threshold so that a grow does not immediately follow a shrink.
+// The ratio at which the array shrinks. The shrink ratio is greater than the threshold so that a grow does not immediately follow a shrink.
+#define DYNAMIC_ARRAY_SHRINK_RATIO 0.5
 
 namespace StevensDev {
 	namespace sgdc { // Stevens Game Development Containers.
@@ -33,7 +34,8 @@ namespace StevensDev {
 				void shrink(); // Decrease the capacity of the array.
 			public:
 				/* Constructor(s). */
-				DynamicArray(sgdm::IAllocator< T >* allocator = new sgdm::DefaultAllocator< T >, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY); // Constructor with optional specified allocator and capacity.
+				// Constructor with optional specified allocator and capacity.
+				DynamicArray(sgdm::IAllocator< T >* allocator = new sgdm::DefaultAllocator< T >, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY);
 				DynamicArray(const DynamicArray< T >& dynamicArray); // Copy constructor.
 				/* Destructor(s). */
 				~DynamicArray(); // Default destructor.

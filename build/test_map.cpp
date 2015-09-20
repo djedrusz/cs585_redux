@@ -9,6 +9,21 @@
 #include "../src/engine/memory/counting_allocator.hpp"
 #include "../src/engine/containers/map.hpp"
 
+/* Globals. */
+StevensDev::sgdm::CountingAllocator< StevensDev::sgdc::MapNode< int > >* TEST_MAP_countingAllocator = new StevensDev::sgdm::CountingAllocator< StevensDev::sgdc::MapNode< int > >();
+StevensDev::sgdc::Map< int >* TEST_MAP_map = new StevensDev::sgdc::Map< int >(TEST_MAP_countingAllocator);
+
+/* Test the construction of a map. */
+TEST(Map, Construction) {
+	EXPECT_EQ(TEST_MAP_countingAllocator->getAllocations(), 1);
+}
+
+/* Test adding a new node to the map. */
+TEST(Map, AddNew) {
+	TEST_MAP_map->add("a", 1);
+	EXPECT_EQ(TEST_MAP_countingAllocator->getAllocations(), 2);
+}
+
 TEST(Map, General) {
 	StevensDev::sgdm::CountingAllocator< StevensDev::sgdc::MapNode< int > >* countingAllocator = new StevensDev::sgdm::CountingAllocator< StevensDev::sgdc::MapNode< int > >();
 	StevensDev::sgdc::Map<int>* map = new StevensDev::sgdc::Map<int>(countingAllocator);
