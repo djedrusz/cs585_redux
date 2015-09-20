@@ -8,7 +8,6 @@
 #ifndef INCLUDED_DYNAMIC_ARRAY
 #define INCLUDED_DYNAMIC_ARRAY
 
-#include <cstring>
 #include <algorithm>
 #include "../memory/default_allocator.hpp"
 
@@ -62,7 +61,6 @@ namespace StevensDev {
 	    	if (size  >= capacity) {
 	            unsigned int newCapacity = (unsigned int)(capacity * DYNAMIC_ARRAY_GROW_RATIO);
 	            T* newArray = allocator->allocate(newCapacity);
-	            //memcpy(newArray, array, size * sizeof(T));
 	            std::copy(array, &array[size], newArray);
 	            allocator->deallocate(array, capacity);
 	            capacity = newCapacity;
@@ -79,7 +77,6 @@ namespace StevensDev {
 		        	newCapacity = DYNAMIC_ARRAY_MINIMUM_CAPACITY;
 		        }
 		        T* newArray = allocator->allocate(newCapacity);
-		        //memcpy(newArray, array, size * sizeof(T));
 		        std::copy(array, &array[size], newArray);
 		        allocator->deallocate(array, capacity);
 		        capacity = newCapacity;
@@ -103,7 +100,6 @@ namespace StevensDev {
 			capacity(dynamicArray.capacity),
 			size(dynamicArray.size) {
 			array = allocator->allocate(capacity);
-			//memcpy(array, dynamicArray.array, size * sizeof(T));
 			std::copy(dynamicArray.array, &dynamicArray.array[size], array);
 		}
 
@@ -123,7 +119,6 @@ namespace StevensDev {
 				array = allocator->allocate(dynamicArray.capacity);
 				capacity = dynamicArray.capacity;
 				size = dynamicArray.size;
-				//memcpy(array, dynamicArray.array, dynamicArray.size * sizeof(T));
 				std::copy(dynamicArray.array, &dynamicArray.array[size], array);
 			}
 		}
@@ -145,7 +140,6 @@ namespace StevensDev {
 		void DynamicArray< T >::prepend(const T& element) {
 			grow();
 
-			//memmove(&array[1], array, size * sizeof(T));
 			std::move(array, &array[size], &array[1]);
 			array[0] = element;
 			size++;
@@ -165,7 +159,6 @@ namespace StevensDev {
 		void DynamicArray< T >::insert(unsigned int index, const T& element) {
 			grow();
 			
-			//memmove(&array[index + 1], &array[index], (size - index) * sizeof(T));
 			std::move(&array[index], &array[size], &array[index + 1]);
 			array[index] = element;
 			size++;
@@ -175,7 +168,6 @@ namespace StevensDev {
 		template< typename T >
 		T DynamicArray< T >::pull() {
 			T element = array[0];
-			//memmove(array, &array[1], (size - 1) * sizeof(T));
 			std::move_backward(&array[1], &array[size], &array[size - 1]);
 			size--;
 
@@ -199,7 +191,6 @@ namespace StevensDev {
 		template< typename T >
 		T DynamicArray< T >::remove(unsigned int index) {
 			T element = array[index];
-			//memmove(&array[index], &array[index + 1], (size - index) * sizeof(T));
 			std::move_backward(&array[index + 1], &array[size], &array[size - 1]);
 			size--;
 
