@@ -18,6 +18,9 @@ namespace StevensDev{
 				/* Function(s). */
 				virtual T* allocate(unsigned int count) = 0; // Allocate the specified amount of memory and return a pointer to the newly created memory block.
 				virtual void deallocate(T* memoryBlock, unsigned int count) = 0; // Deallocate the specified amount of memory from the specified memory block.
+				virtual void construct(T* pointer, const T& t) = 0; // In-place copy constructor.
+				virtual void construct(T* pointer, T&& t) = 0; // In-place move constructor.
+				virtual void destruct(T* pointer) = 0; // In-place destructor.
 		};
 	}
 }
