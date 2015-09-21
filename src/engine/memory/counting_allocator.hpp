@@ -25,8 +25,10 @@ namespace StevensDev {
         			/* Constructor(s). */
         			CountingAllocator(); // Default constructor.
         			CountingAllocator(const CountingAllocator< T >& countingAllocator); // Copy contructor.
+                                CountingAllocator(CountingAllocator< T >&& countingAllocator); // Move constructor.
         			/* Operators. */
         			CountingAllocator< T >& operator = (const CountingAllocator< T >& countingAllocator); // Copy assignment operator.
+                                CountingAllocator< T >& operator = (CountingAllocator< T >&& countingAllocator); // Move assignment operator.
         			/* Function(s). */
         			T* allocate(unsigned int count); // Allocate the specified amount of memory and return a pointer to the newly formed memory block.
         			void deallocate(T* memoryBlock, unsigned int count); // Deallocate the specified amount of memory from the memory block.
@@ -60,9 +62,29 @@ namespace StevensDev {
                         ;
                 }
 
+                /* Move constructor. */
+                template< typename T >
+                CountingAllocator< T >::CountingAllocator(CountingAllocator< T >&& countingAllocator) 
+                :       allocations(countingAllocator.allocations),
+                        deallocations(countingAllocator.deallocations) {
+                        ;
+                }
+
                 /* Copy assignment operator. */
                 template< typename T >
                 CountingAllocator< T >& CountingAllocator< T >::operator = (const CountingAllocator< T >& countingAllocator) {
+                        /* Avoid self-assignment. */
+                        if (*this != countingAllocator) {
+                                allocations = countingAllocator.allocations;
+                                deallocations = countingAllocator.deallocations;
+                        }
+
+                        return *this;
+                }
+
+                /* Move assignment operator. */
+                template< typename T >
+                CountingAllocator< T >& CountingAllocator< T >::operator = (CountingAllocator< T >&& countingAllocator) {
                         /* Avoid self-assignment. */
                         if (*this != countingAllocator) {
                                 allocations = countingAllocator.allocations;

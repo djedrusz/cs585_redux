@@ -12,6 +12,7 @@
 /* Counting allocators. */
 StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator;
 StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator2;
+
 /* Memory blocks. */
 int* TEST_COUNTING_ALLOCATOR_memoryBlock;
 int* TEST_COUNTING_ALLOCATOR_memoryBlock2;
@@ -37,6 +38,22 @@ TEST(CountingAllocator, Allocate) {
 
 	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator2.getAllocations(), 15);
 	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator2.getOutstandingAllocations(), 15);
+}
+
+/* Test the copy constructor of a counting allocator. */
+TEST(CountingAllocator, CopyConstructor) {
+	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3(TEST_COUNTING_ALLOCATOR_countingAllocator);
+
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getAllocations(), 10);
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);
+}
+
+/* Test the move constructor of a counting allocator. */
+TEST(CountingAllocator, MoveConstructor) {
+	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3(TEST_COUNTING_ALLOCATOR_countingAllocator2);
+
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getAllocations(), 15);
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);
 }
 
 /* Test the deallocation of a counting allocator. */
