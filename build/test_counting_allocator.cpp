@@ -48,9 +48,25 @@ TEST(CountingAllocator, CopyConstructor) {
 	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);
 }
 
+/* Test the copy assignment operator of a counting allocator. */
+TEST(CountingAllocator, CopyAssignmentOperator) {
+	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3 = TEST_COUNTING_ALLOCATOR_countingAllocator;
+
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getAllocations(), 10);
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);
+}
+
 /* Test the move constructor of a counting allocator. */
 TEST(CountingAllocator, MoveConstructor) {
-	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3(TEST_COUNTING_ALLOCATOR_countingAllocator2);
+	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3(std::move(TEST_COUNTING_ALLOCATOR_countingAllocator2));
+
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getAllocations(), 15);
+	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);
+}
+
+/* Test the move assignment operator of a counting allocator. */
+TEST(CountingAllocator, MoveAssignmentOperator) {
+	StevensDev::sgdm::CountingAllocator<int> TEST_COUNTING_ALLOCATOR_countingAllocator3 = std::move(TEST_COUNTING_ALLOCATOR_countingAllocator2);
 
 	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getAllocations(), 15);
 	EXPECT_EQ(TEST_COUNTING_ALLOCATOR_countingAllocator3.getDeallocations(), 0);

@@ -181,6 +181,27 @@ TEST(DynamicArray, SubscriptSet) {
 	EXPECT_EQ(tester[2], 5);
 }
 
+/* Test the move constructor of a dynamic array. */
+TEST(DynamicArray, MoveConstructor) {
+	StevensDev::sgdc::DynamicArray< int > dynamicArray2;
+	dynamicArray2.append(2);
+	dynamicArray2.append(3);
+	StevensDev::sgdc::DynamicArray< int >* dynamicArray3 = new StevensDev::sgdc::DynamicArray< int >(std::move(dynamicArray2));
+	EXPECT_EQ(dynamicArray3->get(0), 2);
+	EXPECT_EQ(dynamicArray3->get(1), 3);
+}
+
+/* Test the move assignment operator of a dynamic array. */
+TEST(DynamicArray, MoveAssignmentOperator) {
+	StevensDev::sgdc::DynamicArray< int > dynamicArray2;
+	dynamicArray2.append(2);
+	dynamicArray2.append(3);
+	StevensDev::sgdc::DynamicArray< int > dynamicArray3;
+	dynamicArray3 = std::move(dynamicArray2);
+	EXPECT_EQ(dynamicArray3.get(0), 2);
+	EXPECT_EQ(dynamicArray3.get(1), 3);
+}
+
 /* Test destructor. */
 TEST(DynamicArray, Destructor) {
 	delete TEST_DYNAMIC_ARRAY_dynamicArray;

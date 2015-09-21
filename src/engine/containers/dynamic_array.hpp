@@ -37,10 +37,12 @@ namespace StevensDev {
 				// Constructor with optional specified allocator and capacity.
 				DynamicArray(sgdm::IAllocator< T >* allocator = new sgdm::DefaultAllocator< T >, unsigned int capacity = DYNAMIC_ARRAY_DEFAULT_CAPACITY);
 				DynamicArray(const DynamicArray< T >& dynamicArray); // Copy constructor.
+				DynamicArray(DynamicArray< T >&& dynamicArray); // Move constructor.
 				/* Destructor(s). */
 				~DynamicArray(); // Default destructor.
 				/* Operator(s). */
 				DynamicArray< T >& operator = (const DynamicArray< T >& dynamicArray); // Copy assignment operator.
+				DynamicArray< T >& operator = (DynamicArray< T >&& dynamicArray); // Move assignment operator.
 				T& operator [] (unsigned int index); // Subscript set.
 				const T& operator [] (unsigned int index) const; // Subscript get.
 				/* Function(s). */
@@ -61,7 +63,7 @@ namespace StevensDev {
 	    	if (size  >= capacity) {
 	            unsigned int newCapacity = (unsigned int)(capacity * DYNAMIC_ARRAY_GROW_RATIO);
 	            T* newArray = allocator->allocate(newCapacity);
-	            std::copy(array, &array[size], newArray);
+	            std::move(array, &array[size], newArray);
 	            allocator->deallocate(array, capacity);
 	            capacity = newCapacity;
 	            array = newArray;
@@ -77,7 +79,7 @@ namespace StevensDev {
 		        	newCapacity = DYNAMIC_ARRAY_MINIMUM_CAPACITY;
 		        }
 		        T* newArray = allocator->allocate(newCapacity);
-		        std::copy(array, &array[size], newArray);
+		        std::move(array, &array[size], newArray);
 		        allocator->deallocate(array, capacity);
 		        capacity = newCapacity;
 		        array = newArray;
@@ -103,10 +105,22 @@ namespace StevensDev {
 			std::copy(dynamicArray.array, &dynamicArray.array[size], array);
 		}
 
+		/* Move constructor. */
+		template< typename T >
+		DynamicArray< T >::DynamicArray(DynamicArray&& dynamicArray)
+		:	allocator(dynamicArray.allocator),
+			capacity(dynamicArray.capacity),
+			size(dynamicArray.size) {
+			array = dynamicArray.array;
+			dynamicArray.array = NULL;
+		}
+
 		/* Default destructor. */
 		template< typename T >
 		DynamicArray< T >::~DynamicArray() {
-			allocator->deallocate(array, capacity);
+			if (array != NULL) { // If the dynamic array has not been moved...
+				allocator->deallocate(array, capacity);
+			}
 		}
 
 		/* Copy assignment operator. */
@@ -120,6 +134,20 @@ namespace StevensDev {
 				capacity = dynamicArray.capacity;
 				size = dynamicArray.size;
 				std::copy(dynamicArray.array, &dynamicArray.array[size], array);
+			}
+		}
+
+		/* Move assignment operator. */
+		template< typename T >
+		DynamicArray< T >& DynamicArray< T >::operator = (DynamicArray< T >&& dynamicArray) {
+			if (this != &dynamicArray) { // Avoid self-assignment.
+				allocator->deallocate(array, dynamicArray.capacity); // Clean up old data.
+
+				allocator = dynamicArray.allocator;
+				capacity = dynamicArray.capacity;
+				size = dynamicArray.size;
+				array = dynamicArray.array;
+				dynamicArray.array = NULL;
 			}
 		}
 
