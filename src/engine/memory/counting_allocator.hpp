@@ -109,7 +109,7 @@ namespace StevensDev {
                         deallocations += count;
                         totalDeallocations += count;
 
-                        delete memoryBlock;
+                        delete[] memoryBlock;
                 }
 
                 /* Return the number of allocations. */

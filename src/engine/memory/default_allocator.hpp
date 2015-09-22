@@ -35,7 +35,7 @@ namespace StevensDev {
 		/* Deallocate the specified amount of memory from the specified memory block. */
 		template< typename T >
 		void DefaultAllocator< T >::deallocate(T* memoryBlock, unsigned int count) {
-			delete memoryBlock;
+			delete[] memoryBlock;
 		}
 
 		/* In-place copy constructor. */

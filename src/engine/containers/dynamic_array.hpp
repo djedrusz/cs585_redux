@@ -93,6 +93,7 @@ namespace StevensDev {
 			array(allocator->allocate(capacity)),
 			capacity(capacity),
 			size(0) {
+			;
 		}
 
 		/* Copy constructor. */
