@@ -114,7 +114,7 @@ TEST(Map, Get) {
 	EXPECT_EQ(TEST_MAP_map->get("bbbb"), 3);
 }
 
-/* Test the subscript get. */
+/* Test the subscript get. 
 TEST(Map, SubscriptGet) {
 	std::cout << &(*TEST_MAP_map)["a"] << " = " << &TEST_MAP_map->get("a") << std::endl;
 	EXPECT_EQ((*TEST_MAP_map)["a"], 1);//TEST_MAP_map->get("a"));
