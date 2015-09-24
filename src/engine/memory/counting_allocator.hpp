@@ -148,6 +148,7 @@ const unsigned int CountingAllocator< T >::getTotalOutstandingAllocations() {
         return totalAllocations - totalDeallocations;
 }
 }
+
 }
 
 #endif

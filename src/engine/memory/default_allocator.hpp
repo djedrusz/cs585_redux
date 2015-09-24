@@ -56,6 +56,7 @@ void DefaultAllocator< T >::destruct(T* pointer) {
 	delete (pointer);
 }
 }
+
 }
 
 #endif

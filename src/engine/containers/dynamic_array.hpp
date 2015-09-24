@@ -245,6 +245,7 @@ template< typename T >
 const unsigned int DynamicArray< T >::getSize() const {
 	return size;
 }
+
 }
 }
 

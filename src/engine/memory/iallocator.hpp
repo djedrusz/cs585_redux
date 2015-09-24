@@ -8,7 +8,7 @@
 #ifndef INCLUDED_IALLOCATOR
 #define INCLUDED_IALLOCATOR
 
-namespace StevensDev{
+namespace StevensDev {
 namespace sgdm { // Stevens Game Development Memory.
 /* The "IAllocator" interface. */
 template< typename T >
@@ -22,6 +22,7 @@ class IAllocator {
 		virtual void construct(T* pointer, T&& t) = 0; // In-place move constructor.
 		virtual void destruct(T* pointer) = 0; // In-place destructor.
 };
+
 }
 }
 
