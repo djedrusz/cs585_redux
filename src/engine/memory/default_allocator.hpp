@@ -13,6 +13,7 @@
 
 namespace StevensDev {
 namespace sgdm { // Stevens Game Development Memory.
+
 /* The default allocator for containers. */
 template< typename T >
 class DefaultAllocator : public IAllocator< T > {

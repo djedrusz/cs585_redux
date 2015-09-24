@@ -12,6 +12,7 @@
 
 namespace StevensDev {
 namespace sgdm { /* Stevens Game Development Memory. */
+
 /* A stack guard. */
 template< typename T >
 class StackGuard {

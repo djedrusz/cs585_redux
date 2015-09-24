@@ -12,6 +12,7 @@
 
 namespace StevensDev {
 namespace sgdm { // Stevens Game Development Memory.
+
 /* An allocator which counts allocations and deallocations for each instance, and all instances. */
 template< typename T >
 class CountingAllocator : public DefaultAllocator< T > {

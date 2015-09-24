@@ -20,6 +20,7 @@
 
 namespace StevensDev {
 namespace sgdc { // Stevens Game Development Containers.
+
 /* An array which grows and shrinks dynamically. */
 template< typename T >
 class DynamicArray {

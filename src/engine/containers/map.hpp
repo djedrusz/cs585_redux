@@ -16,6 +16,7 @@
 
 namespace StevensDev {
 namespace sgdc { // Stevens Game Development Containers.
+
 /* A node in the map. */
 template< typename T >
 struct MapNode {
