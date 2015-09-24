@@ -55,8 +55,8 @@ template< typename T >
 void DefaultAllocator< T >::destruct(T* pointer) {
 	delete (pointer);
 }
-}
 
+}
 }
 
 #endif

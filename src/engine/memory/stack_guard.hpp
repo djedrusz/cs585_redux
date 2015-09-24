@@ -54,13 +54,15 @@ template< typename T >
 StackGuard< T >::StackGuard(StackGuard< T >&& stackGuard)
 :	allocator(stackGuard.allocator),
 	guarded(stackGuard.guarded) {
-	stackGuard.guarded = NULL;
+	stackGuard.guarded = nullptr;
 }
 
 /* Default destructor. */
 template< typename T >
 StackGuard< T >::~StackGuard() {
-	allocator->deallocate(guarded, 1);
+	if (guarded != nullptr) {
+		allocator->deallocate(guarded, 1);
+	}
 }
 
 /* Move assignment operator. */
@@ -68,7 +70,7 @@ template< typename T >
 StackGuard< T >& StackGuard< T >::operator = (StackGuard< T >&& stackGuard) {
 	allocator = stackGuard.allocator;
 	guarded = stackGuard.guarded;
-	stackGuard.guarded = NULL;
+	stackGuard.guarded = nullptr;
 }
 
 /* Return the guarded object pointer. */
