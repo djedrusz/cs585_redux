@@ -161,7 +161,12 @@ TEST(JsonParser, EmptyArray) {
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[]");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		nullptr, &mapAllocator,
+		&jsonEntityAllocator,
+		"[]");
 
 	EXPECT_EQ(jsonEntity->isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 0);
@@ -180,7 +185,13 @@ TEST(JsonParser, UnaryArray) {
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[\"thirty\"]");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		nullptr,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"[\"thirty\"]");
 
 	EXPECT_EQ(jsonEntity->isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
@@ -202,7 +213,13 @@ TEST(JsonParser, MultipleArray) {
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[true, false, 17, \"thirty\"]");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		nullptr,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"[true, false, 17, \"thirty\"]");
 
 	EXPECT_EQ(jsonEntity->isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 4);
@@ -229,7 +246,13 @@ TEST(JsonParser, NestedArrays) {
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[[]]");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		nullptr,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"[[]]");
 
 	EXPECT_EQ(jsonEntity->isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
@@ -251,7 +274,16 @@ TEST(JsonParser, EmptyObject) {
 	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, &mapNodeAllocator, &mapAllocator, &jsonEntityAllocator, "{}");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{}");
+
+	EXPECT_EQ(jsonEntity->isObject(), true);
+	EXPECT_EQ(jsonEntity->asObject().getKeys().getSize(), 0);
 
 	jsonEntityAllocator.deallocate(jsonEntity, 1);
 
@@ -269,7 +301,96 @@ TEST(JsonParser, UnaryObject) {
 	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
 	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, &mapNodeAllocator, &mapAllocator, &jsonEntityAllocator, "{\"please\":\"work\"}");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{\"please\":\"work\"}");
+	   /*01-2345678-90-12345-6*/
+
+	EXPECT_EQ(jsonEntity->isObject(), true);
+	EXPECT_EQ(jsonEntity->asObject().has("please"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("please").isString(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("please").asString().compare("work"), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing object with multiple pairs. */
+TEST(JsonParser, MultipleObject) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{\"a\":\"yes\",\"b\":true,\"c\":2,\"d\":3.12}");
+	   /*01-23-45-6789-01-23-4567890-12-3456-78-90123*/
+	   /*0             1           2             3   */
+
+	EXPECT_EQ(jsonEntity->isObject(), true);
+	EXPECT_EQ(jsonEntity->asObject().getKeys().getSize(), 4);
+	EXPECT_EQ(jsonEntity->asObject().has("a"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").isString(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").asString().compare("yes"), 0);
+	EXPECT_EQ(jsonEntity->asObject().has("b"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("b").isBool(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("b").asBool(), true);
+	EXPECT_EQ(jsonEntity->asObject().has("c"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("c").isInt(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("c").asInt(), 2);
+	EXPECT_EQ(jsonEntity->asObject().has("d"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("d").isDouble(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("d").asDouble(), 3.12);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing object within an object. */
+TEST(JsonParser, NestedObject) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{\"a\":{\"b\":\"huzzah\"}}");
+	   /*01-23-45-6789-01-23-4567890-12-3456-78-90123*/
+	   /*0             1           2             3   */
+
+	EXPECT_EQ(jsonEntity->isObject(), true);
+	EXPECT_EQ(jsonEntity->asObject().getKeys().getSize(), 1);
+	EXPECT_EQ(jsonEntity->asObject().has("a"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").isObject(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").asObject().getKeys().getSize(), 1);
+	EXPECT_EQ(jsonEntity->asObject().get("a").asObject().has("b"), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").asObject().get("b").isString(), true);
+	EXPECT_EQ(jsonEntity->asObject().get("a").asObject().get("b").asString().compare("huzzah"), 0);
+
 
 	jsonEntityAllocator.deallocate(jsonEntity, 1);
 

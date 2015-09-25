@@ -58,7 +58,7 @@ class Map {
 		void put(const std::string& key, const T& value); // Put a value with the specified key.
 		T remove(const std::string& key); // Remove the value with the specified key.
 		bool has(const std::string& key) const; // Return whether or not there exists a value at the specified key.
-		const T& get(const std::string& key); // Return the value at the specified key.
+		const T& get(const std::string& key) const; // Return the value at the specified key.
 		const DynamicArray< std::string >& getKeys() const; // Return the keys.
 		const DynamicArray< T >& getValues() const; // Return the values.
 		void print(); // Print out the map.
@@ -299,7 +299,7 @@ bool Map< T >::has(const std::string& key) const {
 
 /* Return the value at the specified key. */
 template< typename T >
-const T& Map< T >::get(const std::string& key) {
+const T& Map< T >::get(const std::string& key) const {
 	MapNode< T >* current = root;
 	unsigned int depth = 0;
 	while (depth < key.length()) {
