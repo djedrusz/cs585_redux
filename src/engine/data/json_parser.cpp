@@ -17,6 +17,7 @@ sgdm::DefaultAllocator< JsonEntity > JsonParser::defaultJsonEntityAllocator;
 JsonParser::Parse JsonParser::parseEntity(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json,
@@ -52,12 +53,26 @@ JsonParser::Parse JsonParser::parseEntity(
 	/* Array. */
 	else if (json[index] == '[') {
 		std::cout << "Parsing array." << std::endl;
-		return parseArray(dynamicArrayAllocator, jsonEntityAllocator, json, index);
+		return parseArray(
+			stringAllocator,
+			dynamicArrayAllocator,
+			mapNodeAllocator,
+			mapAllocator,
+			jsonEntityAllocator,
+			json,
+			index);
 	}
 	/* Object. */
 	else if (json[index] == '{') {
 		std::cout << "Parsing object." << std::endl;
-		return parseObject(mapAllocator, jsonEntityAllocator, json, index);
+		return parseObject(
+			stringAllocator,
+			dynamicArrayAllocator,
+			mapNodeAllocator,
+			mapAllocator,
+			jsonEntityAllocator,
+			json,
+			index);
 	}
 	/* Invalid JSON. */
 	else {
@@ -146,13 +161,16 @@ JsonParser::Parse JsonParser::parseNumber(
 				/* Finish reading exponent and double. */
 				index--;
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
+				return Parse(jsonEntity, index);
 			}
 			else { /* Invalid exponent format. */
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				return Parse(jsonEntity, index);
 			}
 		}
 		else { /* If number has no exponent, finish reading as double. */
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
+			return Parse(jsonEntity, index);
 		}
 	}
 	else { /* If number has no decimal, read as integer. */
@@ -160,8 +178,6 @@ JsonParser::Parse JsonParser::parseNumber(
 		jsonEntityAllocator->construct(jsonEntity, JsonEntity(atoi(std::string(json, startingIndex, startingIndex - index).c_str())));
 		return Parse(jsonEntity, index);
 	}
-
-	return Parse(jsonEntity, index);
 }
 
 /* TODO. */
@@ -178,12 +194,11 @@ JsonParser::Parse JsonParser::parseString(
 	while (true) {
 		if (json[index] == '"') { /* End of string. */
 			if (stringAllocator == nullptr) {
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity(std::string(json, startingIndex + 1, index - 1)));
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity(std::string(json, startingIndex + 1, index - startingIndex - 1)));
 			}
 			else {
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - 1)));
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - startingIndex - 1)));
 			}
-
 
 			break;
 		}
@@ -234,34 +249,134 @@ JsonParser::Parse JsonParser::parseString(
 		}
 	}
 
+	std::cout << "String's last is " << json[index] << " at " << index << std::endl;
 	return Parse(jsonEntity, index);
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseArray(
+
+	sgdm::IAllocator< std::string >* stringAllocator,
 	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
-	const std::string& json,
-	unsigned int index) {
-
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
-	return Parse(jsonEntity, index);
-}
-
-/* TODO. */
-JsonParser::Parse JsonParser::parseObject(
+	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json,
 	unsigned int index) {
 
 	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+	sgdc::DynamicArray< JsonEntity > dynamicArray(jsonEntityAllocator);
+
+	index++; // Skip over bracket.
+	while (true) {
+		if (json[index] == ']') {
+			break;
+		}
+		else {
+			Parse parse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
+			
+			JsonEntity je = *parse.jsonEntity;
+			dynamicArray.append(je);
+			
+			jsonEntityAllocator->deallocate(parse.jsonEntity, 1);
+			index = parse.index + 1;
+
+			/* Flush whitespaces. */
+			while (json[index] == ASCII_TAB ||
+				json[index] == ASCII_NEW_LINE ||
+				json[index] == ASCII_CARRIAGE_RETURN ||
+				json[index] == ASCII_SPACE) {
+				std::cout << "Whitespace" << std::endl;
+				index++;
+			}
+			if (json[index] == ',') {
+				index++;
+			}
+		}
+	}
+
+	jsonEntityAllocator->construct(jsonEntity, JsonEntity(dynamicArrayAllocator, dynamicArray));
+	return Parse(jsonEntity, index);
+}
+
+/* TODO. */
+JsonParser::Parse JsonParser::parseObject(
+	sgdm::IAllocator< std::string >* stringAllocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
+	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
+	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	const std::string& json,
+	unsigned int index) {
+
+	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+	sgdc::Map< JsonEntity > map(mapNodeAllocator, stringAllocator, jsonEntityAllocator);
+
+	index++; // Skip over curly brace.
+	while (true) {
+		if (json[index] == '}') {
+			break;
+		}
+		else {
+			Parse string = parseString(stringAllocator, jsonEntityAllocator, json, index);
+			index = string.index + 1;
+			std::cout << "Exit string at " << index << " = " << json[index] << std::endl;
+			jsonEntityAllocator->deallocate(string.jsonEntity, 1);
+
+			/* Flush whitespaces. */
+			while (json[index] == ASCII_TAB ||
+				json[index] == ASCII_NEW_LINE ||
+				json[index] == ASCII_CARRIAGE_RETURN ||
+				json[index] == ASCII_SPACE) {
+				std::cout << "Whitespace" << std::endl;
+				index++;
+			}
+			if (json[index] != ':') {
+				std::cout << "ERROR NO COLON at index " << index << std::endl;
+			}
+			index++;
+
+			Parse value = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
+			index = value.index + 1;
+
+			JsonEntity val = *value.jsonEntity;
+			map.put(string.jsonEntity->asString(), val);
+
+			jsonEntityAllocator->deallocate(string.jsonEntity, 1);
+			std::cout << "Escape string free" << std::endl;
+			jsonEntityAllocator->deallocate(value.jsonEntity, 1);
+			std::cout << "Escape value free" << std::endl;
+
+			/* Flush whitespaces. */
+			while (json[index] == ASCII_TAB ||
+				json[index] == ASCII_NEW_LINE ||
+				json[index] == ASCII_CARRIAGE_RETURN ||
+				json[index] == ASCII_SPACE) {
+				std::cout << "Whitespace" << std::endl;
+				index++;
+			}
+			if (json[index] == ',') {
+				index++;
+				/* Flush whitespaces. */
+				while (json[index] == ASCII_TAB ||
+					json[index] == ASCII_NEW_LINE ||
+					json[index] == ASCII_CARRIAGE_RETURN ||
+					json[index] == ASCII_SPACE) {
+					std::cout << "Whitespace" << std::endl;
+					index++;
+				}
+			}
+		}
+	}
+
+	jsonEntityAllocator->construct(jsonEntity, JsonEntity(mapAllocator, map));
 	return Parse(jsonEntity, index);
 }
 
 /* Parse the specified JSON string into a JSON entity. */
 JsonEntity* JsonParser::parse(const std::string& json) {
 	return parse(
+		nullptr,
 		nullptr,
 		nullptr,
 		nullptr,
@@ -278,6 +393,7 @@ JsonEntity* JsonParser::parse(
 		nullptr,
 		nullptr,
 		nullptr,
+		nullptr,
 		jsonEntityAllocator,
 		json);
 }
@@ -286,6 +402,7 @@ JsonEntity* JsonParser::parse(
 JsonEntity* JsonParser::parse(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json) {
@@ -293,6 +410,7 @@ JsonEntity* JsonParser::parse(
 	return parseEntity(
 		stringAllocator,
 		dynamicArrayAllocator,
+		mapNodeAllocator,
 		mapAllocator,
 		jsonEntityAllocator,
 		json,

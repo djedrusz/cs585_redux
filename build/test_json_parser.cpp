@@ -133,14 +133,11 @@ TEST(JsonParser, NegativeExponent) {
 
 /* Test parsing simple string. */
 TEST(JsonParser, SimpleString) {
-	sgdm::CountingAllocator< std::string > sca;
-	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > sdaa;
-	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > sma;
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
 	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"string\"");
 
 	EXPECT_EQ(jsonEntity->isString(), true);
-	EXPECT_EQ(jsonEntity->asString()->compare("string"), 0);
+	EXPECT_EQ(jsonEntity->asString().compare("string"), 0);
 
 	countingAllocator.deallocate(jsonEntity, 1);
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
@@ -148,21 +145,139 @@ TEST(JsonParser, SimpleString) {
 
 /* Test parsing string with escape characters. */
 TEST(JsonParser, EscapeString) {
-	sgdm::CountingAllocator< std::string > sca;
-	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > sdaa;
-	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > sma;
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&sca, &sdaa, &sma, &countingAllocator, "\"s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss\"");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss\"");
 
 	EXPECT_EQ(jsonEntity->isString(), true);
-	EXPECT_EQ(jsonEntity->asString()->compare("s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss"), 0);
+	EXPECT_EQ(jsonEntity->asString().compare("s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss"), 0);
 
 	countingAllocator.deallocate(jsonEntity, 1);
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
 
-	std::cout << sca.getTotalOutstandingAllocations() << std::endl;
-	std::cout << sdaa.getTotalOutstandingAllocations() << std::endl;
-	std::cout << sma.getTotalOutstandingAllocations() << std::endl;
+/* Test parsing empty array. */
+TEST(JsonParser, EmptyArray) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[]");
+
+	EXPECT_EQ(jsonEntity->isArray(), true);
+	EXPECT_EQ(jsonEntity->asArray().getSize(), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing array with one value. */
+TEST(JsonParser, UnaryArray) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[\"thirty\"]");
+
+	EXPECT_EQ(jsonEntity->isArray(), true);
+	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
+	EXPECT_EQ(jsonEntity->asArray()[0].isString(), true);
+	std::cout << jsonEntity->asArray()[0].asString() << std::endl;
+	EXPECT_EQ(jsonEntity->asArray()[0].asString().compare("thirty"), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing array with multiple values. */
+TEST(JsonParser, MultipleArray) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[true, false, 17, \"thirty\"]");
+
+	EXPECT_EQ(jsonEntity->isArray(), true);
+	EXPECT_EQ(jsonEntity->asArray().getSize(), 4);
+	EXPECT_EQ(jsonEntity->asArray()[0].isBool(), true);
+	EXPECT_EQ(jsonEntity->asArray()[0].asBool(), true);
+	EXPECT_EQ(jsonEntity->asArray()[1].isBool(), true);
+	EXPECT_EQ(jsonEntity->asArray()[1].asBool(), false);
+	EXPECT_EQ(jsonEntity->asArray()[2].isInt(), true);
+	EXPECT_EQ(jsonEntity->asArray()[2].asInt(), 17);
+	EXPECT_EQ(jsonEntity->asArray()[3].isString(), true);
+	EXPECT_EQ(jsonEntity->asArray()[3].asString().compare("thirty"), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing array within an array. */
+TEST(JsonParser, NestedArrays) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, nullptr, &mapAllocator, &jsonEntityAllocator, "[[]]");
+
+	EXPECT_EQ(jsonEntity->isArray(), true);
+	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
+	EXPECT_EQ(jsonEntity->asArray()[0].isArray(), true);
+	EXPECT_EQ(jsonEntity->asArray()[0].asArray().getSize(), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing empty object. */
+TEST(JsonParser, EmptyObject) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, &mapNodeAllocator, &mapAllocator, &jsonEntityAllocator, "{}");
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing object with one pair. */
+TEST(JsonParser, UnaryObject) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&stringAllocator, &dynamicArrayAllocator, &mapNodeAllocator, &mapAllocator, &jsonEntityAllocator, "{\"please\":\"work\"}");
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
 }
 
 /*TEST(JsonParser, General) {

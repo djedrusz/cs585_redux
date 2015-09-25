@@ -54,6 +54,7 @@ public:
 		/* Data member(s). */
 		static sgdm::DefaultAllocator< std::string > defaultStringAllocator;
 		static sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > defaultDynamicArrayAllocator;
+		static sgdm::DefaultAllocator< sgdc::MapNode< JsonEntity > > defaultMapNodeAllocator;
 		static sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > defaultMapAllocator;
 		sgdm::IAllocator< std::string >* stringAllocator;
 		sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator;
@@ -75,17 +76,17 @@ public:
 		JsonEntity(int i); // Constructor for type int.
 		JsonEntity(double d); // Constructor for type double.
 		JsonEntity(const std::string& s); // Constructor for type string.
-		JsonEntity(sgdc::DynamicArray< JsonEntity >* a); // Constructor for type array.
-		JsonEntity(sgdc::Map< JsonEntity >* o); // Constructor for type object.
+		JsonEntity(const sgdc::DynamicArray< JsonEntity >& a); // Constructor for type array.
+		JsonEntity(const sgdc::Map< JsonEntity >& o); // Constructor for type object.
 		JsonEntity( // Constructor for type string with specified allocator.
 			sgdm::IAllocator< std::string >* stringAllocator,
 			const std::string& s);
 		JsonEntity( // Constructor for type array with specified allocator.
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-			sgdc::DynamicArray< JsonEntity >* a);
+			const sgdc::DynamicArray< JsonEntity >& a);
 		JsonEntity( // Constructor for type object with specified allocator.
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-			sgdc::Map< JsonEntity >* o);
+			const sgdc::Map< JsonEntity >& o);
 		/* Destructor(s). */
 		~JsonEntity(); // Default destructor.
 		/* Operator(s). */
@@ -103,9 +104,9 @@ public:
 		const bool asBool() const; // Return as bool.
 		const int asInt() const; // Return as int.
 		const double asDouble() const; // Return as double.
-		const std::string* asString(); // Return as string.
-		const sgdc::DynamicArray< JsonEntity >* asArray(); // Return as array.
-		const sgdc::Map< JsonEntity >* asObject(); // Return as object.
+		const std::string& asString() const; // Return as string.
+		const sgdc::DynamicArray< JsonEntity >& asArray() const; // Return as array.
+		const sgdc::Map< JsonEntity >& asObject() const; // Return as object.
 };
 
 }

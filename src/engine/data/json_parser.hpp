@@ -42,6 +42,7 @@ class JsonParser {
 		static Parse parseEntity( // TODO.
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+			sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
@@ -54,11 +55,17 @@ class JsonParser {
 			const std::string& json,
 			unsigned int index);
 		static Parse parseArray( // TODO.
+			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+			sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
+			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
 			unsigned int index);
 		static Parse parseObject( // TODO.
+			sgdm::IAllocator< std::string >* stringAllocator,
+			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+			sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
@@ -69,6 +76,7 @@ class JsonParser {
 		static JsonEntity* parse(
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+			sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json);
