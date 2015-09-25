@@ -36,31 +36,33 @@ class JsonParser {
 
 	private:
 		/* Data member(s). */
-		static sgdm::DefaultAllocator< std::string > stringAllocator;
-		static sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > dynamicArrayAllocator;
-		static sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > mapAllocator;
-		static sgdm::DefaultAllocator< JsonEntity > jsonEntityAllocator;
+		static sgdm::DefaultAllocator< JsonEntity > defaultJsonEntityAllocator; // Default JSON entity allocator.
 	public:
 		/* Function(s). */
-		static Parse parseEntity(
+		static Parse parseEntity( // TODO.
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
-			unsigned int index); // TODO.
+			unsigned int index);
 		static Parse parseBool(sgdm::IAllocator< JsonEntity >* allocator, const std::string& json, unsigned int index); // TODO.
 		static Parse parseNumber(sgdm::IAllocator< JsonEntity >* allocator, const std::string& json, unsigned int index); // TODO.
-		static Parse parseString(
+		static Parse parseString( // TODO.
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
-			unsigned int index); // TODO.
-		static Parse parseArray(
+			unsigned int index);
+		static Parse parseArray( // TODO.
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
 			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 			const std::string& json,
-			unsigned int index); // TODO.
+			unsigned int index);
+		static Parse parseObject( // TODO.
+			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
+			sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+			const std::string& json,
+			unsigned int index);
 		static Parse parseObject(sgdm::IAllocator< JsonEntity >* allocator, const std::string& json, unsigned int index); // TODO.
 		static JsonEntity* parse(const std::string& json); // Parse the specified JSON into a JSON entity.
 		static JsonEntity* parse(sgdm::IAllocator< JsonEntity >* jsonEntityAllocator, const std::string& json); // Parse the specified JSON into a JSON entity with the specified allocator.

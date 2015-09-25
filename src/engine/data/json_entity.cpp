@@ -15,51 +15,9 @@ sgdm::DefaultAllocator< std::string > JsonEntity::defaultStringAllocator;
 sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > JsonEntity::defaultDynamicArrayAllocator;
 sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > JsonEntity::defaultMapAllocator;
 
-/* Default constructor. 
-JsonEntity::Data::Data()
-:	b(false) {
-	;
-}
-
-/* Boolean constructor. 
-JsonEntity::Data::Data(bool b)
-:	b(b) {
-	;
-}
-
-/* Integer constructor. 
-JsonEntity::Data::Data(int i)
-:	i(i) {
-	;
-}
-
-/* Double constructor. 
-JsonEntity::Data::Data(double d)
-:	d(d) {
-	;
-}
-
-/* String constructor. 
-JsonEntity::Data::Data(std::string* s)
-:	s(s) {
-	;
-}
-
-/* Array constructor. 
-JsonEntity::Data::Data(sdgc::DynamicArray< JsonEntity >* a)
-:	a(a) {
-	;
-}
-
-/* Object constructor. 
-JsonEntity::Data::Data(sgdc::Map< JsonEntity >* o)
-:	o(o) {
-	;
-}
-
-/* Copy constructor. 
-JsonEntity::JsonEntity(const JsonEntity& jsonEntity) {
-	std::cout << "Copy C" << std::endl;
+/* Copy constructor. */
+JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
+:	type(jsonEntity.type) {
 	if (type == BOOL) {
 		b = jsonEntity.b;
 	}
@@ -86,8 +44,9 @@ JsonEntity::JsonEntity(const JsonEntity& jsonEntity) {
 	}
 }
 
-/* Move constructor. 
-JsonEntity::JsonEntity(JsonEntity&& jsonEntity) {
+/* Move constructor. */
+JsonEntity::JsonEntity(JsonEntity&& jsonEntity)
+:	type(jsonEntity.type) {
 	if (type == BOOL) {
 		b = jsonEntity.b;
 	}
@@ -111,7 +70,7 @@ JsonEntity::JsonEntity(JsonEntity&& jsonEntity) {
 	}
 }
 
-/* Constructor for type int. */
+/* Constructor for type error. */
 JsonEntity::JsonEntity()
 :	type(ERROR), b(false) {
 	;
@@ -153,18 +112,18 @@ JsonEntity::JsonEntity(sgdc::Map< JsonEntity >* o)
 	;
 }
 
-JsonEntity::JsonEntity( /* Constructor for type string with specified allocator. */
+/* Constructor for type string with specified allocator. */
+JsonEntity::JsonEntity(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	const std::string& s)
 :	type(STRING),
 	stringAllocator(stringAllocator),
 	s(stringAllocator->allocate(1)) {
-	std::cout << "String in construtor: " << s <<std::endl;
 	stringAllocator->construct(this->s, std::string(s));
-	std::cout << "String after in-line constructor: " << asString() << std::endl << *asString() << std::endl;
 }
 
-JsonEntity::JsonEntity( /* Constructor for type array with specified allocator. */
+/* Constructor for type array with specified allocator. */
+JsonEntity::JsonEntity(
 	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
 	sgdc::DynamicArray< JsonEntity >* a)
 :	type(ARRAY),
@@ -173,7 +132,8 @@ JsonEntity::JsonEntity( /* Constructor for type array with specified allocator. 
 	dynamicArrayAllocator->construct(this->a, sgdc::DynamicArray< JsonEntity >());
 }
 
-JsonEntity::JsonEntity( /* Constructor for type object with specified allocator. */
+/* Constructor for type object with specified allocator. */
+JsonEntity::JsonEntity(
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdc::Map< JsonEntity >* o)
 :	type(OBJECT),
@@ -184,22 +144,20 @@ JsonEntity::JsonEntity( /* Constructor for type object with specified allocator.
 
 /* Default destructor. */
 JsonEntity::~JsonEntity() {
-	std::cout << "Destructor being called too soon!" << std::endl;
-	if (type == STRING && s != NULL) {
-		std::cout << "Dying!" << std::endl;
-		//std::cout << "Deallocating memory location " << s << std::endl;
-		//stringAllocator->deallocate(s, 1);
-	}/*
-	else if (type == ARRAY) {
+	if (type == STRING && s != nullptr) {
+		stringAllocator->deallocate(s, 1);
+	}
+	else if (type == ARRAY && a != nullptr) {
 		dynamicArrayAllocator->deallocate(a, 1);
 	}
-	else if (type == OBJECT) {
+	else if (type == OBJECT && o != nullptr) {
 		mapAllocator->deallocate(o, 1);
-	}*/
+	}
 }
 
-/* Copy assignment operator. 
+/* Copy assignment operator. */
 JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
+	type = jsonEntity.type;
 	if (type == BOOL) {
 		b = jsonEntity.b;
 	}
@@ -226,8 +184,9 @@ JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
 	}
 }
 
-/* Move assignment operator. 
+/* Move assignment operator. */
 JsonEntity& JsonEntity::operator = (JsonEntity&& jsonEntity) {
+	type = jsonEntity.type;
 	if (type == BOOL) {
 		b = jsonEntity.b;
 	}
@@ -239,18 +198,18 @@ JsonEntity& JsonEntity::operator = (JsonEntity&& jsonEntity) {
 	}
 	else if (type == STRING) {
 		stringAllocator = jsonEntity.stringAllocator;
-		s = stringAllocator->allocate(1);
-		stringAllocator->construct(s, *jsonEntity.s);
+		s = jsonEntity.s;
+		jsonEntity.s = nullptr;
 	}
 	else if (type == ARRAY) {
 		dynamicArrayAllocator = jsonEntity.dynamicArrayAllocator;
-		a = dynamicArrayAllocator->allocate(1);
-		dynamicArrayAllocator->construct(a, *jsonEntity.a);
+		a = jsonEntity.a;
+		jsonEntity.a = nullptr;
 	}
 	else if (type == OBJECT) {
 		mapAllocator = jsonEntity.mapAllocator;
-		o = mapAllocator->allocate(1);
-		mapAllocator->construct(o, *jsonEntity.o);
+		o = jsonEntity.o;
+		jsonEntity.o = nullptr;
 	}
 }
 

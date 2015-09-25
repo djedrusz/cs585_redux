@@ -133,12 +133,13 @@ TEST(JsonParser, NegativeExponent) {
 
 /* Test parsing simple string. */
 TEST(JsonParser, SimpleString) {
+	sgdm::CountingAllocator< std::string > sca;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > sdaa;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > sma;
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
 	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"string\"");
 
 	EXPECT_EQ(jsonEntity->isString(), true);
-	std::cout << "mem loc in test: " << jsonEntity->asString() << std::endl;
-	std::cout << *(jsonEntity->asString()) << std::endl;
 	EXPECT_EQ(jsonEntity->asString()->compare("string"), 0);
 
 	countingAllocator.deallocate(jsonEntity, 1);

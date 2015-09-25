@@ -52,7 +52,6 @@ public:
 
 	private:
 		/* Data member(s). */
-		/* Create default static alloactors? */
 		static sgdm::DefaultAllocator< std::string > defaultStringAllocator;
 		static sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > defaultDynamicArrayAllocator;
 		static sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > defaultMapAllocator;
@@ -68,9 +67,9 @@ public:
 		sgdc::DynamicArray< JsonEntity >* a;
 		sgdc::Map< JsonEntity >* o;
 	public:
-		/* Constructor. */
-		//JsonEntity(const JsonEntity& jsonEntity);
-		//JsonEntity(JsonEntity&& jsonEntity);
+		/* Constructor(s). */
+		JsonEntity(const JsonEntity& jsonEntity); // Copy constructor.
+		JsonEntity(JsonEntity&& jsonEntity); // Move constructor.
 		JsonEntity(); // Constructor for type error.
 		JsonEntity(bool b); // Constructor for type bool.
 		JsonEntity(int i); // Constructor for type int.
@@ -78,22 +77,20 @@ public:
 		JsonEntity(const std::string& s); // Constructor for type string.
 		JsonEntity(sgdc::DynamicArray< JsonEntity >* a); // Constructor for type array.
 		JsonEntity(sgdc::Map< JsonEntity >* o); // Constructor for type object.
-
-		JsonEntity(
+		JsonEntity( // Constructor for type string with specified allocator.
 			sgdm::IAllocator< std::string >* stringAllocator,
-			const std::string& s); // Constructor for type string.
-		JsonEntity(
+			const std::string& s);
+		JsonEntity( // Constructor for type array with specified allocator.
 			sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-			sgdc::DynamicArray< JsonEntity >* a); // Constructor for type array.
-		JsonEntity(
+			sgdc::DynamicArray< JsonEntity >* a);
+		JsonEntity( // Constructor for type object with specified allocator.
 			sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-			sgdc::Map< JsonEntity >* o); // Constructor for type object.
-
+			sgdc::Map< JsonEntity >* o);
 		/* Destructor(s). */
 		~JsonEntity(); // Default destructor.
 		/* Operator(s). */
-		//JsonEntity& operator = (const JsonEntity& jsonEntity); // Copy assignment operator.
-		//JsonEntity& operator = (JsonEntity&& jsonEntity); // Move assignment operator.
+		JsonEntity& operator = (const JsonEntity& jsonEntity); // Copy assignment operator.
+		JsonEntity& operator = (JsonEntity&& jsonEntity); // Move assignment operator.
 		/* Function(s). */
 		const bool isError() const; // Return whether the type is error.
 		const bool isBool() const; // Return whether the type is bool.

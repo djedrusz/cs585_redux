@@ -10,11 +10,8 @@
 namespace StevensDev {
 namespace sgdd { /* Stevens Game Development. */
 
-/* Initialize the static default allocators. */
-sgdm::DefaultAllocator< std::string > JsonParser::stringAllocator;
-sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > JsonParser::dynamicArrayAllocator;
-sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > JsonParser::mapAllocator;
-sgdm::DefaultAllocator< JsonEntity > JsonParser::jsonEntityAllocator;
+/* Initialize the default JSON entity allocator. */
+sgdm::DefaultAllocator< JsonEntity > JsonParser::defaultJsonEntityAllocator;
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseEntity(
@@ -38,24 +35,29 @@ JsonParser::Parse JsonParser::parseEntity(
 
 	/* Boolean. */
 	if (json[index] == 't' || json[index] == 'f') {
+		std::cout << "Parsing boolean." << std::endl;
 		return parseBool(jsonEntityAllocator, json, index);
 	}
 	/* Number. */
 	else if (json[index] == '-' ||
 				(json[index] >= '0' && json[index] <= '9')) {
+		std::cout << "Parsing number." << std::endl;
 		return parseNumber(jsonEntityAllocator, json, index);
 	}
 	/* String. */
 	else if (json[index] == '"') {
+		std::cout << "Parsing string." << std::endl;
 		return parseString(stringAllocator, jsonEntityAllocator, json, index);
 	}
 	/* Array. */
 	else if (json[index] == '[') {
-
+		std::cout << "Parsing array." << std::endl;
+		return parseArray(dynamicArrayAllocator, jsonEntityAllocator, json, index);
 	}
 	/* Object. */
 	else if (json[index] == '{') {
-
+		std::cout << "Parsing object." << std::endl;
+		return parseObject(mapAllocator, jsonEntityAllocator, json, index);
 	}
 	/* Invalid JSON. */
 	else {
@@ -69,7 +71,6 @@ JsonParser::Parse JsonParser::parseBool(
 	const std::string& json,
 	unsigned int index) {
 
-	std::cout << "Parsing bool at index " << index << std::endl;
 	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
 
 	/* True. */
@@ -78,11 +79,9 @@ JsonParser::Parse JsonParser::parseBool(
 		if (json[index++] == 'r' && /* Read rest of 'true'. */
 			json[index++] == 'u' &&
 			json[index] == 'e') {
-			std::cout << "Parsed true" << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity(true));
 		}
 		else {
-			std::cout << "Parsed true error" << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity());
 		}
 	}
@@ -93,11 +92,9 @@ JsonParser::Parse JsonParser::parseBool(
 			json[index++] == 'l' &&
 			json[index++] == 's' &&
 			json[index] == 'e') {
-			std::cout << "Parsed false" << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity(false));
 		}
 		else {
-			std::cout << "Parsed false error" << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity());
 		}
 	}
@@ -111,7 +108,6 @@ JsonParser::Parse JsonParser::parseNumber(
 	const std::string& json,
 	unsigned int index) {
 
-	std::cout << "Parsing number at index " << index << std::endl;
 	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
 	unsigned int startingIndex = index;
 
@@ -149,22 +145,18 @@ JsonParser::Parse JsonParser::parseNumber(
 				}
 				/* Finish reading exponent and double. */
 				index--;
-				std::cout << "Parsed good double" << std::string(json, startingIndex, startingIndex - index) << std::endl;
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 			}
 			else { /* Invalid exponent format. */
-				std::cout << "Parsed bad float" << std::endl;
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
 			}
 		}
 		else { /* If number has no exponent, finish reading as double. */
-			std::cout << "Parsed good double" << std::string(json, startingIndex, startingIndex - index) << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 		}
 	}
 	else { /* If number has no decimal, read as integer. */
 		index--;
-		std::cout << "Parsed good integer " << std::string(json, startingIndex, startingIndex - index) << std::endl;
 		jsonEntityAllocator->construct(jsonEntity, JsonEntity(atoi(std::string(json, startingIndex, startingIndex - index).c_str())));
 		return Parse(jsonEntity, index);
 	}
@@ -179,19 +171,18 @@ JsonParser::Parse JsonParser::parseString(
 	const std::string& json,
 	unsigned int index) {
 
-	std::cout << "Parsing string at index " << index << std::endl;
 	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
 	unsigned int startingIndex = index;
 
 	index++; // Skip over parenthesis.
 	while (true) {
 		if (json[index] == '"') { /* End of string. */
-			std::cout << "Parsed good string " << std::string(json, startingIndex + 1, index - 1) << std::endl;
-			/*std::string* jsonString = stringAllocator->allocate(1);
-			stringAllocator->construct(jsonString, std::string(json, startingIndex + 1, index - 1));
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(jsonString));*/
-
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - 1).c_str()));
+			if (stringAllocator == nullptr) {
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity(std::string(json, startingIndex + 1, index - 1)));
+			}
+			else {
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - 1)));
+			}
 
 
 			break;
@@ -210,36 +201,32 @@ JsonParser::Parse JsonParser::parseString(
 			}
 			else if (json[index] == 'u') { /* Hexadecimal character. */
 				index++;
-				if ((json[index] >= '0' && /* Four hexadecimal digits. */
-					json[index] <= '9' &&
-					json[index] >= 'A' &&
-					json[index++] <= 'F') &&
-					(json[index] >= '0' &&
-					json[index] <= '9' &&
-					json[index] >= 'A' &&
-					json[index++] <= 'F') &&
-					(json[index] >= '0' &&
-					json[index] <= '9' &&
-					json[index] >= 'A' &&
-					json[index++] <= 'F') &&
-					(json[index] >= '0' &&
-					json[index] <= '9' &&
-					json[index] >= 'A' &&
-					json[index++] <= 'F') &&
-					(json[index] >= '0' &&
-					json[index] <= '9' &&
-					json[index] >= 'A' &&
-					json[index] <= 'F')) {
+				if (((json[index] >= '0' && /* Four hexadecimal digits. */
+					json[index] <= '9') ||
+					(json[index] >= 'A' &&
+					json[index++] <= 'F')) &&
+					((json[index] >= '0' && /* Four hexadecimal digits. */
+					json[index] <= '9') ||
+					(json[index] >= 'A' &&
+					json[index++] <= 'F')) &&
+					((json[index] >= '0' && /* Four hexadecimal digits. */
+					json[index] <= '9') ||
+					(json[index] >= 'A' &&
+					json[index++] <= 'F')) &&
+					((json[index] >= '0' && /* Four hexadecimal digits. */
+					json[index] <= '9') ||
+					(json[index] >= 'A' &&
+					json[index] <= 'F'))) {
 					index++;
 				}
 				else { /* Hexadecimal character not followed by four hexadecimal digits. */
-					std::cout << "Parsed bad string" << std::endl;
 					jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+					break;
 				}
 			}
 			else { /* Invalid special character. */
-				std::cout << "Parsed bad string" << std::endl;
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				break;
 			}
 		}
 		else { /* Regular character. */
@@ -263,6 +250,7 @@ JsonParser::Parse JsonParser::parseArray(
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseObject(
+	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json,
 	unsigned int index) {
@@ -274,10 +262,10 @@ JsonParser::Parse JsonParser::parseObject(
 /* Parse the specified JSON string into a JSON entity. */
 JsonEntity* JsonParser::parse(const std::string& json) {
 	return parse(
-		&stringAllocator,
-		&dynamicArrayAllocator,
-		&mapAllocator,
-		&jsonEntityAllocator,
+		nullptr,
+		nullptr,
+		nullptr,
+		&defaultJsonEntityAllocator,
 		json);
 }
 
@@ -287,9 +275,9 @@ JsonEntity* JsonParser::parse(
 	const std::string& json) {
 
 	return parse(
-		&stringAllocator,
-		&dynamicArrayAllocator,
-		&mapAllocator,
+		nullptr,
+		nullptr,
+		nullptr,
 		jsonEntityAllocator,
 		json);
 }
