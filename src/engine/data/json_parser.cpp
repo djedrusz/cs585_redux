@@ -31,6 +31,15 @@ JsonParser::Parse JsonParser::parseBool(sgdm::IAllocator< JsonEntity >* allocato
 	std::cout << "Parsing bool at index " << index << std::endl;
 	JsonEntity* jsonEntity = allocator->allocate(1);
 
+	/* Flush whitespaces. */
+	while (json[index] == ASCII_TAB ||
+		json[index] == ASCII_NEW_LINE ||
+		json[index] == ASCII_CARRIAGE_RETURN ||
+		json[index] == ASCII_SPACE) {
+		std::cout << "Whitespace" << std::endl;
+		index++;
+	}
+
 	/* Parse 'true'. */
 	if (json[index] == 't') {
 		index++;
@@ -74,6 +83,16 @@ JsonParser::Parse JsonParser::parseString(sgdm::IAllocator< JsonEntity >* alloca
 	JsonEntity* jsonEntity = allocator->allocate(1);
 	unsigned int startingIndex = 0;
 
+	/* Flush whitespaces. */
+	while (json[index] == ASCII_TAB ||
+		json[index] == ASCII_NEW_LINE ||
+		json[index] == ASCII_CARRIAGE_RETURN ||
+		json[index] == ASCII_SPACE) {
+		std::cout << "Whitespace" << std::endl;
+		index++;
+	}
+
+	/* Parse string. */
 	if (json[index] == '"') {
 		index++;
 		while (true) {
