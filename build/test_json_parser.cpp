@@ -137,6 +137,8 @@ TEST(JsonParser, SimpleString) {
 	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"string\"");
 
 	EXPECT_EQ(jsonEntity->isString(), true);
+	std::cout << "mem loc in test: " << jsonEntity->asString() << std::endl;
+	std::cout << *(jsonEntity->asString()) << std::endl;
 	EXPECT_EQ(jsonEntity->asString()->compare("string"), 0);
 
 	countingAllocator.deallocate(jsonEntity, 1);
@@ -145,14 +147,21 @@ TEST(JsonParser, SimpleString) {
 
 /* Test parsing string with escape characters. */
 TEST(JsonParser, EscapeString) {
+	sgdm::CountingAllocator< std::string > sca;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > sdaa;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > sma;
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
-	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss\"");
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&sca, &sdaa, &sma, &countingAllocator, "\"s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss\"");
 
 	EXPECT_EQ(jsonEntity->isString(), true);
 	EXPECT_EQ(jsonEntity->asString()->compare("s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss"), 0);
 
 	countingAllocator.deallocate(jsonEntity, 1);
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+
+	std::cout << sca.getTotalOutstandingAllocations() << std::endl;
+	std::cout << sdaa.getTotalOutstandingAllocations() << std::endl;
+	std::cout << sma.getTotalOutstandingAllocations() << std::endl;
 }
 
 /*TEST(JsonParser, General) {

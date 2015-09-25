@@ -48,7 +48,7 @@ void DefaultAllocator< T >::construct(T* pointer, const T& t) {
 /* In-place move contructor. */
 template< typename T >
 void DefaultAllocator< T >::construct(T* pointer, T&& t) {
-	new (pointer) T(std::move(t));
+	new (pointer) T(t);
 }
 
 /* In-place destructor. */

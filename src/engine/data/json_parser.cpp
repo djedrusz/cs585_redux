@@ -10,7 +10,7 @@
 namespace StevensDev {
 namespace sgdd { /* Stevens Game Development. */
 
-/* Initialize the static "JsonParser" data members. */
+/* Initialize the static default allocators. */
 sgdm::DefaultAllocator< std::string > JsonParser::stringAllocator;
 sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > JsonParser::dynamicArrayAllocator;
 sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > JsonParser::mapAllocator;
@@ -187,9 +187,13 @@ JsonParser::Parse JsonParser::parseString(
 	while (true) {
 		if (json[index] == '"') { /* End of string. */
 			std::cout << "Parsed good string " << std::string(json, startingIndex + 1, index - 1) << std::endl;
-			std::string* jsonString = stringAllocator->allocate(1);
+			/*std::string* jsonString = stringAllocator->allocate(1);
 			stringAllocator->construct(jsonString, std::string(json, startingIndex + 1, index - 1));
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(jsonString));
+			jsonEntityAllocator->construct(jsonEntity, JsonEntity(jsonString));*/
+
+			jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - 1).c_str()));
+
+
 			break;
 		}
 		else if (json[index] == '\\') { /* Escape. */
@@ -248,21 +252,22 @@ JsonParser::Parse JsonParser::parseString(
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseArray(
-	sgdm::IAllocator< JsonEntity >* allocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
+	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = allocator->allocate(1);
+	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
 	return Parse(jsonEntity, index);
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseObject(
-	sgdm::IAllocator< JsonEntity >* allocator,
+	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = allocator->allocate(1);
+	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
 	return Parse(jsonEntity, index);
 }
 
@@ -277,7 +282,10 @@ JsonEntity* JsonParser::parse(const std::string& json) {
 }
 
 /* Parse the specified JSON string into a JSON entity with the specified allocator. */
-JsonEntity* JsonParser::parse(sgdm::IAllocator< JsonEntity >* jsonEntityAllocator, const std::string& json) {
+JsonEntity* JsonParser::parse(
+	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	const std::string& json) {
+
 	return parse(
 		&stringAllocator,
 		&dynamicArrayAllocator,
@@ -293,6 +301,7 @@ JsonEntity* JsonParser::parse(
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
 	const std::string& json) {
+
 	return parseEntity(
 		stringAllocator,
 		dynamicArrayAllocator,
