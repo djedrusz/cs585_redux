@@ -11,15 +11,15 @@ namespace StevensDev {
 namespace sgdd { /* Stevens Game Development. */
 
 /* Initialize the default JSON entity allocator. */
-sgdm::DefaultAllocator< JsonEntity > JsonParser::defaultJsonEntityAllocator;
+sgdm::DefaultAllocator< JsonValue > JsonParser::defaultJsonValueAllocator;
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseEntity(
 	sgdm::IAllocator< std::string >* stringAllocator,
-	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
-	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonValue > >* mapNodeAllocator,
+	sgdm::IAllocator< sgdc::Map< JsonValue > >* mapAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
@@ -33,16 +33,16 @@ JsonParser::Parse JsonParser::parseEntity(
 
 	/* Boolean. */
 	if (json[index] == 't' || json[index] == 'f') {
-		return parseBool(jsonEntityAllocator, json, index);
+		return parseBool(jsonValueAllocator, json, index);
 	}
 	/* Number. */
 	else if (json[index] == '-' ||
 				(json[index] >= '0' && json[index] <= '9')) {
-		return parseNumber(jsonEntityAllocator, json, index);
+		return parseNumber(jsonValueAllocator, json, index);
 	}
 	/* String. */
 	else if (json[index] == '"') {
-		return parseString(stringAllocator, jsonEntityAllocator, json, index);
+		return parseString(stringAllocator, jsonValueAllocator, json, index);
 	}
 	/* Array. */
 	else if (json[index] == '[') {
@@ -51,7 +51,7 @@ JsonParser::Parse JsonParser::parseEntity(
 			dynamicArrayAllocator,
 			mapNodeAllocator,
 			mapAllocator,
-			jsonEntityAllocator,
+			jsonValueAllocator,
 			json,
 			index);
 	}
@@ -62,25 +62,25 @@ JsonParser::Parse JsonParser::parseEntity(
 			dynamicArrayAllocator,
 			mapNodeAllocator,
 			mapAllocator,
-			jsonEntityAllocator,
+			jsonValueAllocator,
 			json,
 			index);
 	}
 	/* Invalid JSON. */
 	else {
-		JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
-		jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-		return Parse(jsonEntity, index);
+		JsonValue* jsonValue = jsonValueAllocator->allocate(1);
+		jsonValueAllocator->construct(jsonValue, JsonValue());
+		return Parse(jsonValue, index);
 	}
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseBool(
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+	JsonValue* jsonValue = jsonValueAllocator->allocate(1);
 
 	/* True. */
 	if (json[index] == 't') {
@@ -88,10 +88,10 @@ JsonParser::Parse JsonParser::parseBool(
 		if (json[index++] == 'r' && /* Read rest of 'true'. */
 			json[index++] == 'u' &&
 			json[index] == 'e') {
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(true));
+			jsonValueAllocator->construct(jsonValue, JsonValue(true));
 		}
 		else {
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+			jsonValueAllocator->construct(jsonValue, JsonValue());
 		}
 	}
 	/* False. */
@@ -101,23 +101,23 @@ JsonParser::Parse JsonParser::parseBool(
 			json[index++] == 'l' &&
 			json[index++] == 's' &&
 			json[index] == 'e') {
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(false));
+			jsonValueAllocator->construct(jsonValue, JsonValue(false));
 		}
 		else {
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+			jsonValueAllocator->construct(jsonValue, JsonValue());
 		}
 	}
 
-	return Parse(jsonEntity, index);
+	return Parse(jsonValue, index);
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseNumber(
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+	JsonValue* jsonValue = jsonValueAllocator->allocate(1);
 	unsigned int startingIndex = index;
 
 
@@ -153,46 +153,46 @@ JsonParser::Parse JsonParser::parseNumber(
 					index++;
 				}
 				/* Finish reading exponent and double. */
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
+				jsonValueAllocator->construct(jsonValue, JsonValue(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 				index--;
-				return Parse(jsonEntity, index);
+				return Parse(jsonValue, index);
 			}
 			else { /* Invalid exponent format. */
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-				return Parse(jsonEntity, index);
+				jsonValueAllocator->construct(jsonValue, JsonValue());
+				return Parse(jsonValue, index);
 			}
 		}
 		else { /* If number has no exponent, finish reading as double. */
-			jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
+			jsonValueAllocator->construct(jsonValue, JsonValue(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 			index--;
-			return Parse(jsonEntity, index);
+			return Parse(jsonValue, index);
 		}
 	}
 	else { /* If number has no decimal, read as integer. */
-		jsonEntityAllocator->construct(jsonEntity, JsonEntity(atoi(std::string(json, startingIndex, startingIndex - index).c_str())));
+		jsonValueAllocator->construct(jsonValue, JsonValue(atoi(std::string(json, startingIndex, startingIndex - index).c_str())));
 		index--;
-		return Parse(jsonEntity, index);
+		return Parse(jsonValue, index);
 	}
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseString(
 	sgdm::IAllocator< std::string >* stringAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+	JsonValue* jsonValue = jsonValueAllocator->allocate(1);
 	unsigned int startingIndex = index;
 
 	index++; // Skip over parenthesis.
 	while (true) {
 		if (json[index] == '"') { /* End of string. */
 			if (stringAllocator == nullptr) {
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity(std::string(json, startingIndex + 1, index - startingIndex - 1)));
+				jsonValueAllocator->construct(jsonValue, JsonValue(std::string(json, startingIndex + 1, index - startingIndex - 1)));
 			}
 			else {
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity(stringAllocator, std::string(json, startingIndex + 1, index - startingIndex - 1)));
+				jsonValueAllocator->construct(jsonValue, JsonValue(stringAllocator, std::string(json, startingIndex + 1, index - startingIndex - 1)));
 			}
 
 			break;
@@ -230,12 +230,12 @@ JsonParser::Parse JsonParser::parseString(
 					index+=4;
 				}
 				else { /* Hexadecimal character not followed by four hexadecimal digits. */
-					jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+					jsonValueAllocator->construct(jsonValue, JsonValue());
 					break;
 				}
 			}
 			else { /* Invalid special character. */
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				jsonValueAllocator->construct(jsonValue, JsonValue());
 				break;
 			}
 		}
@@ -244,22 +244,22 @@ JsonParser::Parse JsonParser::parseString(
 		}
 	}
 
-	return Parse(jsonEntity, index);
+	return Parse(jsonValue, index);
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseArray(
 
 	sgdm::IAllocator< std::string >* stringAllocator,
-	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
-	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonValue > >* mapNodeAllocator,
+	sgdm::IAllocator< sgdc::Map< JsonValue > >* mapAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
-	sgdc::DynamicArray< JsonEntity > dynamicArray(jsonEntityAllocator);
+	JsonValue* jsonValue = jsonValueAllocator->allocate(1);
+	sgdc::DynamicArray< JsonValue > dynamicArray(jsonValueAllocator);
 
 	index++; // Skip over bracket.
 	while (true) {
@@ -267,17 +267,17 @@ JsonParser::Parse JsonParser::parseArray(
 			break;
 		}
 		else {
-			Parse parse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
-			if (parse.jsonEntity->isError()) {
-				jsonEntityAllocator->deallocate(parse.jsonEntity, 1);
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-				return Parse(jsonEntity, index);
+			Parse parse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonValueAllocator, json, index);
+			if (parse.jsonValue->isError()) {
+				jsonValueAllocator->deallocate(parse.jsonValue, 1);
+				jsonValueAllocator->construct(jsonValue, JsonValue());
+				return Parse(jsonValue, index);
 			}
 			
-			JsonEntity je = *parse.jsonEntity;
+			JsonValue je = *parse.jsonValue;
 			dynamicArray.append(je);
 			
-			jsonEntityAllocator->deallocate(parse.jsonEntity, 1);
+			jsonValueAllocator->deallocate(parse.jsonValue, 1);
 			index = parse.index + 1;
 
 			/* Flush whitespaces. */
@@ -293,22 +293,22 @@ JsonParser::Parse JsonParser::parseArray(
 		}
 	}
 
-	jsonEntityAllocator->construct(jsonEntity, JsonEntity(dynamicArrayAllocator, dynamicArray));
-	return Parse(jsonEntity, index);
+	jsonValueAllocator->construct(jsonValue, JsonValue(dynamicArrayAllocator, dynamicArray));
+	return Parse(jsonValue, index);
 }
 
 /* TODO. */
 JsonParser::Parse JsonParser::parseObject(
 	sgdm::IAllocator< std::string >* stringAllocator,
-	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
-	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonValue > >* mapNodeAllocator,
+	sgdm::IAllocator< sgdc::Map< JsonValue > >* mapAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json,
 	unsigned int index) {
 
-	JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
-	sgdc::Map< JsonEntity > map(mapNodeAllocator, stringAllocator, jsonEntityAllocator);
+	JsonValue* jsonValue = jsonValueAllocator->allocate(1);
+	sgdc::Map< JsonValue > map(mapNodeAllocator, stringAllocator, jsonValueAllocator);
 
 	index++; // Skip over curly brace.
 	while (true) {
@@ -323,16 +323,16 @@ JsonParser::Parse JsonParser::parseObject(
 			break;
 		}
 		else {
-			Parse stringParse = parseString(stringAllocator, jsonEntityAllocator, json, index);
-			if (stringParse.jsonEntity->isError()) {
-				jsonEntityAllocator->deallocate(stringParse.jsonEntity, 1);
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-				return Parse(jsonEntity, index);
+			Parse stringParse = parseString(stringAllocator, jsonValueAllocator, json, index);
+			if (stringParse.jsonValue->isError()) {
+				jsonValueAllocator->deallocate(stringParse.jsonValue, 1);
+				jsonValueAllocator->construct(jsonValue, JsonValue());
+				return Parse(jsonValue, index);
 			}
 
 			index = stringParse.index + 1;
-			std::string key = stringParse.jsonEntity->asString();
-			jsonEntityAllocator->deallocate(stringParse.jsonEntity, 1);
+			std::string key = stringParse.jsonValue->asString();
+			jsonValueAllocator->deallocate(stringParse.jsonValue, 1);
 
 			/* Flush whitespaces. */
 			while (json[index] == ASCII_TAB ||
@@ -342,20 +342,20 @@ JsonParser::Parse JsonParser::parseObject(
 				index++;
 			}
 			if (json[index] != ':') {
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-				return Parse(jsonEntity, index);
+				jsonValueAllocator->construct(jsonValue, JsonValue());
+				return Parse(jsonValue, index);
 			}
 			index++;
 
-			Parse entityParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
-			if (entityParse.jsonEntity->isError()) {
-				jsonEntityAllocator->deallocate(entityParse.jsonEntity, 1);
-				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
-				return Parse(jsonEntity, index);
+			Parse entityParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonValueAllocator, json, index);
+			if (entityParse.jsonValue->isError()) {
+				jsonValueAllocator->deallocate(entityParse.jsonValue, 1);
+				jsonValueAllocator->construct(jsonValue, JsonValue());
+				return Parse(jsonValue, index);
 			}
 			index = entityParse.index + 1;
-			JsonEntity value = *entityParse.jsonEntity;
-			jsonEntityAllocator->deallocate(entityParse.jsonEntity, 1);
+			JsonValue value = *entityParse.jsonValue;
+			jsonValueAllocator->deallocate(entityParse.jsonValue, 1);
 
 			map.put(key, value);
 
@@ -386,24 +386,24 @@ JsonParser::Parse JsonParser::parseObject(
 		}
 	}
 
-	jsonEntityAllocator->construct(jsonEntity, JsonEntity(mapAllocator, map));
-	return Parse(jsonEntity, index);
+	jsonValueAllocator->construct(jsonValue, JsonValue(mapAllocator, map));
+	return Parse(jsonValue, index);
 }
 
 /* Parse the specified JSON string into a JSON entity. */
-JsonEntity* JsonParser::parse(const std::string& json) {
+JsonValue* JsonParser::parse(const std::string& json) {
 	return parse(
 		nullptr,
 		nullptr,
 		nullptr,
 		nullptr,
-		&defaultJsonEntityAllocator,
+		&defaultJsonValueAllocator,
 		json);
 }
 
 /* Parse the specified JSON string into a JSON entity with the specified allocator. */
-JsonEntity* JsonParser::parse(
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+JsonValue* JsonParser::parse(
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json) {
 
 	return parse(
@@ -411,17 +411,17 @@ JsonEntity* JsonParser::parse(
 		nullptr,
 		nullptr,
 		nullptr,
-		jsonEntityAllocator,
+		jsonValueAllocator,
 		json);
 }
 
 /* Parse the specified JSON string into a JSON entity with the specified allocators. */
-JsonEntity* JsonParser::parse(
+JsonValue* JsonParser::parse(
 	sgdm::IAllocator< std::string >* stringAllocator,
-	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	sgdm::IAllocator< sgdc::MapNode< JsonEntity > >* mapNodeAllocator,
-	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-	sgdm::IAllocator< JsonEntity >* jsonEntityAllocator,
+	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
+	sgdm::IAllocator< sgdc::MapNode< JsonValue > >* mapNodeAllocator,
+	sgdm::IAllocator< sgdc::Map< JsonValue > >* mapAllocator,
+	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json) {
 
 	return parseEntity(
@@ -429,9 +429,9 @@ JsonEntity* JsonParser::parse(
 		dynamicArrayAllocator,
 		mapNodeAllocator,
 		mapAllocator,
-		jsonEntityAllocator,
+		jsonValueAllocator,
 		json,
-		0).jsonEntity;
+		0).jsonValue;
 }
 
 }

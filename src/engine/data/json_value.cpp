@@ -2,21 +2,21 @@
 	Dominik Jedruszczak
 
 	json_entity.cpp
-	Implementation of the "JsonEntity" class.
+	Implementation of the "JsonValue" class.
 */
 
-#include "json_entity.hpp"
+#include "json_value.hpp"
 
 namespace StevensDev {
 namespace sgdd { /* Stevens Game Development Data. */
 
 /* Initialize static default allocators. */
-sgdm::DefaultAllocator< std::string > JsonEntity::defaultStringAllocator;
-sgdm::DefaultAllocator< sgdc::DynamicArray< JsonEntity > > JsonEntity::defaultDynamicArrayAllocator;
-sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > JsonEntity::defaultMapAllocator;
+sgdm::DefaultAllocator< std::string > JsonValue::defaultStringAllocator;
+sgdm::DefaultAllocator< sgdc::DynamicArray< JsonValue > > JsonValue::defaultDynamicArrayAllocator;
+sgdm::DefaultAllocator< sgdc::Map< JsonValue > > JsonValue::defaultMapAllocator;
 
 /* Copy constructor. */
-JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
+JsonValue::JsonValue(const JsonValue& jsonEntity)
 :	type(jsonEntity.type) {
 	if (type == BOOL) {
 		data.b = jsonEntity.data.b;
@@ -45,7 +45,7 @@ JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
 }
 
 /* Move constructor. */
-JsonEntity::JsonEntity(JsonEntity&& jsonEntity)
+JsonValue::JsonValue(JsonValue&& jsonEntity)
 :	type(jsonEntity.type) {
 	if (type == BOOL) {
 		data.b = jsonEntity.data.b;
@@ -74,49 +74,49 @@ JsonEntity::JsonEntity(JsonEntity&& jsonEntity)
 }
 
 /* Constructor for type error. */
-JsonEntity::JsonEntity()
+JsonValue::JsonValue()
 :	type(ERROR) {
 	data.b = false;
 }
 
 /* Constructor for type bool. */
-JsonEntity::JsonEntity(bool b)
+JsonValue::JsonValue(bool b)
 :	type(BOOL) {
 	data.b = b;
 }
 
 /* Constructor for type int. */
-JsonEntity::JsonEntity(int i)
+JsonValue::JsonValue(int i)
 :	type(INT) {
 	data.i = i;
 }
 
 /* Constructor for type double. */
-JsonEntity::JsonEntity(double d)
+JsonValue::JsonValue(double d)
 :	type(DOUBLE) {
 	data.d = d;
 }
 
 /* Constructor for type string. */
-JsonEntity::JsonEntity(const std::string& s)
-:	JsonEntity(&defaultStringAllocator, s) {
+JsonValue::JsonValue(const std::string& s)
+:	JsonValue(&defaultStringAllocator, s) {
 	;
 }
 
 /* Constructor for type array. */
-JsonEntity::JsonEntity(const sgdc::DynamicArray< JsonEntity >& a)
-:	JsonEntity(&defaultDynamicArrayAllocator, a) {
+JsonValue::JsonValue(const sgdc::DynamicArray< JsonValue >& a)
+:	JsonValue(&defaultDynamicArrayAllocator, a) {
 	;
 }
 
 /* Constructor for type object. */
-JsonEntity::JsonEntity(const sgdc::Map< JsonEntity >& o)
-:	JsonEntity(&defaultMapAllocator, o) {
+JsonValue::JsonValue(const sgdc::Map< JsonValue >& o)
+:	JsonValue(&defaultMapAllocator, o) {
 	;
 }
 
 /* Constructor for type string with specified allocator. */
-JsonEntity::JsonEntity(
+JsonValue::JsonValue(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	const std::string& s)
 :	type(STRING),
@@ -126,9 +126,9 @@ JsonEntity::JsonEntity(
 }
 
 /* Constructor for type array with specified allocator. */
-JsonEntity::JsonEntity(
-	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
-	const sgdc::DynamicArray< JsonEntity >& a)
+JsonValue::JsonValue(
+	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
+	const sgdc::DynamicArray< JsonValue >& a)
 :	type(ARRAY),
 	dynamicArrayAllocator(dynamicArrayAllocator) {
 	data.a = dynamicArrayAllocator->allocate(1);
@@ -136,9 +136,9 @@ JsonEntity::JsonEntity(
 }
 
 /* Constructor for type object with specified allocator. */
-JsonEntity::JsonEntity(
-	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
-	const sgdc::Map< JsonEntity >& o)
+JsonValue::JsonValue(
+	sgdm::IAllocator< sgdc::Map< JsonValue > >* mapAllocator,
+	const sgdc::Map< JsonValue >& o)
 :	type(OBJECT),
 	mapAllocator(mapAllocator) {
 	data.o = mapAllocator->allocate(1);
@@ -146,7 +146,7 @@ JsonEntity::JsonEntity(
 }
 
 /* Default destructor. */
-JsonEntity::~JsonEntity() {
+JsonValue::~JsonValue() {
 	if (type == STRING && data.s != nullptr) {
 		stringAllocator->deallocate(data.s, 1);
 	}
@@ -159,7 +159,7 @@ JsonEntity::~JsonEntity() {
 }
 
 /* Copy assignment operator. */
-JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
+JsonValue& JsonValue::operator = (const JsonValue& jsonEntity) {
 	type = jsonEntity.type;
 	if (type == BOOL) {
 		data.b = jsonEntity.data.b;
@@ -188,7 +188,7 @@ JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
 }
 
 /* Move assignment operator. */
-JsonEntity& JsonEntity::operator = (JsonEntity&& jsonEntity) {
+JsonValue& JsonValue::operator = (JsonValue&& jsonEntity) {
 	type = jsonEntity.type;
 	if (type == BOOL) {
 		data.b = jsonEntity.data.b;
@@ -217,72 +217,72 @@ JsonEntity& JsonEntity::operator = (JsonEntity&& jsonEntity) {
 }
 
 /* Return whether the type is error. */
-const bool JsonEntity::isError() const {
+const bool JsonValue::isError() const {
 	return type == ERROR;
 }
 
 /* Return whether the type is bool. */
-const bool JsonEntity::isBool() const {
+const bool JsonValue::isBool() const {
 	return type == BOOL;
 }
 
 /* Return whether the type is int. */
-const bool JsonEntity::isInt() const {
+const bool JsonValue::isInt() const {
 	return type == INT;
 }
 
 /* Return whether the type is double. */
-const bool JsonEntity::isDouble() const {
+const bool JsonValue::isDouble() const {
 	return type == DOUBLE;
 }
 
 /* Return whether the type is string. */
-const bool JsonEntity::isString() const {
+const bool JsonValue::isString() const {
 	return type == STRING;
 }
 
 /* Return whether the type is array. */
-const bool JsonEntity::isArray() const {
+const bool JsonValue::isArray() const {
 	return type == ARRAY;
 }
 
 /* Return whether the type is object. */
-const bool JsonEntity::isObject() const {
+const bool JsonValue::isObject() const {
 	return type == OBJECT;
 }
 
 /* Return the type. */
-const JsonEntity::Types JsonEntity::getType() const {
+const JsonValue::Types JsonValue::getType() const {
 	return type;
 }
 
 /* Return as bool. */
-const bool JsonEntity::asBool() const {
+const bool JsonValue::asBool() const {
 	return data.b;
 }
 
 /* Return as int. */
-const int JsonEntity::asInt() const {
+const int JsonValue::asInt() const {
 	return data.i;
 }
 
 /* Return as double. */
-const double JsonEntity::asDouble() const {
+const double JsonValue::asDouble() const {
 	return data.d;
 }
 
 /* Return as string. */
-const std::string& JsonEntity::asString() const {
+const std::string& JsonValue::asString() const {
 	return *data.s;
 }
 
 /* Return as array. */
-const sgdc::DynamicArray< JsonEntity >& JsonEntity::asArray() const {
+const sgdc::DynamicArray< JsonValue >& JsonValue::asArray() const {
 	return *data.a;
 }
 
 /* Return as object. */
-const sgdc::Map< JsonEntity >& JsonEntity::asObject() const {
+const sgdc::Map< JsonValue >& JsonValue::asObject() const {
 	return *data.o;
 }
 
