@@ -19,28 +19,28 @@ sgdm::DefaultAllocator< sgdc::Map< JsonEntity > > JsonEntity::defaultMapAllocato
 JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
 :	type(jsonEntity.type) {
 	if (type == BOOL) {
-		b = jsonEntity.b;
+		data.b = jsonEntity.data.b;
 	}
 	else if (type == INT) {
-		i = jsonEntity.i;
+		data.i = jsonEntity.data.i;
 	}
 	else if (type == DOUBLE) {
-		d = jsonEntity.d;
+		data.d = jsonEntity.data.d;
 	}
 	else if (type == STRING) {
 		stringAllocator = jsonEntity.stringAllocator;
-		s = stringAllocator->allocate(1);
-		stringAllocator->construct(s, *jsonEntity.s);
+		data.s = stringAllocator->allocate(1);
+		stringAllocator->construct(data.s, *jsonEntity.data.s);
 	}
 	else if (type == ARRAY) {
 		dynamicArrayAllocator = jsonEntity.dynamicArrayAllocator;
-		a = dynamicArrayAllocator->allocate(1);
-		dynamicArrayAllocator->construct(a, *jsonEntity.a);
+		data.a = dynamicArrayAllocator->allocate(1);
+		dynamicArrayAllocator->construct(data.a, *jsonEntity.data.a);
 	}
 	else if (type == OBJECT) {
 		mapAllocator = jsonEntity.mapAllocator;
-		o = mapAllocator->allocate(1);
-		mapAllocator->construct(o, *jsonEntity.o);
+		data.o = mapAllocator->allocate(1);
+		mapAllocator->construct(data.o, *jsonEntity.data.o);
 	}
 }
 
@@ -48,53 +48,53 @@ JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
 JsonEntity::JsonEntity(JsonEntity&& jsonEntity)
 :	type(jsonEntity.type) {
 	if (type == BOOL) {
-		b = jsonEntity.b;
+		data.b = jsonEntity.data.b;
 	}
 	else if (type == INT) {
-		i = jsonEntity.i;
+		data.i = jsonEntity.data.i;
 	}
 	else if (type == DOUBLE) {
-		d = jsonEntity.d;
+		data.d = jsonEntity.data.d;
 	}
 	else if (type == STRING) {
 		stringAllocator = jsonEntity.stringAllocator;
-		s = std::move(jsonEntity.s);
-		jsonEntity.s = nullptr;
+		data.s = std::move(jsonEntity.data.s);
+		jsonEntity.data.s = nullptr;
 	}
 	else if (type == ARRAY) {
 		dynamicArrayAllocator = jsonEntity.dynamicArrayAllocator;
-		a = std::move(jsonEntity.a);
-		jsonEntity.a = nullptr;
+		data.a = std::move(jsonEntity.data.a);
+		jsonEntity.data.a = nullptr;
 	}
 	else if (type == OBJECT) {
 		mapAllocator = jsonEntity.mapAllocator;
-		o = std::move(jsonEntity.o);
-		jsonEntity.o = nullptr;
+		data.o = std::move(jsonEntity.data.o);
+		jsonEntity.data.o = nullptr;
 	}
 }
 
 /* Constructor for type error. */
 JsonEntity::JsonEntity()
-:	type(ERROR), b(false) {
-	;
+:	type(ERROR) {
+	data.b = false;
 }
 
 /* Constructor for type bool. */
 JsonEntity::JsonEntity(bool b)
-:	type(BOOL), b(b) {
-	;
+:	type(BOOL) {
+	data.b = b;
 }
 
 /* Constructor for type int. */
 JsonEntity::JsonEntity(int i)
-:	type(INT), i(i) {
-	;
+:	type(INT) {
+	data.i = i;
 }
 
 /* Constructor for type double. */
 JsonEntity::JsonEntity(double d)
-:	type(DOUBLE), d(d) {
-	;
+:	type(DOUBLE) {
+	data.d = d;
 }
 
 /* Constructor for type string. */
@@ -120,9 +120,9 @@ JsonEntity::JsonEntity(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	const std::string& s)
 :	type(STRING),
-	stringAllocator(stringAllocator),
-	s(stringAllocator->allocate(1)) {
-	stringAllocator->construct(this->s, std::string(s));
+	stringAllocator(stringAllocator) {
+	data.s = stringAllocator->allocate(1);
+	stringAllocator->construct(data.s, std::string(s));
 }
 
 /* Constructor for type array with specified allocator. */
@@ -130,9 +130,9 @@ JsonEntity::JsonEntity(
 	sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator,
 	const sgdc::DynamicArray< JsonEntity >& a)
 :	type(ARRAY),
-	dynamicArrayAllocator(dynamicArrayAllocator),
-	a(dynamicArrayAllocator->allocate(1)) {
-	dynamicArrayAllocator->construct(this->a, a);
+	dynamicArrayAllocator(dynamicArrayAllocator) {
+	data.a = dynamicArrayAllocator->allocate(1);
+	dynamicArrayAllocator->construct(data.a, a);
 }
 
 /* Constructor for type object with specified allocator. */
@@ -140,21 +140,21 @@ JsonEntity::JsonEntity(
 	sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator,
 	const sgdc::Map< JsonEntity >& o)
 :	type(OBJECT),
-	mapAllocator(mapAllocator),
-	o(mapAllocator->allocate(1)) {
-	mapAllocator->construct(this->o, o);
+	mapAllocator(mapAllocator) {
+	data.o = mapAllocator->allocate(1);
+	mapAllocator->construct(data.o, o);
 }
 
 /* Default destructor. */
 JsonEntity::~JsonEntity() {
-	if (type == STRING && s != nullptr) {
-		stringAllocator->deallocate(s, 1);
+	if (type == STRING && data.s != nullptr) {
+		stringAllocator->deallocate(data.s, 1);
 	}
-	else if (type == ARRAY && a != nullptr) {
-		dynamicArrayAllocator->deallocate(a, 1);
+	else if (type == ARRAY && data.a != nullptr) {
+		dynamicArrayAllocator->deallocate(data.a, 1);
 	}
-	else if (type == OBJECT && o != nullptr) {
-		mapAllocator->deallocate(o, 1);
+	else if (type == OBJECT && data.o != nullptr) {
+		mapAllocator->deallocate(data.o, 1);
 	}
 }
 
@@ -162,28 +162,28 @@ JsonEntity::~JsonEntity() {
 JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
 	type = jsonEntity.type;
 	if (type == BOOL) {
-		b = jsonEntity.b;
+		data.b = jsonEntity.data.b;
 	}
 	else if (type == INT) {
-		i = jsonEntity.i;
+		data.i = jsonEntity.data.i;
 	}
 	else if (type == DOUBLE) {
-		d = jsonEntity.d;
+		data.d = jsonEntity.data.d;
 	}
 	else if (type == STRING) {
 		stringAllocator = jsonEntity.stringAllocator;
-		s = stringAllocator->allocate(1);
-		stringAllocator->construct(s, *jsonEntity.s);
+		data.s = stringAllocator->allocate(1);
+		stringAllocator->construct(data.s, *jsonEntity.data.s);
 	}
 	else if (type == ARRAY) {
 		dynamicArrayAllocator = jsonEntity.dynamicArrayAllocator;
-		a = dynamicArrayAllocator->allocate(1);
-		dynamicArrayAllocator->construct(a, *jsonEntity.a);
+		data.a = dynamicArrayAllocator->allocate(1);
+		dynamicArrayAllocator->construct(data.a, *jsonEntity.data.a);
 	}
 	else if (type == OBJECT) {
 		mapAllocator = jsonEntity.mapAllocator;
-		o = mapAllocator->allocate(1);
-		mapAllocator->construct(o, *jsonEntity.o);
+		data.o = mapAllocator->allocate(1);
+		mapAllocator->construct(data.o, *jsonEntity.data.o);
 	}
 }
 
@@ -191,28 +191,28 @@ JsonEntity& JsonEntity::operator = (const JsonEntity& jsonEntity) {
 JsonEntity& JsonEntity::operator = (JsonEntity&& jsonEntity) {
 	type = jsonEntity.type;
 	if (type == BOOL) {
-		b = jsonEntity.b;
+		data.b = jsonEntity.data.b;
 	}
 	else if (type == INT) {
-		i = jsonEntity.i;
+		data.i = jsonEntity.data.i;
 	}
 	else if (type == DOUBLE) {
-		d = jsonEntity.d;
+		data.d = jsonEntity.data.d;
 	}
 	else if (type == STRING) {
 		stringAllocator = jsonEntity.stringAllocator;
-		s = std::move(jsonEntity.s);
-		jsonEntity.s = nullptr;
+		data.s = std::move(jsonEntity.data.s);
+		jsonEntity.data.s = nullptr;
 	}
 	else if (type == ARRAY) {
 		dynamicArrayAllocator = jsonEntity.dynamicArrayAllocator;
-		a = std::move(jsonEntity.a);
-		jsonEntity.a = nullptr;
+		data.a = std::move(jsonEntity.data.a);
+		jsonEntity.data.a = nullptr;
 	}
 	else if (type == OBJECT) {
 		mapAllocator = jsonEntity.mapAllocator;
-		o = std::move(jsonEntity.o);
-		jsonEntity.o = nullptr;
+		data.o = std::move(jsonEntity.data.o);
+		jsonEntity.data.o = nullptr;
 	}
 }
 
@@ -258,32 +258,32 @@ const JsonEntity::Types JsonEntity::getType() const {
 
 /* Return as bool. */
 const bool JsonEntity::asBool() const {
-	return b;
+	return data.b;
 }
 
 /* Return as int. */
 const int JsonEntity::asInt() const {
-	return i;
+	return data.i;
 }
 
 /* Return as double. */
 const double JsonEntity::asDouble() const {
-	return d;
+	return data.d;
 }
 
 /* Return as string. */
 const std::string& JsonEntity::asString() const {
-	return *s;
+	return *data.s;
 }
 
 /* Return as array. */
 const sgdc::DynamicArray< JsonEntity >& JsonEntity::asArray() const {
-	return *a;
+	return *data.a;
 }
 
 /* Return as object. */
 const sgdc::Map< JsonEntity >& JsonEntity::asObject() const {
-	return *o;
+	return *data.o;
 }
 
 }

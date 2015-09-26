@@ -28,26 +28,16 @@ public:
 		OBJECT
 	};
 
-	/* The data of a JSON entity. 
+	/* The data of a JSON entity. */
 	union Data {
-		/* Data member(s). 
+		/* Data member(s). */
 		bool b;
 		int i;
 		double d;
 		std::string* s;
 		sgdc::DynamicArray< JsonEntity >* a;
 		sgdc::Map< JsonEntity >* o;
-		/* Constructor(s). 
-		Data(); // Default constructor.
-		Data(bool b); // Boolean constructor.
-		Data(int i); // Integer constructor.
-		Data(double d); // Double constructor.
-		Data(std::string* s); // String constructor.
-		Data(sgdc::DynamicArray< JsonEntity >* a); // Array constructor.
-		//Data(sgdc::Map< JsonEntity >* o); // Object constructor.
-		/* Destructor(s). 
-		~Data() { ; }; // Default destructor.
-	};*/
+	};
 
 	private:
 		/* Data member(s). */
@@ -59,13 +49,7 @@ public:
 		sgdm::IAllocator< sgdc::DynamicArray< JsonEntity > >* dynamicArrayAllocator;
 		sgdm::IAllocator< sgdc::Map< JsonEntity > >* mapAllocator;
 		Types type; // The type.
-		//Data data; // The data.
-		bool b;
-		int i;
-		double d;
-		std::string* s;
-		sgdc::DynamicArray< JsonEntity >* a;
-		sgdc::Map< JsonEntity >* o;
+		Data data; // The data.
 	public:
 		/* Constructor(s). */
 		JsonEntity(const JsonEntity& jsonEntity); // Copy constructor.
