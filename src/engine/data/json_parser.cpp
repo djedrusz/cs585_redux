@@ -10,7 +10,7 @@
 namespace StevensDev {
 namespace sgdd { /* Stevens Game Development. */
 
-/* Initialize the default JSON entity allocator. */
+/* Initialize the default JSON value allocator. */
 sgdm::DefaultAllocator< JsonValue > JsonParser::defaultJsonValueAllocator;
 
 /* TODO. */
@@ -347,15 +347,15 @@ JsonParser::Parse JsonParser::parseObject(
 			}
 			index++;
 
-			Parse entityParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonValueAllocator, json, index);
-			if (entityParse.jsonValue->isError()) {
-				jsonValueAllocator->deallocate(entityParse.jsonValue, 1);
+			Parse valueParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonValueAllocator, json, index);
+			if (valueParse.jsonValue->isError()) {
+				jsonValueAllocator->deallocate(valueParse.jsonValue, 1);
 				jsonValueAllocator->construct(jsonValue, JsonValue());
 				return Parse(jsonValue, index);
 			}
-			index = entityParse.index + 1;
-			JsonValue value = *entityParse.jsonValue;
-			jsonValueAllocator->deallocate(entityParse.jsonValue, 1);
+			index = valueParse.index + 1;
+			JsonValue value = *valueParse.jsonValue;
+			jsonValueAllocator->deallocate(valueParse.jsonValue, 1);
 
 			map.put(key, value);
 
@@ -390,7 +390,7 @@ JsonParser::Parse JsonParser::parseObject(
 	return Parse(jsonValue, index);
 }
 
-/* Parse the specified JSON string into a JSON entity. */
+/* Parse the specified JSON string into a JSON value. */
 JsonValue* JsonParser::parse(const std::string& json) {
 	return parse(
 		nullptr,
@@ -401,7 +401,7 @@ JsonValue* JsonParser::parse(const std::string& json) {
 		json);
 }
 
-/* Parse the specified JSON string into a JSON entity with the specified allocator. */
+/* Parse the specified JSON string into a JSON value with the specified allocator. */
 JsonValue* JsonParser::parse(
 	sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 	const std::string& json) {
@@ -415,7 +415,7 @@ JsonValue* JsonParser::parse(
 		json);
 }
 
-/* Parse the specified JSON string into a JSON entity with the specified allocators. */
+/* Parse the specified JSON string into a JSON value with the specified allocators. */
 JsonValue* JsonParser::parse(
 	sgdm::IAllocator< std::string >* stringAllocator,
 	sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,

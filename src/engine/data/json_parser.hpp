@@ -24,7 +24,7 @@ namespace sgdd { /* Stevens Game Development Data. */
 class JsonParser {
 	/* Return of a parse. */
 	struct Parse {
-		JsonValue* jsonValue; // The JSON entity parsed.
+		JsonValue* jsonValue; // The JSON value parsed.
 		unsigned int index; // The index at which the parse returned.
 		Parse(JsonValue* jsonValue, unsigned int index)
 		:	jsonValue(jsonValue),
@@ -35,7 +35,7 @@ class JsonParser {
 
 	private:
 		/* Data member(s). */
-		static sgdm::DefaultAllocator< JsonValue > defaultJsonValueAllocator; // Default JSON entity allocator.
+		static sgdm::DefaultAllocator< JsonValue > defaultJsonValueAllocator; // Default JSON value allocator.
 	public:
 		/* Function(s). */
 		static Parse parseEntity( // TODO.
@@ -70,8 +70,8 @@ class JsonParser {
 			const std::string& json,
 			unsigned int index);
 		static Parse parseObject(sgdm::IAllocator< JsonValue >* allocator, const std::string& json, unsigned int index); // TODO.
-		static JsonValue* parse(const std::string& json); // Parse the specified JSON into a JSON entity.
-		static JsonValue* parse(sgdm::IAllocator< JsonValue >* jsonValueAllocator, const std::string& json); // Parse the specified JSON into a JSON entity with the specified allocator.
+		static JsonValue* parse(const std::string& json); // Parse the specified JSON into a JSON value.
+		static JsonValue* parse(sgdm::IAllocator< JsonValue >* jsonValueAllocator, const std::string& json); // Parse the specified JSON into a JSON value with the specified allocator.
 		static JsonValue* parse(
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,

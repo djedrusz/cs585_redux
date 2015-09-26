@@ -1,7 +1,7 @@
 /*
 	Dominik Jedruszczak
 
-	json_entity.hpp
+	json_value.hpp
 	Declaration of the "JsonValue" class.
 */
 

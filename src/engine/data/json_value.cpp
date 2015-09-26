@@ -1,7 +1,7 @@
 /*
 	Dominik Jedruszczak
 
-	json_entity.cpp
+	json_value.cpp
 	Implementation of the "JsonValue" class.
 */
 

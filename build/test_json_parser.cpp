@@ -406,8 +406,8 @@ TEST(JsonParser, NestedArrays) {
 	EXPECT_EQ(jsonValueAllocator.getTotalOutstandingAllocations(), 0);
 }
 
-/* Test parsing array with bad entity. */
-TEST(JsonParser, ArrayErrorBadEntity) {
+/* Test parsing array with bad value. */
+TEST(JsonParser, ArrayErrorBadValue) {
 	sgdm::CountingAllocator< std::string > stringAllocator;
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonValue > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonValue > > mapAllocator;
@@ -622,8 +622,8 @@ TEST(JsonParser, ObjectWhitespaces) {
 	EXPECT_EQ(jsonValueAllocator.getTotalOutstandingAllocations(), 0);
 }
 
-/* Test parsing object invalid entity. */
-TEST(JsonParser, ObjectErrorBadEntity) {
+/* Test parsing object invalid value. */
+TEST(JsonParser, ObjectErrorBadValue) {
 	sgdm::CountingAllocator< std::string > stringAllocator;
 	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonValue > > dynamicArrayAllocator;
 	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonValue > > mapNodeAllocator;
