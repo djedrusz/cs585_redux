@@ -8,7 +8,6 @@
 #ifndef INCLUDED_JSON_ENTITY
 #define INCLUDED_JSON_ENTITY
 
-#include <iostream>
 #include "../containers/dynamic_array.hpp"
 #include "../containers/map.hpp"
 

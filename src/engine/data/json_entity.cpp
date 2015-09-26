@@ -38,7 +38,6 @@ JsonEntity::JsonEntity(const JsonEntity& jsonEntity)
 		dynamicArrayAllocator->construct(a, *jsonEntity.a);
 	}
 	else if (type == OBJECT) {
-		std::cout << "COPY JSON OBJECT" << std::endl;
 		mapAllocator = jsonEntity.mapAllocator;
 		o = mapAllocator->allocate(1);
 		mapAllocator->construct(o, *jsonEntity.o);
@@ -148,9 +147,6 @@ JsonEntity::JsonEntity(
 
 /* Default destructor. */
 JsonEntity::~JsonEntity() {
-	if (type == BOOL) {
-		std::cout << "Destroy bool" << std::endl;
-	}
 	if (type == STRING && s != nullptr) {
 		stringAllocator->deallocate(s, 1);
 	}

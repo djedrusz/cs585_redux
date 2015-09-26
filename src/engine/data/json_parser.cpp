@@ -23,36 +23,29 @@ JsonParser::Parse JsonParser::parseEntity(
 	const std::string& json,
 	unsigned int index) {
 
-	std::cout << "Parse entity at index " << index << std::endl;
-
 	/* Flush whitespaces. */
 	while (json[index] == ASCII_TAB ||
 		json[index] == ASCII_NEW_LINE ||
 		json[index] == ASCII_CARRIAGE_RETURN ||
 		json[index] == ASCII_SPACE) {
-		std::cout << "Whitespace" << std::endl;
 		index++;
 	}
 
 	/* Boolean. */
 	if (json[index] == 't' || json[index] == 'f') {
-		std::cout << "Parsing boolean." << std::endl;
 		return parseBool(jsonEntityAllocator, json, index);
 	}
 	/* Number. */
 	else if (json[index] == '-' ||
 				(json[index] >= '0' && json[index] <= '9')) {
-		std::cout << "Parsing number." << std::endl;
 		return parseNumber(jsonEntityAllocator, json, index);
 	}
 	/* String. */
 	else if (json[index] == '"') {
-		std::cout << "Parsing string." << std::endl;
 		return parseString(stringAllocator, jsonEntityAllocator, json, index);
 	}
 	/* Array. */
 	else if (json[index] == '[') {
-		std::cout << "Parsing array." << std::endl;
 		return parseArray(
 			stringAllocator,
 			dynamicArrayAllocator,
@@ -64,7 +57,6 @@ JsonParser::Parse JsonParser::parseEntity(
 	}
 	/* Object. */
 	else if (json[index] == '{') {
-		std::cout << "Parsing object." << std::endl;
 		return parseObject(
 			stringAllocator,
 			dynamicArrayAllocator,
@@ -161,7 +153,6 @@ JsonParser::Parse JsonParser::parseNumber(
 					index++;
 				}
 				/* Finish reading exponent and double. */
-				std::cout << "Read double from " << std::string(json, startingIndex, startingIndex - index) << std::endl;
 				jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 				index--;
 				return Parse(jsonEntity, index);
@@ -172,14 +163,12 @@ JsonParser::Parse JsonParser::parseNumber(
 			}
 		}
 		else { /* If number has no exponent, finish reading as double. */
-			std::cout << "Read double from " << std::string(json, startingIndex, startingIndex - index) << std::endl;
 			jsonEntityAllocator->construct(jsonEntity, JsonEntity(atof(std::string(json, startingIndex, startingIndex - index).c_str())));
 			index--;
 			return Parse(jsonEntity, index);
 		}
 	}
 	else { /* If number has no decimal, read as integer. */
-		std::cout << "Read integer from " << std::string(json, startingIndex, startingIndex - index) << std::endl;
 		jsonEntityAllocator->construct(jsonEntity, JsonEntity(atoi(std::string(json, startingIndex, startingIndex - index).c_str())));
 		index--;
 		return Parse(jsonEntity, index);
@@ -255,7 +244,6 @@ JsonParser::Parse JsonParser::parseString(
 		}
 	}
 
-	std::cout << "String's last is " << json[index] << " at " << index << std::endl;
 	return Parse(jsonEntity, index);
 }
 
@@ -297,7 +285,6 @@ JsonParser::Parse JsonParser::parseArray(
 				json[index] == ASCII_NEW_LINE ||
 				json[index] == ASCII_CARRIAGE_RETURN ||
 				json[index] == ASCII_SPACE) {
-				std::cout << "Whitespace" << std::endl;
 				index++;
 			}
 			if (json[index] == ',') {
@@ -344,9 +331,7 @@ JsonParser::Parse JsonParser::parseObject(
 			}
 
 			index = stringParse.index + 1;
-			std::cout << "Parsing after key: " << json[index] << " at index: " << index << std::endl;
 			std::string key = stringParse.jsonEntity->asString();
-			std::cout << "key is: " << key << std::endl;
 			jsonEntityAllocator->deallocate(stringParse.jsonEntity, 1);
 
 			/* Flush whitespaces. */
@@ -357,7 +342,8 @@ JsonParser::Parse JsonParser::parseObject(
 				index++;
 			}
 			if (json[index] != ':') {
-				std::cout << "ERROR NO COLON at index " << index << std::endl;
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				return Parse(jsonEntity, index);
 			}
 			index++;
 
@@ -368,12 +354,7 @@ JsonParser::Parse JsonParser::parseObject(
 				return Parse(jsonEntity, index);
 			}
 			index = entityParse.index + 1;
-			std::cout << "Parsing after value: " << json[index] << " at index: " << index << std::endl;
 			JsonEntity value = *entityParse.jsonEntity;
-			std::cout << "value is of type: " << value.getType() << std::endl;
-			if (value.isInt()) {
-				std::cout << "value is int and is " << value.asInt() << std::endl;
-			}
 			jsonEntityAllocator->deallocate(entityParse.jsonEntity, 1);
 
 			map.put(key, value);

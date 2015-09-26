@@ -293,7 +293,6 @@ TEST(JsonParser, UnaryArray) {
 	EXPECT_EQ(jsonEntity->isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
 	EXPECT_EQ(jsonEntity->asArray()[0].isString(), true);
-	std::cout << jsonEntity->asArray()[0].asString() << std::endl;
 	EXPECT_EQ(jsonEntity->asArray()[0].asString().compare("thirty"), 0);
 
 	jsonEntityAllocator.deallocate(jsonEntity, 1);
@@ -651,20 +650,30 @@ TEST(JsonParser, ObjectErrorBadEntity) {
 	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
 }
 
-/*TEST(JsonParser, General) {
-	std::cout << "Wert" << std::endl;
-	sgdd::JsonEntity* jsonEntity;
+/* Test parsing object no colon. */
+TEST(JsonParser, ObjectErrorNoColon) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{\"a\"\"yes\",\"b\":trsue,\"c\":2,\"d\":3.12}");
+	   /*01-23-45-6789-01-23-4567890-12-3456-78-90123*/
+	   /*0             1           2             3   */
 
-	std::cout << jsonEntity->getType() << std::endl;
-	jsonEntity = sgdd::JsonParser::parse(" 	\
-		\"string\"");
+	EXPECT_EQ(jsonEntity->isError(), true);
 
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
 
-	jsonEntity = sgdd::JsonParser::parse("-1234.567e-89");
-	double halp = jsonEntity->asDouble();
-	double halp2 = atof("-1234.567e-89");
-	std::cout << halp << std::endl;
-	std::cout << halp2 << std::endl;
-	std::cout << jsonEntity->getType() << std::endl;
-	EXPECT_EQ(1, 1);
-}*/
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
