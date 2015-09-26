@@ -318,17 +318,17 @@ JsonParser::Parse JsonParser::parseObject(
 
 	index++; // Skip over curly brace.
 	while (true) {
+		/* Flush whitespaces. */
+		while (json[index] == ASCII_TAB ||
+			json[index] == ASCII_NEW_LINE ||
+			json[index] == ASCII_CARRIAGE_RETURN ||
+			json[index] == ASCII_SPACE) {
+			index++;
+		}
 		if (json[index] == '}') {
 			break;
 		}
 		else {
-			/*Parse string = parseString(stringAllocator, jsonEntityAllocator, json, index);
-			std::string key = string.jsonEntity->asString();
-			std::cout << string.jsonEntity->asString() << std::endl;
-			index = string.index + 1;
-			std::cout << "Exit string at " << index << " = " << json[index] << std::endl;
-			jsonEntityAllocator->deallocate(string.jsonEntity, 1);*/
-
 			Parse stringParse = parseString(stringAllocator, jsonEntityAllocator, json, index);
 			index = stringParse.index + 1;
 			std::cout << "Parsing after key: " << json[index] << " at index: " << index << std::endl;
@@ -347,17 +347,6 @@ JsonParser::Parse JsonParser::parseObject(
 				std::cout << "ERROR NO COLON at index " << index << std::endl;
 			}
 			index++;
-
-			/*Parse value = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
-			index = value.index + 1;
-
-			JsonEntity val = *value.jsonEntity;
-			map.put(key, val);
-
-			jsonEntityAllocator->deallocate(string.jsonEntity, 1);
-			std::cout << "Escape string free" << std::endl;
-			//jsonEntityAllocator->deallocate(value.jsonEntity, 1);
-			std::cout << "Escape value free" << std::endl;*/
 
 			Parse entityParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
 			index = entityParse.index + 1;
