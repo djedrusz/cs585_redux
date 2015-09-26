@@ -76,7 +76,9 @@ JsonParser::Parse JsonParser::parseEntity(
 	}
 	/* Invalid JSON. */
 	else {
-		return Parse(NULL, index);
+		JsonEntity* jsonEntity = jsonEntityAllocator->allocate(1);
+		jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+		return Parse(jsonEntity, index);
 	}
 }
 
@@ -223,20 +225,20 @@ JsonParser::Parse JsonParser::parseString(
 				if (((json[index] >= '0' && /* Four hexadecimal digits. */
 					json[index] <= '9') ||
 					(json[index] >= 'A' &&
-					json[index++] <= 'F')) &&
-					((json[index] >= '0' && /* Four hexadecimal digits. */
-					json[index] <= '9') ||
-					(json[index] >= 'A' &&
-					json[index++] <= 'F')) &&
-					((json[index] >= '0' && /* Four hexadecimal digits. */
-					json[index] <= '9') ||
-					(json[index] >= 'A' &&
-					json[index++] <= 'F')) &&
-					((json[index] >= '0' && /* Four hexadecimal digits. */
-					json[index] <= '9') ||
-					(json[index] >= 'A' &&
-					json[index] <= 'F'))) {
-					index++;
+					json[index] <= 'F')) &&
+					((json[index + 1] >= '0' && /* Four hexadecimal digits. */
+					json[index + 1] <= '9') ||
+					(json[index + 1] >= 'A' &&
+					json[index + 1] <= 'F')) &&
+					((json[index + 2] >= '0' && /* Four hexadecimal digits. */
+					json[index + 2] <= '9') ||
+					(json[index + 2] >= 'A' &&
+					json[index + 2] <= 'F')) &&
+					((json[index + 3] >= '0' && /* Four hexadecimal digits. */
+					json[index + 3] <= '9') ||
+					(json[index + 3] >= 'A' &&
+					json[index + 3] <= 'F'))) {
+					index+=4;
 				}
 				else { /* Hexadecimal character not followed by four hexadecimal digits. */
 					jsonEntityAllocator->construct(jsonEntity, JsonEntity());
@@ -278,6 +280,11 @@ JsonParser::Parse JsonParser::parseArray(
 		}
 		else {
 			Parse parse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
+			if (parse.jsonEntity->isError()) {
+				jsonEntityAllocator->deallocate(parse.jsonEntity, 1);
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				return Parse(jsonEntity, index);
+			}
 			
 			JsonEntity je = *parse.jsonEntity;
 			dynamicArray.append(je);
@@ -330,6 +337,12 @@ JsonParser::Parse JsonParser::parseObject(
 		}
 		else {
 			Parse stringParse = parseString(stringAllocator, jsonEntityAllocator, json, index);
+			if (stringParse.jsonEntity->isError()) {
+				jsonEntityAllocator->deallocate(stringParse.jsonEntity, 1);
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				return Parse(jsonEntity, index);
+			}
+
 			index = stringParse.index + 1;
 			std::cout << "Parsing after key: " << json[index] << " at index: " << index << std::endl;
 			std::string key = stringParse.jsonEntity->asString();
@@ -349,6 +362,11 @@ JsonParser::Parse JsonParser::parseObject(
 			index++;
 
 			Parse entityParse = parseEntity(stringAllocator, dynamicArrayAllocator, mapNodeAllocator, mapAllocator, jsonEntityAllocator, json, index);
+			if (entityParse.jsonEntity->isError()) {
+				jsonEntityAllocator->deallocate(entityParse.jsonEntity, 1);
+				jsonEntityAllocator->construct(jsonEntity, JsonEntity());
+				return Parse(jsonEntity, index);
+			}
 			index = entityParse.index + 1;
 			std::cout << "Parsing after value: " << json[index] << " at index: " << index << std::endl;
 			JsonEntity value = *entityParse.jsonEntity;

@@ -49,6 +49,28 @@ TEST(JsonParser, BoolWhitespace) {
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
 }
 
+/* Test parsing true error. */
+TEST(JsonParser, TrueError) {
+	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "tlue");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
+
+	countingAllocator.deallocate(jsonEntity, 1);
+	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing false error. */
+TEST(JsonParser, FalseError) {
+	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "falsf");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
+
+	countingAllocator.deallocate(jsonEntity, 1);
+	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
+
 /* Test parsing zero. */
 TEST(JsonParser, PositiveZero) {
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
@@ -159,6 +181,17 @@ TEST(JsonParser, NumberWhitespaces) {
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
 }
 
+/* Test parsing number error invalid exponent format. */
+TEST(JsonParser, NumberErrorInvalidExponent) {
+	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "123.01ea");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
+
+	countingAllocator.deallocate(jsonEntity, 1);
+	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
+
 /* Test parsing simple string. */
 TEST(JsonParser, SimpleString) {
 	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
@@ -192,6 +225,28 @@ TEST(JsonParser, StringWhitespaces) {
 
 	EXPECT_EQ(jsonEntity->isString(), true);
 	EXPECT_EQ(jsonEntity->asString().compare("s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u12344ss"), 0);
+
+	countingAllocator.deallocate(jsonEntity, 1);
+	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing string error invalid special character. */
+TEST(JsonParser, StringErrorBadSpecial) {
+	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"s\\\"s\\\\s\\/s\\zs\\fs\\n\\rs\\ts\\u12344ss\"");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
+
+	countingAllocator.deallocate(jsonEntity, 1);
+	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing string error invalid hex. */
+TEST(JsonParser, StringErrorBadHex) {
+	sgdm::CountingAllocator< sgdd::JsonEntity > countingAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(&countingAllocator, "\"s\\\"s\\\\s\\/s\\bs\\fs\\n\\rs\\ts\\u123z4ss\"");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
 
 	countingAllocator.deallocate(jsonEntity, 1);
 	EXPECT_EQ(countingAllocator.getTotalOutstandingAllocations(), 0);
@@ -343,6 +398,30 @@ TEST(JsonParser, NestedArrays) {
 	EXPECT_EQ(jsonEntity->asArray().getSize(), 1);
 	EXPECT_EQ(jsonEntity->asArray()[0].isArray(), true);
 	EXPECT_EQ(jsonEntity->asArray()[0].asArray().getSize(), 0);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing array with bad entity. */
+TEST(JsonParser, ArrayErrorBadEntity) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		nullptr,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"[true, falsej, 17, \"thirty\"]");
+
+	EXPECT_EQ(jsonEntity->isError(), true);
 
 	jsonEntityAllocator.deallocate(jsonEntity, 1);
 
@@ -534,6 +613,34 @@ TEST(JsonParser, ObjectWhitespaces) {
 	EXPECT_EQ(jsonEntity->asObject().has("d"), true);
 	EXPECT_EQ(jsonEntity->asObject().get("d").isDouble(), true);
 	EXPECT_EQ(jsonEntity->asObject().get("d").asDouble(), 3.12);
+
+	jsonEntityAllocator.deallocate(jsonEntity, 1);
+
+	EXPECT_EQ(stringAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(dynamicArrayAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapNodeAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(mapAllocator.getTotalOutstandingAllocations(), 0);
+	EXPECT_EQ(jsonEntityAllocator.getTotalOutstandingAllocations(), 0);
+}
+
+/* Test parsing object invalid entity. */
+TEST(JsonParser, ObjectErrorBadEntity) {
+	sgdm::CountingAllocator< std::string > stringAllocator;
+	sgdm::CountingAllocator< sgdc::DynamicArray< sgdd::JsonEntity > > dynamicArrayAllocator;
+	sgdm::CountingAllocator< sgdc::MapNode< sgdd::JsonEntity > > mapNodeAllocator;
+	sgdm::CountingAllocator< sgdc::Map< sgdd::JsonEntity > > mapAllocator;
+	sgdm::CountingAllocator< sgdd::JsonEntity > jsonEntityAllocator;
+	sgdd::JsonEntity* jsonEntity = sgdd::JsonParser::parse(
+		&stringAllocator,
+		&dynamicArrayAllocator,
+		&mapNodeAllocator,
+		&mapAllocator,
+		&jsonEntityAllocator,
+		"{\"a\":\"yes\",\"b\":trsue,\"c\":2,\"d\":3.12}");
+	   /*01-23-45-6789-01-23-4567890-12-3456-78-90123*/
+	   /*0             1           2             3   */
+
+	EXPECT_EQ(jsonEntity->isError(), true);
 
 	jsonEntityAllocator.deallocate(jsonEntity, 1);
 
