@@ -36,8 +36,7 @@ class JsonParser {
 	private:
 		/* Data member(s). */
 		static sgdm::DefaultAllocator< JsonValue > defaultJsonValueAllocator; // Default JSON value allocator.
-	public:
-		/* Function(s). */
+		/* Functions(s). */
 		static Parse parseEntity( // TODO.
 			sgdm::IAllocator< std::string >* stringAllocator,
 			sgdm::IAllocator< sgdc::DynamicArray< JsonValue > >* dynamicArrayAllocator,
@@ -69,7 +68,8 @@ class JsonParser {
 			sgdm::IAllocator< JsonValue >* jsonValueAllocator,
 			const std::string& json,
 			unsigned int index);
-		static Parse parseObject(sgdm::IAllocator< JsonValue >* allocator, const std::string& json, unsigned int index); // TODO.
+	public:
+		/* Function(s). */
 		static JsonValue* parse(const std::string& json); // Parse the specified JSON into a JSON value.
 		static JsonValue* parse(sgdm::IAllocator< JsonValue >* jsonValueAllocator, const std::string& json); // Parse the specified JSON into a JSON value with the specified allocator.
 		static JsonValue* parse(
