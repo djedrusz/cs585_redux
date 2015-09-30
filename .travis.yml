@@ -4,22 +4,9 @@ compiler: g++
 before_install:
 - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 - sudo apt-get update -qq
-- sudo apt-get install freetype
-- sudo apt-get install jpeg
-- sudo apt-get install x11
-- sudo apt-get install xrandr
-- sudo apt-get install xcb
-- sudo apt-get install x11-xcb
-- sudo apt-get install xcb-randr
-- sudo apt-get install xcb-image
-- sudo apt-get install opengl
-- sudo apt-get install flac
-- sudo apt-get install ogg
-- sudo apt-get install vorbis
-- sudo apt-get install vorbisenc
-- sudo apt-get install vorbisfile
-- sudo apt-get install openal
-- sudo apt-get install pthread
+- sudo apt-get install libpthread-stubs0-dev libgl1-mesa-dev libx11-dev
+- sudo apt-get install libxrandr-dev libfreetype6-dev libglew1.5-dev
+- sudo apt-get install libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libjpeg62
 - sudo apt-get install libsfml-dev
 
 install:
