@@ -10,9 +10,9 @@ install:
 - export CXX="g++-4.8"
 
 before_script:
-- sudo apt-get install libpthread-stubs0-dev libgl1-mesa-dev libx11-dev
-- sudo apt-get install libxrandr-dev libfreetype6-dev libglew1.5-dev
-- sudo apt-get install libjpeg8-dev libgpgme11-dev libsndfile1-dev libopenal-dev libjpeg62
-- sudo apt-get install libsfml-dev
+- wget http://sfml-dev.org/download/sfml/2.1/SFML-2.1-linux-gcc-64bits.tar.bz2 -O /tmp/sfml.tar.bz2
+- tar -xjvf /tmp/sfml.tar.bz2
+- sudo cp -r SFML-2.1/* /usr/
+- sudo apt-get install -y libjpeg62-dev libsndfile1-dev libglew1.5 libglew1.5-dev libfreetype6 libjpeg-turbo8 libjpeg8 libopenal-data libopenal1  libxrandr2 libxrender1 libsoil1 
 
 script: cd build && cmake . && make && ./tests
