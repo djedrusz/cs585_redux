@@ -12,7 +12,7 @@ target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
 
 project(sfml)
 set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
-find_package(SFML 1 REQUIRED system window graphics network audio)
+find_package(SFML 2.3.2 REQUIRED system window graphics network audio)
 include_directories(${SFML_INCLUDE_DIR})
 add_executable(sfml test_sfml.cpp)
 target_link_libraries(sfml ${SFML_LIBRARIES})
