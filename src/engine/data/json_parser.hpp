@@ -16,7 +16,6 @@
 #define ASCII_CARRIAGE_RETURN 13
 #define ASCII_SPACE 32
 
-
 namespace StevensDev {
 namespace sgdd { /* Stevens Game Development Data. */
 
