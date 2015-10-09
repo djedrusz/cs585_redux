@@ -16,28 +16,28 @@ namespace sgdd { /* Stevens Game Development Data. */
 
 /* A JSON value. */
 class JsonValue {
-public:
-	/* The possible JSON value types. */
-	enum Types {
-		ERROR,
-		BOOL,
-		INT,
-		DOUBLE,
-		STRING,
-		ARRAY,
-		OBJECT
-	};
+	public:
+		/* The possible JSON value types. */
+		enum Types {
+			ERROR,
+			BOOL,
+			INT,
+			DOUBLE,
+			STRING,
+			ARRAY,
+			OBJECT
+		};
 
-	/* The data of a JSON value. */
-	union Data {
-		/* Data member(s). */
-		bool b;
-		int i;
-		double d;
-		std::string* s;
-		sgdc::DynamicArray< JsonValue >* a;
-		sgdc::Map< JsonValue >* o;
-	};
+		/* The data of a JSON value. */
+		union Data {
+			/* Data member(s). */
+			bool b;
+			int i;
+			double d;
+			std::string* s;
+			sgdc::DynamicArray< JsonValue >* a;
+			sgdc::Map< JsonValue >* o;
+		};
 
 	private:
 		/* Data member(s). */

@@ -1,7 +1,7 @@
 /*
 	Dominik Jedruszczak
 
-	ITickable.hpp
+	itickable.hpp
 	Declaration of the "ITickable" interface.
 */
 

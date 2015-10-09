@@ -1,8 +1,8 @@
 /*
 	Dominik Jedruszczak
 
-	ITickable.cpp
+	itickable.cpp
 	Implementation of the "ITickable" interface.
 */
 
-#include "ITickable.hpp"
+#include "itickable.hpp"
