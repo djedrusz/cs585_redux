@@ -23,6 +23,7 @@ class RenderableSprite {
 	public:
 		/* Constructor(s). */
 		RenderableSprite(); // Default constructor.
+		RenderableSprite(float x, float y); // Contructor with specified position.
 		RenderableSprite(const RenderableSprite& renderableSprite); // Copy constructor.
 		RenderableSprite(RenderableSprite&& renderableSprite); // Move constructor.
 		/* Operator(s). */
