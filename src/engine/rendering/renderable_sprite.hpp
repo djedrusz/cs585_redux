@@ -30,7 +30,7 @@ class RenderableSprite {
 		RenderableSprite& operator = (const RenderableSprite& renderableSprite); // Copy assignment operator.
 		RenderableSprite& operator = (RenderableSprite&& renderableSprite); // Move assignment operator.
 		/* Function(s). */
-		const sf::Sprite& getSprite() const; // Return the sprite;
+		sf::Sprite& getSprite(); // Return the sprite;
 		const float getPositionX() const; // Return the x-position.
 		const float getPositionY() const; // Return the y-position.
 		void setPositionX(float x); // Set the x-position.

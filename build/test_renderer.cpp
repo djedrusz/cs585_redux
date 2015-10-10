@@ -1,25 +1,18 @@
 /*
 	Dominik Jedruszczak
 
-	test_renderer.cpp
+	test_renderer
 	Tests for the "Renderer" class.
 */
 
+#include "../gtest/include/gtest/gtest.h"
 #include "../src/engine/rendering/renderer.hpp"
 
-int main() {
-	using namespace StevensDev;
+/* Test adding and getting a texture of a renderer. */
+TEST(Renderer, AddGetTexture) {
+	StevensDev::sgdr::Renderer renderer;
+	renderer.addTexture("smiley", "../textures/smiley.png");
 
-	sgdr::RenderableSprite renderableSprite;
-	const sf::Sprite& spriteRef = renderableSprite.getSprite();
-	sgdr::Renderer renderer;
-	renderer.setupWindow(800, 800);
-	renderer.addTexture("smiley", "../textures/smiley.jpg");
-	renderer.addRenderableSprite(&renderableSprite);
-
-	while (renderer.isActive()) {
-		renderer.draw();
-	}
-
-	return 0;
+	EXPECT_TRUE(renderer.getTexture("smiley").getSize().x > 0);
+	EXPECT_TRUE(renderer.getTexture("smiley").getSize().y > 0);
 }

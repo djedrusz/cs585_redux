@@ -48,7 +48,9 @@ void Renderer::setupWindow(unsigned int width, unsigned int height) {
 
 /* Return whether or not the window is active. */
 bool Renderer::isActive() {
-	return window.isOpen();
+	sf::Event event;
+	window.pollEvent(event);
+	return (event.type != sf::Event::Closed);
 }
 
 /* Add a texture. */

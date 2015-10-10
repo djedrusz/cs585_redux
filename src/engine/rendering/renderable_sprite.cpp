@@ -17,44 +17,36 @@ RenderableSprite::RenderableSprite()
 }
 
 /* Constructor with specified position. */
-RenderableSprite::RenderableSprite(float x, float y)
-:	x(x),
-	y(y) {
-	;
+RenderableSprite::RenderableSprite(float x, float y) {
+	setPosition(x, y);
 }
 
 /* Copy constructor. */
 RenderableSprite::RenderableSprite(const RenderableSprite& renderableSprite)
-:	sprite(renderableSprite.sprite),
-	x(renderableSprite.x),
-	y(renderableSprite.y) {
-	;	
+:	sprite(renderableSprite.sprite) {
+	setPosition(renderableSprite.x, renderableSprite.y);
 }
 
 /* Move constructor. */
 RenderableSprite::RenderableSprite(RenderableSprite&& renderableSprite)
-:	sprite(std::move(renderableSprite.sprite)),
-	x(renderableSprite.x),
-	y(renderableSprite.y) {
-	;	
+:	sprite(std::move(renderableSprite.sprite)) {
+	setPosition(renderableSprite.x, renderableSprite.y);	
 }
 
 /* Copy assignment operator. */
 RenderableSprite& RenderableSprite::operator = (const RenderableSprite& renderableSprite) {
 	sprite = renderableSprite.sprite;
-	x = renderableSprite.x;
-	y = renderableSprite.y;
+	setPosition(renderableSprite.x, renderableSprite.y);
 }
 
 /* Move assignment operator. */
 RenderableSprite& RenderableSprite::operator = (RenderableSprite&& renderableSprite) {
 	sprite = std::move(renderableSprite.sprite);
-	x = renderableSprite.x;
-	y = renderableSprite.y;
+	setPosition(renderableSprite.x, renderableSprite.y);
 }
 
 /* Return the sprite. */
-const sf::Sprite& RenderableSprite::getSprite() const {
+sf::Sprite& RenderableSprite::getSprite() {
 	return sprite;
 }
 
@@ -70,24 +62,24 @@ const float RenderableSprite::getPositionY() const {
 
 /* Set the x-position. */
 void RenderableSprite::setPositionX(float x) {
-	this->x = x;
+	setPosition(x, y);
 }
 
 /* Set the y-position. */
 void RenderableSprite::setPositionY(float y) {
-	this->y = y;
+	setPosition(x, y);
 }
 
 /* Set the x and y-positions. */
 void RenderableSprite::setPosition(float x, float y) {
 	this->x = x;
 	this->y = y;
+	sprite.setPosition(this->x, this->y);
 }
 
 /* Increment the x and y-positions. */
 void RenderableSprite::move(float x, float y) {
-	this->x += x;
-	this->y += y;
+	setPosition(this->x + x, this->y + y);
 }
 
 }

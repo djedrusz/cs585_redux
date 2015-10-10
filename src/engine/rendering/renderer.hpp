@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Event.hpp>
 #include "renderable_sprite.hpp"
 #include "../containers/map.hpp"
 #include "../containers/dynamic_array.hpp"
