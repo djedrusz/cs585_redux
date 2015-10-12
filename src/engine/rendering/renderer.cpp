@@ -56,10 +56,9 @@ bool Renderer::isActive() {
 /* Add a texture. */
 void Renderer::addTexture(const std::string& name, const std::string& path) {
 	sf::Texture texture;
-	/*if (texture.loadFromFile(path)) {
+	if (texture.loadFromFile(path)) {
 		textures.put(name, std::move(texture));
-	}*/
-	textures.put(name, texture);
+	}
 }
 
 /* Get a texture. */
