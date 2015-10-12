@@ -6,3 +6,5 @@
 */
 
 #include "../src/engine/input/input.hpp"
+
+/* No tests. */

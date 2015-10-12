@@ -6,3 +6,5 @@
 */
 
 #include "../src/engine/scene/scene.hpp"
+
+/* No tests. */
