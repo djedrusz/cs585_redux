@@ -215,12 +215,12 @@ void Input::preTick() {
 
 /* Tick logic. */
 void Input::tick(float deltaTime) {
-
+	;
 }
 
 /* Post-tick logic. */
 void Input::postTick() {
-
+	;
 }
 
 /* Return the only instance. */
