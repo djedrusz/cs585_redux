@@ -20,3 +20,9 @@ include_directories(${SFML_INCLUDE_DIR})
 add_executable(test_renderer ../src/engine/data/json_value.cpp ../src/engine/data/json_parser.cpp ../src/engine/input/input.cpp ../src/engine/rendering/renderable_sprite.cpp ../src/engine/rendering/renderer.cpp ../src/engine/input/input.cpp ../src/engine/scene/scene.cpp test_renderer_visual.cpp)
 target_link_libraries(test_renderer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_renderer ${SFML_LIBRARIES})
+
+project(test_scene_graph)
+add_executable(test_scene_graph
+../src/engine/scene/rectangle_bounds.cpp
+../src/engine/scene/nxn_scene_graph.cpp
+test_scene_graph_visual.cpp)

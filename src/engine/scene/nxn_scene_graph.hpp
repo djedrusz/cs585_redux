@@ -11,6 +11,7 @@
 #include "itickable.hpp"
 #include "../containers/dynamic_array.hpp"
 #include "icollidable.hpp"
+#include <iostream> // REMOVE AFTER TESTING.
 
 namespace StevensDev {
 namespace sgds { // Stevens Game Development Scene.
@@ -23,14 +24,20 @@ class NxNSceneGraph : public ITickable {
 		/* Data member(s). */
 		const float length;
 		const unsigned int divisions;
+		sgdc::DynamicArray< ICollidable* >** graph;
 		sgdc::DynamicArray< ICollidable* > addedCollidables; // Collidables to be added.
 		sgdc::DynamicArray< ICollidable* > removedCollidables; // Collidables to be removed.
 		sgdc::DynamicArray< ICollidable* > collidables;
+		/* Function(s). */
+		void addCollidableToGraph(ICollidable* collidable);
+		void removeCollidableFromGraph(ICollidable* collidable);
 	public:
 		/* Constructor(s). */
 		NxNSceneGraph(float length, unsigned int divisions);
 		NxNSceneGraph(const NxNSceneGraph& nxNSceneGraph);
 		NxNSceneGraph(NxNSceneGraph&& nxNSceneGraph);
+		/* Destructor(s). */
+		~NxNSceneGraph();
 		/* Function(s). */
 		void preTick();
 		void tick(float deltaTime);
@@ -49,6 +56,7 @@ class NxNSceneGraph : public ITickable {
 			unsigned short flags);
 		sgdc::DynamicArray< ICollidable* > getCollisions(
 			const ICollidable* collidable); // Does not return self.
+		void print(); // REMOVE AFTER TESTING.
 };
 
 }
