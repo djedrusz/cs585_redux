@@ -47,6 +47,8 @@ void NxNSceneGraph::addCollidableToGraph(ICollidable* collidable) {
 		top = length - unitLength;
 	}
 
+	std::cout << left << " " << top << " " << right << " " << bottom << std::endl;
+
 	for (unsigned int x = left; x <= right; x++) {
 		for (unsigned int y = top; y <= bottom; y++) {
 			graph[x][y].append(collidable);

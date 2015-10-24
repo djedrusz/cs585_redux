@@ -25,7 +25,13 @@ int main(int arc, char** argv) {
 
 	scene.print();
 
+	SimpleCollidable superCollidable(sgds::RectangleBounds(-1.0f, -1.0f, 10.0f, 10.0f));
 	SimpleCollidable collidable(sgds::RectangleBounds(1, 1, 1.75, 2.5));
+
+	std::cout << std::endl;
+	scene.addCollidable(&superCollidable);
+	scene.preTick();
+	scene.print();
 
 	std::cout << std::endl;
 	scene.addCollidable(&collidable);
