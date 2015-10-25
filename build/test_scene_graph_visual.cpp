@@ -9,26 +9,27 @@
 
 using namespace StevensDev;
 
-class SimpleCollidable : public sgds::ICollidable {
+class SimpleCollidable : public StevensDev::sgds::ICollidable {
 	private:
-		sgds::RectangleBounds& bounds;
+		unsigned short flags;
+		StevensDev::sgds::RectangleBounds& bounds;
 	public:
-		SimpleCollidable(sgds::RectangleBounds rectangleBounds) : bounds(rectangleBounds) { ; };
-		sgds::RectangleBounds& getBoundss() { return bounds; };
-		const sgds::RectangleBounds& getBounds() const { return bounds; };
-		unsigned short getFlags() const { return 0; };
-		bool canCollide(const unsigned short flags) const { return false; };
-		bool collides(const sgds::RectangleBounds& rectangleBounds) const { return false; };
+		SimpleCollidable(StevensDev::sgds::RectangleBounds rectangleBounds, unsigned short flags) : bounds(rectangleBounds), flags(flags) { ; };
+		StevensDev::sgds::RectangleBounds& getBoundss() { return bounds; };
+		const StevensDev::sgds::RectangleBounds& getBounds() const { return bounds; };
+		unsigned short getFlags() const { return flags; };
+		bool canCollide(const unsigned short flags) const { return flags == this->flags; };
+		bool collides(const StevensDev::sgds::RectangleBounds& rectangleBounds) const { return false; };
 };
 
 int main(int arc, char** argv) {
 	sgds::NxNSceneGraph scene(6.0f, 8);
-	SimpleCollidable topLeft(sgds::RectangleBounds(-1, -1, 2, 2));
-	SimpleCollidable topRight(sgds::RectangleBounds(5, -1, 2, 2));
-	SimpleCollidable bottomLeft(sgds::RectangleBounds(-1, 5, 2, 2));
-	SimpleCollidable bottomRight(sgds::RectangleBounds(5, 5, 2, 2));
-	SimpleCollidable middle(sgds::RectangleBounds(2.5, 2.5, 1, 1));
-	SimpleCollidable over(sgds::RectangleBounds(-1, -1, 8, 8));
+	SimpleCollidable topLeft(sgds::RectangleBounds(-1, -1, 2, 2), 1);
+	SimpleCollidable topRight(sgds::RectangleBounds(5, -1, 2, 2), 1);
+	SimpleCollidable bottomLeft(sgds::RectangleBounds(-1, 5, 2, 2), 1);
+	SimpleCollidable bottomRight(sgds::RectangleBounds(5, 5, 2, 2), 1);
+	SimpleCollidable middle(sgds::RectangleBounds(2.5, 2.5, 1, 1), 1);
+	SimpleCollidable over(sgds::RectangleBounds(-1, -1, 8, 8), 1);
 
 	scene.addCollidable(&topLeft);
 	scene.addCollidable(&topRight);

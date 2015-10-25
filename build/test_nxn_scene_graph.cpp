@@ -17,7 +17,7 @@ class SimpleCollidable : public StevensDev::sgds::ICollidable {
 		StevensDev::sgds::RectangleBounds& getBoundss() { return bounds; };
 		const StevensDev::sgds::RectangleBounds& getBounds() const { return bounds; };
 		unsigned short getFlags() const { return flags; };
-		bool canCollide(const unsigned short flags) const { return false; };
+		bool canCollide(const unsigned short flags) const { return flags == this->flags; };
 		bool collides(const StevensDev::sgds::RectangleBounds& rectangleBounds) const { return false; };
 };
 
