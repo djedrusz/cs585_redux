@@ -8,6 +8,8 @@
 #ifndef INCLUDED_RECTANGLE_BOUNDS
 #define INCLUDED_RECTANGLE_BOUNDS
 
+#include <cassert>
+
 namespace StevensDev {
 namespace sgds { // Stevens Game Development Scene.
 

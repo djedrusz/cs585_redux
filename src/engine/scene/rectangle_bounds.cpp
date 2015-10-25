@@ -15,7 +15,8 @@ RectangleBounds::RectangleBounds(float x, float y, float width, float height)
 	y(y),
 	width(width),
 	height(height) {
-	;
+	assert(width > 0);
+	assert(height > 0);
 }
 
 RectangleBounds::RectangleBounds(const RectangleBounds& rectangleBounds)
@@ -23,7 +24,8 @@ RectangleBounds::RectangleBounds(const RectangleBounds& rectangleBounds)
 	y(rectangleBounds.y),
 	width(rectangleBounds.width),
 	height(rectangleBounds.height) {
-	;
+	assert(width > 0);
+	assert(height > 0);
 }
 
 RectangleBounds::RectangleBounds(RectangleBounds&& rectangleBounds)
@@ -31,7 +33,8 @@ RectangleBounds::RectangleBounds(RectangleBounds&& rectangleBounds)
 	y(rectangleBounds.y),
 	width(rectangleBounds.width),
 	height(rectangleBounds.height) {
-	;
+	assert(width > 0);
+	assert(height > 0);
 }
 
 RectangleBounds& RectangleBounds::operator = (const RectangleBounds& rectangleBounds) {
@@ -39,6 +42,8 @@ RectangleBounds& RectangleBounds::operator = (const RectangleBounds& rectangleBo
 	this->y = rectangleBounds.y;
 	this->width = rectangleBounds.width;
 	this->height = rectangleBounds.height;
+	assert(this->width > 0);
+	assert(this->height > 0);
 }
 
 RectangleBounds& RectangleBounds::operator = (RectangleBounds&& rectangleBounds) {
@@ -46,6 +51,8 @@ RectangleBounds& RectangleBounds::operator = (RectangleBounds&& rectangleBounds)
 	this->y = rectangleBounds.y;
 	this->width = rectangleBounds.width;
 	this->height = rectangleBounds.height;
+	assert(this->width > 0);
+	assert(this->height > 0);
 }
 
 const float RectangleBounds::getX() const {
@@ -79,15 +86,19 @@ void RectangleBounds::setPosition(float x, float y) {
 
 void RectangleBounds::setWidth(float width) {
 	this->width = width;
+	assert(this->width > 0);
 }
 
 void RectangleBounds::setHeight(float height) {
 	this->height = height;
+	assert(this->height > 0);
 }
 
 void RectangleBounds::setDimensions(float width, float height) {
 	this->width = width;
 	this->height = height;
+	assert(this->width > 0);
+	assert(this->height > 0);
 }
 
 bool RectangleBounds::collides(const RectangleBounds& rectangleBounds) const {

@@ -29,6 +29,8 @@ class NxNSceneGraph : public ITickable {
 		sgdc::DynamicArray< ICollidable* > removedCollidables; // Collidables to be removed.
 		sgdc::DynamicArray< ICollidable* > collidables;
 		/* Function(s). */
+		void createGraph();
+		void destroyGraph();
 		void addCollidableToGraph(ICollidable* collidable);
 		void removeCollidableFromGraph(ICollidable* collidable);
 	public:
