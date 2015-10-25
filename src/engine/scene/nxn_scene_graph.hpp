@@ -58,7 +58,9 @@ class NxNSceneGraph : public ITickable {
 			unsigned short flags);
 		sgdc::DynamicArray< ICollidable* > getCollisions(
 			const ICollidable* collidable); // Does not return self.
+#ifdef NXN_SCENE_GRAPH_TESTING
 		void print(); // REMOVE AFTER TESTING.
+#endif
 };
 
 }

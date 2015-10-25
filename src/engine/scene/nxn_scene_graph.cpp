@@ -479,6 +479,7 @@ sgdc::DynamicArray< ICollidable* > NxNSceneGraph::getCollisions(
 	return collisions;
 }
 
+#ifdef NXN_SCENE_GRAPH_TESTING
 /* REMOVE AFTER TESTING. */
 void NxNSceneGraph::print() {
 	for (unsigned int y = 0; y < divisions; y++) {
@@ -488,6 +489,7 @@ void NxNSceneGraph::print() {
 		std::cout << std::endl;
 	}
 }
+#endif
 
 }
 }
