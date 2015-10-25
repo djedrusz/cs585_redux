@@ -22,7 +22,7 @@ target_link_libraries(test_renderer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_renderer ${SFML_LIBRARIES})
 
 project(test_scene_graph)
-add_compile_options(-DNXN_SCENE_GRAPH_TESTING)
+add_definitions(-DNXN_SCENE_GRAPH_TESTING)
 add_executable(test_scene_graph
 ../src/engine/scene/rectangle_bounds.cpp
 ../src/engine/scene/nxn_scene_graph.cpp
