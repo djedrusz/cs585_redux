@@ -12,7 +12,9 @@ add_executable(tests test_default_allocator.cpp test_counting_allocator.cpp test
 ../src/engine/events/event_dispatcher.cpp
 test_event_dispatcher.cpp
 ../src/engine/events/event_bus.cpp
-test_event_bus.cpp)
+test_event_bus.cpp
+../src/engine/events/mapped_event_dispatcher.cpp
+test_mapped_event_dispatcher.cpp)
 target_link_libraries(tests gtest gtest_main)
 target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(tests ${SFML_LIBRARIES})

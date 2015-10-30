@@ -67,6 +67,7 @@ void EventDispatcher::postTick() {
 	for (unsigned int i = 0; i < addedListeners.getSize(); i++) {
 		listeners.append(addedListeners.get(i));
 	}
+	addedListeners = std::move(sgdc::DynamicArray< std::function< void(const IEvent&) >* >());
 
 	/* Remove the removed listeners. */
 	for (unsigned int i = 0; i < removedListeners.getSize(); i++) {
@@ -76,6 +77,7 @@ void EventDispatcher::postTick() {
 			}
 		}
 	}
+	removedListeners = std::move(sgdc::DynamicArray< std::function< void(const IEvent&) >* >());
 }
 
 }
