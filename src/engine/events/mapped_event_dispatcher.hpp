@@ -26,13 +26,13 @@ class MappedEventDispatcher : public sgds::ITickable {
 			private:
 				/* Data member(s). */
 				std::string event;
-				std::function< void(const IEvent*) >* listener;
+				const std::function< void(const IEvent*) >* listener;
 			public:
 				/* Constructor(s). */
 				Mapping();
 				Mapping(
 					const std::string& event,
-					std::function< void(const IEvent*) >* listener);
+					const std::function< void(const IEvent*) >* listener);
 				Mapping(const Mapping& mapping);
 				Mapping(Mapping&& mapping);
 				/* Operator(s). */
@@ -40,12 +40,12 @@ class MappedEventDispatcher : public sgds::ITickable {
 				Mapping& operator = (Mapping&& mapping);
 				/* Function(s). */
 				const std::string& getEvent() const;
-				std::function< void(const IEvent*) >* getListener() const;
+				const std::function< void(const IEvent*) >* getListener() const;
 		};
 		/* Data member(s). */
 		sgdc::Map<
 			sgdc::DynamicArray<
-				std::function<
+				const std::function<
 					void(const IEvent*) >* >* > listeners;
 		sgdc::DynamicArray< Mapping > addedMappings;
 		sgdc::DynamicArray< Mapping > removedMappings;
@@ -66,10 +66,10 @@ class MappedEventDispatcher : public sgds::ITickable {
 		void postTick();
 		void addListener(
 			const IEvent* event,
-			std::function< void(const IEvent*) >* listener);
+			const std::function< void(const IEvent*) >* listener);
 		void removeListener(
 			const IEvent* event,
-			std::function< void(const IEvent*) >* listener);
+			const std::function< void(const IEvent*) >* listener);
 		void addEvent(const IEvent* event);
 		void removeEvent(const IEvent* event);
 };

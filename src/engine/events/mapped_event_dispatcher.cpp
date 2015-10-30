@@ -19,7 +19,7 @@ MappedEventDispatcher::Mapping::Mapping()
 
 MappedEventDispatcher::Mapping::Mapping(
 	const std::string& event,
-	std::function< void(const IEvent*) >* listener)
+	const std::function< void(const IEvent*) >* listener)
 :	event(event),
 	listener(listener) {
 	;
@@ -54,7 +54,7 @@ MappedEventDispatcher::Mapping::getEvent() const {
 	return event;
 }
 
-std::function< void(const IEvent*) >* 
+const std::function< void(const IEvent*) >* 
 MappedEventDispatcher::Mapping::getListener() const {
 	return listener;
 }
@@ -98,24 +98,13 @@ MappedEventDispatcher& MappedEventDispatcher::operator =
 }
 
 void MappedEventDispatcher::preTick() {
-	/* Add the added mappings. 
-	for (unsigned int i = 0; i < addedMappings.getSize(); i++) {
-		if (!listeners.has(addedMappings[i].getEvent())) {
-			listeners.put(
-				addedMappings[i].getEvent(),
-				std::move(
-					sgdc::DynamicArray< 
-						std::function< 
-							void(const IEvent*) >* >()));
-		}
-	}
-	addedMappings = std::move(sgdc::DynamicArray< Mapping >());*/
+	/* Add the added mappings. */
 	for (unsigned int i = 0; i < addedMappings.getSize(); i++) {
 		if (!listeners.has(addedMappings.get(i).getEvent())) {
 			listeners.put(
 				addedMappings.get(i).getEvent(),
 				new sgdc::DynamicArray<
-						std::function<
+						const std::function<
 							void(const IEvent*) >* >());
 			listeners.get(addedMappings.get(i).getEvent())->append(addedMappings.get(i).getListener());
 		}
@@ -142,20 +131,7 @@ void MappedEventDispatcher::tick(float deltaTime) {
 }
 
 void MappedEventDispatcher::postTick() {
-	/* Remove the removed mappings. 
-	for (unsigned int i = 0; i < removedMappings.getSize(); i++) {
-		if (listeners.has(removedMappings[i].getEvent())) {
-			for (unsigned int j = 0; 
-				j < listeners.get(removedMappings[i].getEvent()).getSize(); 
-				j++) {
-				if (listeners.get(removedMappings[i].getEvent()).get(j)
-					== removedMappings[i].getListener()) {
-					;
-				}
-			}
-		}
-	}
-	removedMappings = std::move(sgdc::DynamicArray< Mapping >());*/
+	/* Remove the removed mappings. */
 	for (unsigned int i = 0; i < removedMappings.getSize(); i++) {
 		if (listeners.has(removedMappings.get(i).getEvent())) {
 			for (unsigned int j = 0;
@@ -184,13 +160,13 @@ void MappedEventDispatcher::postTick() {
 
 void MappedEventDispatcher::addListener(
 	const IEvent* event,
-	std::function< void(const IEvent*) >* listener) {
+	const std::function< void(const IEvent*) >* listener) {
 	addedMappings.append(Mapping(event->getType(), listener));
 }
 
 void MappedEventDispatcher::removeListener(
 	const IEvent* event,
-	std::function< void(const IEvent*) >* listener) {
+	const std::function< void(const IEvent*) >* listener) {
 	removedMappings.append(Mapping(event->getType(), listener));
 }
 
