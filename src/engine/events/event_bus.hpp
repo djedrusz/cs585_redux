@@ -8,7 +8,7 @@
 #ifndef INCLUDED_EVENT_BUS
 #define INCLUDED_EVENT_BUS
 
-#include "event_dispatcher.hpp"
+#include "mapped_event_dispatcher.hpp"
 
 namespace StevensDev {
 namespace sgde { // Stevens Game Development Events.
@@ -23,7 +23,7 @@ class EventBus {
 		EventBus& operator = (const EventBus& eventBus) = delete;
 	public:
 		/* Function(s). */
-		static EventDispatcher& getDispatcher();
+		static MappedEventDispatcher& getDispatcher();
 };
 
 }

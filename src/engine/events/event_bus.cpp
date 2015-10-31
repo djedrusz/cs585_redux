@@ -10,10 +10,10 @@
 namespace StevensDev {
 namespace sgde { // Stevens Game Development Events.
 
-EventDispatcher& EventBus::getDispatcher() {
-	static EventDispatcher eventDispatcher;
+MappedEventDispatcher& EventBus::getDispatcher() {
+	static MappedEventDispatcher mappedEventDispatcher;
 
-	return eventDispatcher;
+	return mappedEventDispatcher;
 }
 
 }
