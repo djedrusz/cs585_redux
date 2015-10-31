@@ -50,9 +50,6 @@ class MappedEventDispatcher : public sgds::ITickable {
 					void(const IEvent*) >* >* > listeners;
 		sgdc::DynamicArray< Mapping > addedMappings;
 		sgdc::DynamicArray< Mapping > removedMappings;
-		sgdc::DynamicArray< const IEvent* > events;
-		sgdc::DynamicArray< const IEvent* > addedEvents;
-		sgdc::DynamicArray< const IEvent* > removedEvents;
 	public:
 		/* Constructor(s). */
 		MappedEventDispatcher();
@@ -73,8 +70,7 @@ class MappedEventDispatcher : public sgds::ITickable {
 		void removeListener(
 			const IEvent* event,
 			const std::function< void(const IEvent*) >* listener);
-		void addEvent(const IEvent* event);
-		void removeEvent(const IEvent* event);
+		void dispatch(const IEvent* event);
 };
 
 }

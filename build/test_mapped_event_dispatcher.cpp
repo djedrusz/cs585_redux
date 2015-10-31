@@ -60,12 +60,11 @@ TEST(MappedEventDispatcher, General) {
 		std::bind(&ATestListener::onTestValueEvent, &testListener, std::placeholders::_1);
 
 	mappedEventDispatcher.addListener(&testEvent, &testEventCallback);
-	mappedEventDispatcher.addEvent(&testEvent);
-
 	mappedEventDispatcher.preTick();
 	mappedEventDispatcher.tick(0);
 	mappedEventDispatcher.postTick();
 
+	mappedEventDispatcher.dispatch(&testEvent);
 	EXPECT_EQ(testListener.getTestEventCount(), 1);
 
 	mappedEventDispatcher.preTick();
@@ -75,12 +74,11 @@ TEST(MappedEventDispatcher, General) {
 	EXPECT_EQ(testListener.getTestEventCount(), 1);
 
 	mappedEventDispatcher.addListener(&testValueEvent, &testValueEventCallback);
-	mappedEventDispatcher.addEvent(&testValueEvent);
-
 	mappedEventDispatcher.preTick();
 	mappedEventDispatcher.tick(0);
 	mappedEventDispatcher.postTick();
 
+	mappedEventDispatcher.dispatch(&testValueEvent);
 	EXPECT_EQ(testListener.getTestEventCount(), 24);
 }
 
