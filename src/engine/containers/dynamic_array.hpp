@@ -55,6 +55,7 @@ class DynamicArray {
 		T remove(unsigned int index); // Remove and return the element at the specified index.
 		void set(unsigned int index, const T& element); // Set the element at the specified index.
 		const T& get(unsigned int index); // Return the element at the specified index.
+		const T& get(unsigned int index) const; // Return the element at the specified index.
 		const unsigned int getSize() const; // Return the size.
 };
 
@@ -238,6 +239,12 @@ void DynamicArray< T >::set(unsigned int index, const T& element) {
 /* Return the element at the specified index. */
 template< typename T >
 const T& DynamicArray< T >::get(unsigned int index) {
+	return array[index];
+}
+
+/* Return the element at the specified index. */
+template< typename T >
+const T& DynamicArray< T >::get(unsigned int index) const {
 	return array[index];
 }
 

@@ -12,13 +12,13 @@ namespace StevensDev {
 namespace sgde { // Stevens Game Development Events.
 
 MappedEventDispatcher::Mapping::Mapping()
-:	event(""),
+:	event(NULL),
 	listener(NULL) {
 	;
 }
 
 MappedEventDispatcher::Mapping::Mapping(
-	const std::string& event,
+	const IEvent* event,
 	const std::function< void(const IEvent*) >* listener)
 :	event(event),
 	listener(listener) {
@@ -49,7 +49,7 @@ MappedEventDispatcher::Mapping::operator = (Mapping&& mapping) {
 	listener = mapping.listener;
 }
 
-const std::string& 
+const IEvent* 
 MappedEventDispatcher::Mapping::getEvent() const {
 	return event;
 }
@@ -81,6 +81,12 @@ MappedEventDispatcher::MappedEventDispatcher(
 	;
 }
 
+MappedEventDispatcher::~MappedEventDispatcher() {
+	for (unsigned int i = 0; i < listeners.getKeys().getSize(); i++) {
+		delete listeners.get(listeners.getKeys().get(i));
+	}
+}
+
 MappedEventDispatcher& MappedEventDispatcher::operator = 
 	(const MappedEventDispatcher& mappedEventDispatcher) {
 	listeners = mappedEventDispatcher.listeners;
@@ -100,14 +106,14 @@ MappedEventDispatcher& MappedEventDispatcher::operator =
 void MappedEventDispatcher::preTick() {
 	/* Add the added mappings. */
 	for (unsigned int i = 0; i < addedMappings.getSize(); i++) {
-		if (!listeners.has(addedMappings.get(i).getEvent())) {
+		if (!listeners.has(addedMappings.get(i).getEvent()->getType())) {
 			listeners.put(
-				addedMappings.get(i).getEvent(),
+				addedMappings.get(i).getEvent()->getType(),
 				new sgdc::DynamicArray<
 						const std::function<
 							void(const IEvent*) >* >());
-			listeners.get(addedMappings.get(i).getEvent())->append(addedMappings.get(i).getListener());
 		}
+		listeners.get(addedMappings.get(i).getEvent()->getType())->append(addedMappings.get(i).getListener());
 	}
 	addedMappings = std::move(sgdc::DynamicArray< Mapping >());
 
@@ -115,6 +121,7 @@ void MappedEventDispatcher::preTick() {
 	for (unsigned int i = 0; i < addedEvents.getSize(); i++) {
 		events.append(addedEvents.get(i));
 	}
+	addedEvents = std::move(sgdc::DynamicArray< const IEvent* >());
 }
 
 void MappedEventDispatcher::tick(float deltaTime) {
@@ -133,15 +140,19 @@ void MappedEventDispatcher::tick(float deltaTime) {
 void MappedEventDispatcher::postTick() {
 	/* Remove the removed mappings. */
 	for (unsigned int i = 0; i < removedMappings.getSize(); i++) {
-		if (listeners.has(removedMappings.get(i).getEvent())) {
+		if (listeners.has(removedMappings.get(i).getEvent()->getType())) {
 			for (unsigned int j = 0;
-				j < listeners.get(removedMappings.get(i).getEvent())->getSize();
+				j < listeners.get(removedMappings.get(i).getEvent()->getType())->getSize();
 				j++) {
-				if (listeners.get(removedMappings.get(i).getEvent())->get(j)
+				if (listeners.get(removedMappings.get(i).getEvent()->getType())->get(j)
 					== removedMappings.get(i).getListener()) {
-					listeners.get(removedMappings.get(i).getEvent())->remove(j);
+					listeners.get(removedMappings.get(i).getEvent()->getType())->remove(j);
 					j--;
 				}
+			}
+			if (listeners.get(removedMappings.get(i).getEvent()->getType())->getSize() == 0) {
+				delete listeners.get(removedMappings.get(i).getEvent()->getType());
+				listeners.remove(removedMappings.get(i).getEvent()->getType());
 			}
 		}
 	}
@@ -156,18 +167,19 @@ void MappedEventDispatcher::postTick() {
 			}
 		}
 	}
+	removedEvents = std::move(sgdc::DynamicArray< const IEvent* >());
 }
 
 void MappedEventDispatcher::addListener(
 	const IEvent* event,
 	const std::function< void(const IEvent*) >* listener) {
-	addedMappings.append(Mapping(event->getType(), listener));
+	addedMappings.append(Mapping(event, listener));
 }
 
 void MappedEventDispatcher::removeListener(
 	const IEvent* event,
 	const std::function< void(const IEvent*) >* listener) {
-	removedMappings.append(Mapping(event->getType(), listener));
+	removedMappings.append(Mapping(event, listener));
 }
 
 void MappedEventDispatcher::addEvent(const IEvent* event) {

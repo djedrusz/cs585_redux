@@ -14,6 +14,7 @@
 #include <functional>
 #include "../containers/dynamic_array.hpp"
 #include "../containers/map.hpp"
+#include <iostream>
 
 namespace StevensDev {
 namespace sgde { // Stevens Game Development Events.
@@ -25,13 +26,13 @@ class MappedEventDispatcher : public sgds::ITickable {
 		class Mapping {
 			private:
 				/* Data member(s). */
-				std::string event;
+				const IEvent* event;
 				const std::function< void(const IEvent*) >* listener;
 			public:
 				/* Constructor(s). */
 				Mapping();
 				Mapping(
-					const std::string& event,
+					const IEvent* event,
 					const std::function< void(const IEvent*) >* listener);
 				Mapping(const Mapping& mapping);
 				Mapping(Mapping&& mapping);
@@ -39,7 +40,7 @@ class MappedEventDispatcher : public sgds::ITickable {
 				Mapping& operator = (const Mapping& mapping);
 				Mapping& operator = (Mapping&& mapping);
 				/* Function(s). */
-				const std::string& getEvent() const;
+				const IEvent* getEvent() const;
 				const std::function< void(const IEvent*) >* getListener() const;
 		};
 		/* Data member(s). */
@@ -57,6 +58,8 @@ class MappedEventDispatcher : public sgds::ITickable {
 		MappedEventDispatcher();
 		MappedEventDispatcher(const MappedEventDispatcher& mappedEventDispatcher);
 		MappedEventDispatcher(MappedEventDispatcher&& mappedEventDispatcher);
+		/* Destructor(s). */
+		~MappedEventDispatcher();
 		/* Operator(s). */
 		MappedEventDispatcher& operator = (const MappedEventDispatcher& mappedEventDispatcher);
 		MappedEventDispatcher& operator = (MappedEventDispatcher&& mappedEventDispatcher);
