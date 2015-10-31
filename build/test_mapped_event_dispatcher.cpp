@@ -82,10 +82,63 @@ TEST(MappedEventDispatcher, General) {
 	EXPECT_EQ(testListener.getTestEventCount(), 24);
 }
 
-TEST(MappedEventDispatcher, AddListenerEvent) {
+TEST(MappedEventDispatcher, AddListenerDispatch) {
 	StevensDev::sgde::MappedEventDispatcher mappedEventDispatcher;
 	ATestEvent testEvent;
 	ATestListener testListener;
 	std::function< void(const StevensDev::sgde::IEvent*) > testEventCallback =
 		std::bind(&ATestListener::onTestEvent, &testListener, std::placeholders::_1);
+
+	mappedEventDispatcher.addListener(&testEvent, &testEventCallback);
+	mappedEventDispatcher.preTick();
+	mappedEventDispatcher.tick(0);
+	mappedEventDispatcher.postTick();
+
+	mappedEventDispatcher.dispatch(&testEvent);
+
+	EXPECT_EQ(testListener.getTestEventCount(), 1);
+}
+
+TEST(MappedEventDispatcher, RemoveListener) {
+	StevensDev::sgde::MappedEventDispatcher mappedEventDispatcher;
+	ATestEvent testEvent;
+	ATestListener testListener;
+	std::function< void(const StevensDev::sgde::IEvent*) > testEventCallback =
+		std::bind(&ATestListener::onTestEvent, &testListener, std::placeholders::_1);
+
+	mappedEventDispatcher.addListener(&testEvent, &testEventCallback);
+	mappedEventDispatcher.preTick();
+	mappedEventDispatcher.tick(0);
+	mappedEventDispatcher.postTick();
+
+	mappedEventDispatcher.removeListener(&testEvent, &testEventCallback);
+	mappedEventDispatcher.preTick();
+	mappedEventDispatcher.tick(0);
+	mappedEventDispatcher.postTick();
+
+	mappedEventDispatcher.dispatch(&testEvent);
+	
+	EXPECT_EQ(testListener.getTestEventCount(), 0);
+}
+
+TEST(MappedEventDispatcher, MultipleListenersMultipleDispatch) {
+	StevensDev::sgde::MappedEventDispatcher mappedEventDispatcher;
+	ATestEvent testEvent;
+	ATestValueEvent testValueEvent(23);
+	ATestListener testListener;
+	std::function< void(const StevensDev::sgde::IEvent*) > testEventCallback =
+		std::bind(&ATestListener::onTestEvent, &testListener, std::placeholders::_1);
+	std::function< void(const StevensDev::sgde::IEvent*) > testValueEventCallback =
+		std::bind(&ATestListener::onTestValueEvent, &testListener, std::placeholders::_1);
+
+	mappedEventDispatcher.addListener(&testEvent, &testEventCallback);
+	mappedEventDispatcher.addListener(&testValueEvent, &testValueEventCallback);
+	mappedEventDispatcher.preTick();
+	mappedEventDispatcher.tick(0);
+	mappedEventDispatcher.postTick();
+
+	mappedEventDispatcher.dispatch(&testEvent);
+	mappedEventDispatcher.dispatch(&testValueEvent);
+	
+	EXPECT_EQ(testListener.getTestEventCount(), 24);
 }

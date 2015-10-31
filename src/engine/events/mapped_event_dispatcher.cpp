@@ -100,6 +100,12 @@ MappedEventDispatcher& MappedEventDispatcher::operator =
 }
 
 void MappedEventDispatcher::preTick() {
+}
+
+void MappedEventDispatcher::tick(float deltaTime) {
+}
+
+void MappedEventDispatcher::postTick() {
 	/* Add the added mappings. */
 	for (unsigned int i = 0; i < addedMappings.getSize(); i++) {
 		if (!listeners.has(addedMappings.get(i).getEvent()->getType())) {
@@ -112,12 +118,7 @@ void MappedEventDispatcher::preTick() {
 		listeners.get(addedMappings.get(i).getEvent()->getType())->append(addedMappings.get(i).getListener());
 	}
 	addedMappings = std::move(sgdc::DynamicArray< Mapping >());
-}
-
-void MappedEventDispatcher::tick(float deltaTime) {
-}
-
-void MappedEventDispatcher::postTick() {
+	
 	/* Remove the removed mappings. */
 	for (unsigned int i = 0; i < removedMappings.getSize(); i++) {
 		if (listeners.has(removedMappings.get(i).getEvent()->getType())) {
