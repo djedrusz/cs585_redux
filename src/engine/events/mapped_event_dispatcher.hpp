@@ -3,7 +3,6 @@
 
 	mapped_event_dispatcher.hpp
 	Declaration of the "MappedEventDispatcher" class.
-	This will likely replace the current "EventDispatcher" class.
 */
 
 #ifndef INCLUDED_MAPPED_EVENT_DISPATCHER
@@ -58,8 +57,10 @@ class MappedEventDispatcher : public sgds::ITickable {
 		/* Destructor(s). */
 		~MappedEventDispatcher();
 		/* Operator(s). */
-		MappedEventDispatcher& operator = (const MappedEventDispatcher& mappedEventDispatcher);
-		MappedEventDispatcher& operator = (MappedEventDispatcher&& mappedEventDispatcher);
+		MappedEventDispatcher& operator = 
+			(const MappedEventDispatcher& mappedEventDispatcher);
+		MappedEventDispatcher& operator = 
+			(MappedEventDispatcher&& mappedEventDispatcher);
 		/* Function(s). */
 		void preTick();
 		void tick(float deltaTime);

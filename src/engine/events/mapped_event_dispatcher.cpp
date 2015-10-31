@@ -3,7 +3,6 @@
 
 	mapped_event_dispatcher.cpp
 	Implemention of the "MappedEventDispatcher" class.
-	This will likely replace the current "EventDispatcher" class.
 */
 
 #include "mapped_event_dispatcher.hpp"
@@ -115,10 +114,11 @@ void MappedEventDispatcher::postTick() {
 						const std::function<
 							void(const IEvent*) >* >());
 		}
-		listeners.get(addedMappings.get(i).getEvent()->getType())->append(addedMappings.get(i).getListener());
+		listeners.get(addedMappings.get(i).getEvent()->getType())
+			->append(addedMappings.get(i).getListener());
 	}
 	addedMappings = std::move(sgdc::DynamicArray< Mapping >());
-	
+
 	/* Remove the removed mappings. */
 	for (unsigned int i = 0; i < removedMappings.getSize(); i++) {
 		if (listeners.has(removedMappings.get(i).getEvent()->getType())) {
