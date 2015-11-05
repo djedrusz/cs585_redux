@@ -22,16 +22,18 @@ Sounds& Sounds::getInstance() {
 	return sounds;
 }
 
-void Sounds::onSoundEvent(const sgde::IEvent* soundEvent) {
-	std::cout << "THIS SHOULD BE HIT." << std::endl;
+void Sounds::onSoundEvent(const sgde::IEvent* event) {
+	const sgde::SoundEvent* soundEvent = (const sgde::SoundEvent*)event;
 	
-	const sgde::SoundEvent* se = 
-				dynamic_cast< const sgde::SoundEvent* >(soundEvent);;
-	
-	soundBuffers[0].loadFromFile(se->getPath());
-	sounds[0].setBuffer(soundBuffers[0]);
-	sounds[0].play();
-	while(1);
+	/* Simple iteration for now. */
+	for (unsigned int i = 0; i < MAX_SOUNDS; i++) {
+		if (sounds[i].getStatus() == sf::Sound::Status::Stopped) {
+			soundBuffers[i].loadFromFile(soundEvent->getPath());
+			sounds[i].setBuffer(soundBuffers[i]);
+			sounds[i].play();
+			break;
+		}
+	}
 }
 
 }

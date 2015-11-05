@@ -14,28 +14,29 @@
 int main(int argc, char** argv) {
 	using namespace StevensDev;
 
-	//static sound::Sounds& sounds = sound::Sounds::getInstance();
-	
-	//std::function< void(const sgde::IEvent*) > soundEventCallback =
-		/*std::bind(
+	std::function< void(const sgde::IEvent*) > soundEventCallback =
+		std::bind(
 			&sound::Sounds::onSoundEvent, 
-			//&sounds,
-			std::placeholders::_1);*/
-		//&sound::Sounds::onSoundEvent;
+			&sound::Sounds::getInstance(),
+			std::placeholders::_1);
+		&sound::Sounds::onSoundEvent;
 
-	//sgde::SoundEvent soundEvent("../sounds/cannon.wav");
+	sgde::SoundEvent soundEvent("../sounds/cannon.wav");
 
-	/*sgde::EventBus::getDispatcher().addListener(
+	sgde::EventBus::getDispatcher().addListener(
 		&soundEvent, 
 		&soundEventCallback);
-	sgde::EventBus::getDispatcher().preTick();
-	sgde::EventBus::getDispatcher().tick(0);
-	sgde::EventBus::getDispatcher().postTick();
 
-	sgde::EventBus::getDispatcher().dispatch(&soundEvent);
-	soundEventCallback(&soundEvent);*/
+	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
+	sgds::Scene::getInstance().addTickable(&sgde::EventBus::getDispatcher());
 
-	sound::Sounds::getInstance().onSoundEvent(NULL);
+	while(1) {
+		sgds::Scene::getInstance().tick();
+
+		if (sgdi::Input::getInstance().wasPressed(sgdi::Input::Type::A)) {
+			sgde::EventBus::getDispatcher().dispatch(&soundEvent);
+		}
+	}
 
 	return 0;
 }
