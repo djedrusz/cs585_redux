@@ -51,6 +51,8 @@ add_executable(test_actor_controller
 ../src/engine/rendering/renderer.cpp
 ../src/engine/scene/scene.cpp
 ../src/engine/input/input.cpp
+../src/engine/events/mapped_event_dispatcher.cpp
+../src/engine/events/event_bus.cpp
 test_actor_controller.cpp)
 target_link_libraries(test_actor_controller ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_actor_controller ${SFML_LIBRARIES})

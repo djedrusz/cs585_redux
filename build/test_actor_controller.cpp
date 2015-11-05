@@ -5,12 +5,14 @@
 */
 
 #include <iostream>
-	
+
 #include "../src/engine/rendering/renderer.hpp"
 #include "../src/engine/scene/scene.hpp"
 #include "../src/engine/input/input.hpp"
 #include "../src/engine/scene/iactor.hpp"
 #include "../src/engine/scene/icontroller.hpp"
+#include "../src/engine/events/ievent.hpp"
+#include "../src/engine/events/event_bus.hpp"
 
 using namespace StevensDev;
 
@@ -33,6 +35,11 @@ class BrownianController : public sgds::IController {
 		virtual void possess(sgds::IActor* actor) {
 			this->actor = actor;
 		}
+		/* Function(s). */
+		void onMoveEvent(const sgde::IEvent* event) {
+			actor->getRenderableSprite()
+				->setPosition(127, 127);
+		}
 };
 
 class BrownianActor : public sgds::IActor {
@@ -48,6 +55,20 @@ class BrownianActor : public sgds::IActor {
 		}
 		virtual sgds::ICollidable* getCollidable() {
 			return NULL;
+		}
+};
+
+class MoveEvent : public sgde::IEvent {
+	private:
+		/* Data member(s). */
+		const std::string type = "move";
+	public:
+		/* Constructor(s). */
+		MoveEvent() {};
+		/* Inherited function(s). */
+		// IEvent.
+		virtual const std::string& getType() const {
+			return type;
 		}
 };
 
@@ -70,16 +91,27 @@ int main(int argc, char** argv) {
 	/* Renderables. */
 	renderer.addRenderableSprite(brownianActor.getRenderableSprite());
 
+	/* Events. */
+	MoveEvent moveEvent;
+	/* Callbacks. */
+	std::function< void(const sgde::IEvent*) > moveEventCallback =
+		std::bind(&BrownianController::onMoveEvent, &brownianController, std::placeholders::_1);
+	sgde::EventBus::getDispatcher().addListener(&moveEvent, &moveEventCallback);
+
 	/* Scene. */
 	// Input.
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
 	// Controllers.
 	sgds::Scene::getInstance().addTickable(&brownianController);
+	// Event bus.
+	sgds::Scene::getInstance().addTickable(&sgde::EventBus::getDispatcher());
 
 	while (renderer.isActive()) {
 		sgds::Scene::getInstance().tick();
 
-		std::cout << "Tick" << std::endl;
+		if (sgdi::Input::getInstance().wasPressed(sgdi::Input::Type::A)) {
+			sgde::EventBus::getDispatcher().dispatch(&moveEvent);
+		}
 
 		renderer.draw();
 	}
