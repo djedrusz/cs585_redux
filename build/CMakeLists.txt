@@ -27,6 +27,21 @@ add_executable(test_renderer ../src/engine/data/json_value.cpp ../src/engine/dat
 target_link_libraries(test_renderer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_renderer ${SFML_LIBRARIES})
 
+project(test_sound)
+set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
+find_package(SFML 2.1.0 REQUIRED system window graphics network audio)
+include_directories(${SFML_INCLUDE_DIR})
+add_executable(test_sound 
+../src/engine/input/input.cpp
+../src/engine/scene/scene.cpp
+../src/engine/events/sound_event.cpp
+../src/engine/sound/sounds.cpp
+../src/engine/events/mapped_event_dispatcher.cpp
+../src/engine/events/event_bus.cpp
+test_sound.cpp)
+target_link_libraries(test_sound ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(test_sound ${SFML_LIBRARIES})
+
 project(test_scene_graph)
 add_definitions(-DNXN_SCENE_GRAPH_TESTING)
 add_executable(test_scene_graph
