@@ -14,18 +14,18 @@
 int main(int argc, char** argv) {
 	using namespace StevensDev;
 
-	static sound::Sounds& sounds = sound::Sounds::getInstance();
+	//static sound::Sounds& sounds = sound::Sounds::getInstance();
 	
-	std::function< void(const sgde::IEvent*) > soundEventCallback =
+	//std::function< void(const sgde::IEvent*) > soundEventCallback =
 		/*std::bind(
 			&sound::Sounds::onSoundEvent, 
 			//&sounds,
 			std::placeholders::_1);*/
-		&sound::Sounds::onSoundEvent;
+		//&sound::Sounds::onSoundEvent;
 
-	sgde::SoundEvent soundEvent("../sounds/cannon.wav");
+	//sgde::SoundEvent soundEvent("../sounds/cannon.wav");
 
-	sgde::EventBus::getDispatcher().addListener(
+	/*sgde::EventBus::getDispatcher().addListener(
 		&soundEvent, 
 		&soundEventCallback);
 	sgde::EventBus::getDispatcher().preTick();
@@ -33,10 +33,9 @@ int main(int argc, char** argv) {
 	sgde::EventBus::getDispatcher().postTick();
 
 	sgde::EventBus::getDispatcher().dispatch(&soundEvent);
-	soundEventCallback(&soundEvent);
+	soundEventCallback(&soundEvent);*/
 
-	while(1);
-
+	sound::Sounds::getInstance().onSoundEvent(NULL);
 
 	return 0;
 }

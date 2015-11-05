@@ -29,7 +29,7 @@ class Sounds {
 	public:
 		/* Function(s). */
 		static Sounds& getInstance();
-		static void onSoundEvent(const sgde::IEvent* soundEvent);
+		void onSoundEvent(const sgde::IEvent* soundEvent);
 };
 
 }
