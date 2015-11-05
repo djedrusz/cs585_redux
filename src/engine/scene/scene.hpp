@@ -27,6 +27,8 @@ class Scene {
 		/* Data member(s). */
 		time_t previousTime = time(NULL); // The previous time.
 		sgdc::DynamicArray< ITickable* > tickables; // The tickables.
+		sgdc::DynamicArray< ITickable* > addedTickables;
+		sgdc::DynamicArray< ITickable* > removedTickables;
 		sgdr::Renderer* renderer; // The renderer.
 	public:
 		/* Function(s). */
