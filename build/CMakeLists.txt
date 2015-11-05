@@ -42,6 +42,19 @@ test_sound.cpp)
 target_link_libraries(test_sound ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_sound ${SFML_LIBRARIES})
 
+project(test_actor_controller)
+set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
+find_package(SFML 2.1.0 REQUIRED system window graphics network audio)
+include_directories(${SFML_INCLUDE_DIR})
+add_executable(test_actor_controller
+../src/engine/rendering/renderable_sprite.cpp
+../src/engine/rendering/renderer.cpp
+../src/engine/scene/scene.cpp
+../src/engine/input/input.cpp
+test_actor_controller.cpp)
+target_link_libraries(test_actor_controller ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(test_actor_controller ${SFML_LIBRARIES})
+
 project(test_scene_graph)
 add_definitions(-DNXN_SCENE_GRAPH_TESTING)
 add_executable(test_scene_graph
