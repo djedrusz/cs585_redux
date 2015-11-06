@@ -56,6 +56,9 @@ class BrownianActor : public sgds::IActor {
 		virtual sgds::ICollidable* getCollidable() {
 			return NULL;
 		}
+		virtual sgde::MappedEventDispatcher* getEventDispatcher() {
+			return NULL;
+		}
 };
 
 class MoveEvent : public sgde::IEvent {

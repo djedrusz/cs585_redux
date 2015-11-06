@@ -10,7 +10,7 @@
 #include "../containers/dynamic_array.hpp"
 #include "../events/sound_event.hpp"
 
-#define MAX_SOUNDS 20 // The maximum amount of concurrent sounds.
+#define MAX_SOUNDS 100 // The maximum amount of concurrent sounds.
 
 namespace StevensDev {
 namespace sound {
