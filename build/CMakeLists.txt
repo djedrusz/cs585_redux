@@ -15,8 +15,7 @@ test_event_dispatcher.cpp
 test_event_bus.cpp
 ../src/engine/events/mapped_event_dispatcher.cpp
 test_mapped_event_dispatcher.cpp
-../src/engine/assets/texture_manager.cpp
-test_texture_manager.cpp)
+../src/engine/assets/texture_manager.cpp)
 target_link_libraries(tests gtest gtest_main)
 target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(tests ${SFML_LIBRARIES})
