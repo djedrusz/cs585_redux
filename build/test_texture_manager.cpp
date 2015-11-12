@@ -7,8 +7,8 @@
 #include "../gtest/include/gtest/gtest.h"
 #include "../src/engine/assets/texture_manager.hpp"
 
-TEST(TextureManager, addRemove) {
-	/*StevensDev::sgda::TextureManager::add(
+/*TEST(TextureManager, addRemove) {
+	StevensDev::sgda::TextureManager::add(
 		"smiley", "../textures/smiley.png");
 
 	EXPECT_GT(
@@ -18,7 +18,7 @@ TEST(TextureManager, addRemove) {
 	EXPECT_GT(
 		StevensDev::sgda::TextureManager::get(
 			"smiley").getSize().y,
-		0);*/
+		0);
 	// Removed because Travis CI doesn't download the images or 
 	// something stupid like that.
-}
+}*/
