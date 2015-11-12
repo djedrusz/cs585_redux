@@ -8,17 +8,20 @@
 #include "../src/engine/rendering/renderer.hpp"
 #include "../src/engine/input/input.hpp"
 #include "../src/engine/scene/scene.hpp"
+#include "../src/engine/assets/texture_manager.hpp"
 #include <iostream>
 
 int main() {
 	using namespace StevensDev;
 
+	/* Textures. */
+	sgda::TextureManager::add("smiley", "../textures/smiley_small.png");
+
 	/* Rendering. */
 	sgdr::Renderer renderer;
-	renderer.addTexture("smiley", "../textures/smiley_small.png");
 
 	sgdr::RenderableSprite renderableSprite;
-	renderableSprite.getSprite().setTexture(renderer.getTexture("smiley"));
+	renderableSprite.getSprite().setTexture(sgda::TextureManager::get("smiley"));
 
 	renderer.addRenderableSprite(&renderableSprite);
 

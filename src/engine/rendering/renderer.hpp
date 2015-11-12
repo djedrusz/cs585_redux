@@ -23,7 +23,6 @@ class Renderer {
 	private:
 		/* Data member(s). */
 		sf::RenderWindow window; // Window.
-		sgdc::Map< sf::Texture > textures; // Map of textures.
 		sgdc::DynamicArray< RenderableSprite* > renderableSprites; // List of renderable sprites.
 	public:
 		/* Constructor(s). */
@@ -36,8 +35,6 @@ class Renderer {
 		/* Function(s). */
 		void setupWindow(unsigned int width, unsigned int height); // Set up the SFML window.
 		bool isActive(); // Return whether or not the window is active.
-		void addTexture(const std::string& name, const std::string& path); // Add a texture.
-		const sf::Texture& getTexture(const std::string& name); // Get a texture.
 		void addRenderableSprite(RenderableSprite* renderableSprite); // Add a renderable sprite.
 		void removeRenderableSprite(RenderableSprite* renderableSprite); // Remove a renderable sprite.
 		void draw(); // Render the renderable sprites.

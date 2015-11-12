@@ -17,27 +17,23 @@ Renderer::Renderer() {
 
 /* Copy constructor. */
 Renderer::Renderer(const Renderer& renderer)
-:	textures(renderer.textures),
-	renderableSprites(renderer.renderableSprites) {
+:	renderableSprites(renderer.renderableSprites) {
 	;
 }
 
 /* Move constructor. */
 Renderer::Renderer(Renderer&& renderer)
-:	textures(std::move(renderer.textures)),
-	renderableSprites(std::move(renderer.renderableSprites)) {
+:	renderableSprites(std::move(renderer.renderableSprites)) {
 	;
 }
 
 /* Copy assignment operator. */
 Renderer& Renderer::operator = (const Renderer& renderer) {
-	textures = renderer.textures;
 	renderableSprites = renderer.renderableSprites;
 }
 
 /* Move assignment operator. */
 Renderer& Renderer::operator = (Renderer&& renderer) {
-	textures = std::move(renderer.textures);
 	renderableSprites = std::move(renderer.renderableSprites);
 }
 
@@ -51,19 +47,6 @@ bool Renderer::isActive() {
 	sf::Event event;
 	window.pollEvent(event);
 	return (event.type != sf::Event::Closed);
-}
-
-/* Add a texture. */
-void Renderer::addTexture(const std::string& name, const std::string& path) {
-	sf::Texture texture;
-	if (texture.loadFromFile(path)) {
-		textures.put(name, std::move(texture));
-	}
-}
-
-/* Get a texture. */
-const sf::Texture& Renderer::getTexture(const std::string& name) {
-	return textures.get(name);
 }
 
 /* Add a renderable sprite. */

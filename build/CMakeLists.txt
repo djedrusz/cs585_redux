@@ -14,7 +14,9 @@ test_event_dispatcher.cpp
 ../src/engine/events/event_bus.cpp
 test_event_bus.cpp
 ../src/engine/events/mapped_event_dispatcher.cpp
-test_mapped_event_dispatcher.cpp)
+test_mapped_event_dispatcher.cpp
+../src/engine/assets/texture_manager.cpp
+test_texture_manager.cpp)
 target_link_libraries(tests gtest gtest_main)
 target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(tests ${SFML_LIBRARIES})
@@ -23,7 +25,8 @@ project(test_renderer)
 set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
 find_package(SFML 2.1.0 REQUIRED system window graphics network audio)
 include_directories(${SFML_INCLUDE_DIR})
-add_executable(test_renderer ../src/engine/data/json_value.cpp ../src/engine/data/json_parser.cpp ../src/engine/input/input.cpp ../src/engine/rendering/renderable_sprite.cpp ../src/engine/rendering/renderer.cpp ../src/engine/input/input.cpp ../src/engine/scene/scene.cpp test_renderer_visual.cpp)
+add_executable(test_renderer ../src/engine/data/json_value.cpp ../src/engine/data/json_parser.cpp ../src/engine/input/input.cpp ../src/engine/rendering/renderable_sprite.cpp ../src/engine/rendering/renderer.cpp ../src/engine/input/input.cpp ../src/engine/scene/scene.cpp test_renderer_visual.cpp
+../src/engine/assets/texture_manager.cpp)
 target_link_libraries(test_renderer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_renderer ${SFML_LIBRARIES})
 
@@ -53,6 +56,7 @@ add_executable(test_actor_controller
 ../src/engine/input/input.cpp
 ../src/engine/events/mapped_event_dispatcher.cpp
 ../src/engine/events/event_bus.cpp
+../src/engine/assets/texture_manager.cpp
 test_actor_controller.cpp)
 target_link_libraries(test_actor_controller ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(test_actor_controller ${SFML_LIBRARIES})

@@ -13,6 +13,7 @@
 #include "../src/engine/scene/icontroller.hpp"
 #include "../src/engine/events/ievent.hpp"
 #include "../src/engine/events/event_bus.hpp"
+#include "../src/engine/assets/texture_manager.hpp"
 
 using namespace StevensDev;
 
@@ -76,16 +77,18 @@ class MoveEvent : public sgde::IEvent {
 };
 
 int main(int argc, char** argv) {
+	/* Textures. */
+	sgda::TextureManager::add("smiley", "../textures/smiley_small.png");
+
 	/* Renderer. */
 	sgdr::Renderer renderer;
-	renderer.addTexture("smiley", "../textures/smiley_small.png");
 	renderer.setupWindow(256, 256);
 
 	/* Actors. */
 	BrownianActor brownianActor;
 	brownianActor.getRenderableSprite()
 		->getSprite()
-		.setTexture(renderer.getTexture("smiley"));
+		.setTexture(sgda::TextureManager::get("smiley"));
 
 	/* Controllers. */
 	BrownianController brownianController;
