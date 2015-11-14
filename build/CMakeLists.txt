@@ -16,7 +16,6 @@ test_event_bus.cpp
 ../src/engine/events/mapped_event_dispatcher.cpp
 test_mapped_event_dispatcher.cpp
 ../src/engine/assets/texture_manager.cpp
-../src/engine/containers/smart_map.cpp
 test_smart_map.cpp)
 target_link_libraries(tests gtest gtest_main)
 target_link_libraries(tests ${CMAKE_THREAD_LIBS_INIT})
@@ -24,7 +23,6 @@ target_link_libraries(tests ${SFML_LIBRARIES})
 
 project(test_smart_map_visual)
 add_executable(test_smart_map_visual
-../src/engine/containers/smart_map.cpp
 test_smart_map_visual.cpp)
 
 project(test_renderer)
@@ -73,3 +71,33 @@ add_executable(test_scene_graph
 ../src/engine/scene/rectangle_bounds.cpp
 ../src/engine/scene/nxn_scene_graph.cpp
 test_scene_graph_visual.cpp)
+
+project(assignment8)
+set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
+find_package(SFML 2.1.0 REQUIRED system window graphics network audio)
+include_directories(${SFML_INCLUDE_DIR})
+add_executable(assignment8
+../src/engine/assets/texture_manager.cpp
+
+../src/engine/events/mapped_event_dispatcher.cpp
+
+../src/engine/input/input.cpp
+
+../src/engine/rendering/renderable_sprite.cpp
+../src/engine/rendering/renderer.cpp
+
+../src/engine/scene/nxn_scene_graph.cpp
+../src/engine/scene/rectangle_bounds.cpp
+../src/engine/scene/scene.cpp
+
+../src/game/actors/move_to_box.cpp
+../src/game/actors/player_controlled_box.cpp
+
+../src/game/collidables/collidable_box.cpp
+
+../src/game/controllers/move_to_controller.cpp
+../src/game/controllers/player_controller.cpp
+
+assignment8.cpp)
+target_link_libraries(assignment8 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(assignment8 ${SFML_LIBRARIES})

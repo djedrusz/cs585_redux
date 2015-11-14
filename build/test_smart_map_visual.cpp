@@ -43,6 +43,6 @@ int main(int argc, char** argv) {
 	smartMap.remove("ab");
 	smartMap.print();
 
-	std::cout << "Working? -- " << working << std::endl;
+	std::cout << "Working? -- " << (working?"yes":"no") << std::endl;
 	return 0;
 }

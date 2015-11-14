@@ -1,5 +1,7 @@
 /*
 	Dominik Jedruszczak
+
+	Game Engine
 */
 
 #ifndef INCLUDED_SMART_MAP
@@ -33,13 +35,13 @@ class SmartMap {
 			public:
 				/* Constructor(s). */
 				SmartMapNode(SmartMapNode* parent);
-				SmartMapNode(const SmartMapNode& smartMapNode);
-				SmartMapNode(SmartMapNode&& smartMapNode);
+				SmartMapNode(const SmartMapNode& smartSmartMapNode);
+				SmartMapNode(SmartMapNode&& smartSmartMapNode);
 				/* Destructor(s). */
 				~SmartMapNode();
 				/* Operator(s). */
-				SmartMapNode& operator = (const SmartMapNode& smartMapNode);
-				SmartMapNode& operator = (SmartMapNode&& smartMapNode);
+				SmartMapNode& operator = (const SmartMapNode& smartSmartMapNode);
+				SmartMapNode& operator = (SmartMapNode&& smartSmartMapNode);
 				/* Function(s). */
 				SmartMapNode* getParent();
 				// Value.
@@ -65,13 +67,13 @@ class SmartMap {
 	public:
 		/* Constructor(s). */
 		SmartMap();
-		SmartMap(const SmartMap& smartMap);
-		SmartMap(SmartMap&& smartMap);
+		SmartMap(const SmartMap& smartSmartMap);
+		SmartMap(SmartMap&& smartSmartMap);
 		/* Destructor(s). */
 		~SmartMap();
 		/* Operator(s). */
-		SmartMap& operator = (const SmartMap& smartMap);
-		SmartMap& operator = (SmartMap&& smartMap);
+		SmartMap& operator = (const SmartMap& smartSmartMap);
+		SmartMap& operator = (SmartMap&& smartSmartMap);
 		/* Function(s). */
 		void put(const std::string& key, const T& value);
 		void putIfAbsent(const std::string& key, const T& value);
@@ -100,13 +102,13 @@ SmartMap< T >::SmartMapNode::SmartMapNode(SmartMapNode* parent)
 }
 
 template< typename T >
-SmartMap< T >::SmartMapNode::SmartMapNode(const SmartMapNode& smartMapNode)
+SmartMap< T >::SmartMapNode::SmartMapNode(const SmartMapNode& smartSmartMapNode)
 :	parent(parent),
-	b_hasValue(smartMapNode.b_hasValue),
-	value(smartMapNode.value),
-	b_hasChildren(smartMapNode.b_hasChildren) {
+	b_hasValue(smartSmartMapNode.b_hasValue),
+	value(smartSmartMapNode.value),
+	b_hasChildren(smartSmartMapNode.b_hasChildren) {
 	for (unsigned int i = 0; i < SMART_MAP_NODE_NUM_CHILDREN; i++) {
-		children[i] = smartMapNode.children[i];
+		children[i] = smartSmartMapNode.children[i];
 	}
 #ifdef SMART_MAP_DEBUG
 	std::cout << "SmartMapNode copy construction." << std::endl;
@@ -114,13 +116,13 @@ SmartMap< T >::SmartMapNode::SmartMapNode(const SmartMapNode& smartMapNode)
 }
 
 template< typename T >
-SmartMap< T >::SmartMapNode::SmartMapNode(SmartMapNode&& smartMapNode)
+SmartMap< T >::SmartMapNode::SmartMapNode(SmartMapNode&& smartSmartMapNode)
 :	parent(std::move(parent)),
-	b_hasValue(std::move(smartMapNode.b_hasValue)),
-	value(std::move(smartMapNode.value)),
-	b_hasChildren(std::move(smartMapNode.b_hasChildren)) {
+	b_hasValue(std::move(smartSmartMapNode.b_hasValue)),
+	value(std::move(smartSmartMapNode.value)),
+	b_hasChildren(std::move(smartSmartMapNode.b_hasChildren)) {
 	for (unsigned int i = 0; i < SMART_MAP_NODE_NUM_CHILDREN; i++) {
-		children[i] = std::move(smartMapNode.children[i]);
+		children[i] = std::move(smartSmartMapNode.children[i]);
 	}
 #ifdef SMART_MAP_DEBUG
 	std::cout << "SmartMapNode move construction." << std::endl;
@@ -141,25 +143,25 @@ SmartMap< T >::SmartMapNode::~SmartMapNode() {
 
 template< typename T >
 typename SmartMap< T >::SmartMapNode& SmartMap< T >::SmartMapNode::
-operator = (const SmartMap< T >::SmartMapNode& smartMapNode) {
-	parent = smartMapNode.parent;
-	b_hasValue = smartMapNode.b_hasValue;
-	value = smartMapNode.value;
-	b_hasChildren = smartMapNode.b_hasChildren;
+operator = (const SmartMap< T >::SmartMapNode& smartSmartMapNode) {
+	parent = smartSmartMapNode.parent;
+	b_hasValue = smartSmartMapNode.b_hasValue;
+	value = smartSmartMapNode.value;
+	b_hasChildren = smartSmartMapNode.b_hasChildren;
 	for (unsigned int i = 0; i < SMART_MAP_NODE_NUM_CHILDREN; i++) {
-		children[i] = smartMapNode.children[i];
+		children[i] = smartSmartMapNode.children[i];
 	}
 }
 
 template< typename T >
 typename SmartMap< T >::SmartMapNode& SmartMap< T >::SmartMapNode::
-operator = (SmartMap< T >::SmartMapNode&& smartMapNode) {
-	parent = std::move(smartMapNode.parent);
-	b_hasValue = std::move(smartMapNode.b_hasValue);
-	value = std::move(smartMapNode.value);
-	b_hasChildren = smartMapNode.b_hasChildren;
+operator = (SmartMap< T >::SmartMapNode&& smartSmartMapNode) {
+	parent = std::move(smartSmartMapNode.parent);
+	b_hasValue = std::move(smartSmartMapNode.b_hasValue);
+	value = std::move(smartSmartMapNode.value);
+	b_hasChildren = smartSmartMapNode.b_hasChildren;
 	for (unsigned int i = 0; i < SMART_MAP_NODE_NUM_CHILDREN; i++) {
-		children[i] = std::move(smartMapNode.children[i]);
+		children[i] = std::move(smartSmartMapNode.children[i]);
 	}
 }
 
@@ -259,18 +261,18 @@ SmartMap< T >::SmartMap() {
 }
 
 template< typename T >
-SmartMap< T >::SmartMap(const SmartMap& smartMap)
-:	root(smartMap.root),
-	keys(smartMap.keys),
-	values(smartMap.values) {
+SmartMap< T >::SmartMap(const SmartMap& smartSmartMap)
+:	root(smartSmartMap.root),
+	keys(smartSmartMap.keys),
+	values(smartSmartMap.values) {
 	;
 }
 
 template< typename T >
-SmartMap< T >::SmartMap(SmartMap&& smartMap)
-:	root(std::move(smartMap.root)),
-	keys(std::move(smartMap.keys)),
-	values(std::move(smartMap.values)) {
+SmartMap< T >::SmartMap(SmartMap&& smartSmartMap)
+:	root(std::move(smartSmartMap.root)),
+	keys(std::move(smartSmartMap.keys)),
+	values(std::move(smartSmartMap.values)) {
 	;
 }
 
@@ -280,17 +282,17 @@ SmartMap< T >::~SmartMap() {
 }
 
 template< typename T >
-SmartMap< T >& SmartMap< T >::SmartMap::operator = (const SmartMap& smartMap) {
-	root = smartMap.root;
-	keys = smartMap.keys;
-	values = smartMap.values;
+SmartMap< T >& SmartMap< T >::SmartMap::operator = (const SmartMap& smartSmartMap) {
+	root = smartSmartMap.root;
+	keys = smartSmartMap.keys;
+	values = smartSmartMap.values;
 }
 
 template< typename T >
-SmartMap< T >& SmartMap< T >::SmartMap::operator = (SmartMap&& smartMap) {
-	root = std::move(smartMap.root);
-	keys = std::move(smartMap.keys);
-	values = std::move(smartMap.values);
+SmartMap< T >& SmartMap< T >::SmartMap::operator = (SmartMap&& smartSmartMap) {
+	root = std::move(smartSmartMap.root);
+	keys = std::move(smartSmartMap.keys);
+	values = std::move(smartSmartMap.values);
 }
 
 template< typename T >
