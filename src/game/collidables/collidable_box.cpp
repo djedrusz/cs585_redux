@@ -7,8 +7,9 @@
 namespace StevensDev {
 namespace mgcl { // My Game Collidables.
 
-CollidableBox::CollidableBox(/*sgds::IActor* actor*/)
-:	rectangleBounds(0, 0, 64, 64) {
+CollidableBox::CollidableBox(/*const std::string& actorKey*/)
+:	/*actorKey(actorKey),*/
+	rectangleBounds(0, 0, 64, 64) {
 	;
 }
 
@@ -18,8 +19,8 @@ void CollidableBox::moveBounds(float x, float y) {
 		rectangleBounds.getY() + y);
 }
 
-/*const sgds::IActor* CollidableBox::getActor() {
-	return nullptr;
+/*const std::string& CollidableBox::getActorKey() {
+	return actorKey;
 }*/
 
 const sgds::RectangleBounds& CollidableBox::getBounds() const {

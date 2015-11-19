@@ -13,6 +13,8 @@ namespace mgcl { // My Game Collidables.
 /* A collidable box. */
 class CollidableBox : public sgds::ICollidable {
 	private:
+		//std::string actorKey;
+		//int x;
 		sgds::RectangleBounds rectangleBounds;
 		unsigned short flags;
 	public:
@@ -22,6 +24,7 @@ class CollidableBox : public sgds::ICollidable {
 		void moveBounds(float x, float y);
 		/* Inherited function(s). */
 		// Collidable.
+		//virtual const sgds::IActor* getActor();
 		virtual const sgds::RectangleBounds& getBounds() const;
 		virtual unsigned short getFlags() const;
 		virtual bool canCollide(const unsigned short flags) const;

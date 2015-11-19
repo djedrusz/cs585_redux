@@ -15,7 +15,7 @@ class SimpleCollidable : public StevensDev::sgds::ICollidable {
 		StevensDev::sgds::RectangleBounds& bounds;
 	public:
 		SimpleCollidable(StevensDev::sgds::RectangleBounds rectangleBounds, unsigned short flags) : bounds(rectangleBounds), flags(flags) { ; };
-		const StevensDev::sgds::IActor* getActor() { return nullptr; }
+		const std::string& getActorKey() { return ""; }
 		StevensDev::sgds::RectangleBounds& getBoundss() { return bounds; };
 		const StevensDev::sgds::RectangleBounds& getBounds() const { return bounds; };
 		unsigned short getFlags() const { return flags; };

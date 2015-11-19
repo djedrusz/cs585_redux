@@ -7,7 +7,8 @@
 namespace StevensDev {
 namespace mga { // My Game Actors.
 
-MoveToBox::MoveToBox() {
+MoveToBox::MoveToBox() 
+/*:	collidableBox(mgcl::CollidableBox("actor"))*/ {
 }
 
 sgdr::RenderableSprite* MoveToBox::getRenderableSprite() {
