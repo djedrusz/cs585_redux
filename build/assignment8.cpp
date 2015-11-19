@@ -4,11 +4,13 @@
 	Assignment 8 game.
 */
 
+#include <unistd.h>
+
 #include "../src/engine/assets/texture_manager.hpp"
 
 #include "../src/engine/rendering/renderer.hpp"
 
-#include "../src/engine/scene/nxn_scene_graph.hpp"
+#include "../src/engine/scene/scene_manager.hpp"
 #include "../src/engine/scene/scene.hpp"
 
 #include "../src/game/actors/move_to_box.hpp"
@@ -54,8 +56,9 @@ int main(int argc, char** argv) {
 	renderer.addRenderableSprite(moveToBox.getRenderableSprite());
 	renderer.addRenderableSprite(playerControlledBox.getRenderableSprite());
 
-	/* Scene graph. */
-	sgds::NxNSceneGraph sceneGraph(256, 10);
+	/* Scene manager/graph. */
+	sgds::SceneManager::setSceneGraph(256, 10);
+	sgds::NxNSceneGraph& sceneGraph = sgds::SceneManager::getSceneGraph();
 	sceneGraph.addCollidable(moveToBox.getCollidable());
 	sceneGraph.addCollidable(playerControlledBox.getCollidable());
 
@@ -68,13 +71,21 @@ int main(int argc, char** argv) {
 	while (renderer.isActive()) {
 		sgds::Scene::getInstance().tick();
 
-		if (sceneGraph
-				.getCollisions(
-					playerControlledBox
-						.getCollidable())
-							.getSize() > 0) {
-			std::cout << "Collision" << std::endl;
-		}
+		/*sgdc::DynamicArray< sgds::ICollidable* > playerControlledBoxCollisions =
+			std::move(
+				sceneGraph
+					.getCollisions(
+						playerControlledBox
+							.getCollidable()));
+		if (playerControlledBoxCollisions.getSize() > 0) {
+			if (playerControlledBox
+					.getCollidable()
+						->collides(
+							playerControlledBoxCollisions[0]
+								->getBounds())) {
+				std::cout << "X" << std::endl;
+			}
+		}*/
 
 		renderer.draw();
 	}

@@ -6,11 +6,13 @@
 #define INCLUDED_IACTOR
 
 #include "../rendering/renderable_sprite.hpp"
-#include "icollidable.hpp"
+//#include "icollidable.hpp"
 #include "../events/mapped_event_dispatcher.hpp"
 
 namespace StevensDev {
 namespace sgds { // Stevens Game Development Scene.
+
+class ICollidable;
 
 /* An abstract actor object. */
 class IActor {

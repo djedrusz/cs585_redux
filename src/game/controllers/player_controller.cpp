@@ -21,6 +21,20 @@ void PlayerController::preTick() {
 }
 
 void PlayerController::tick(float deltaTime) {
+	/* Check for collisions. */
+	sgdc::DynamicArray< sgds::ICollidable* > collisions =
+		std::move(
+			sgds::SceneManager::getSceneGraph().getCollisions(
+				playerControlledBox->getCollidable()));
+	for (unsigned int i = 0; i < collisions.getSize(); i++) {
+		std::cout << "Y" << std::endl;
+		if (playerControlledBox
+				->getCollidable()
+					->collides(collisions.get(i)->getBounds())) {
+			std::cout << "X" << std::endl;
+		}
+	}
+
 	/* Move the actor's sprite. */
 	if (sgdi::Input::getInstance().isDown(sgdi::Input::Type::A)) {
 		playerControlledBox->move(

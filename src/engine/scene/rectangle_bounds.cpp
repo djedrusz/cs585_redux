@@ -104,10 +104,10 @@ void RectangleBounds::setDimensions(float width, float height) {
 bool RectangleBounds::collides(const RectangleBounds& rectangleBounds) const {
 	return
 		(
-			x < rectangleBounds.x + rectangleBounds.width &&
-			x + width > rectangleBounds.x &&
-			y < rectangleBounds.y + rectangleBounds.height &&
-			y + height > rectangleBounds.y
+			(this->x < (rectangleBounds.x + rectangleBounds.width)) &&
+			((this->x + this->width) > rectangleBounds.x) &&
+			(this->y < (rectangleBounds.y + rectangleBounds.height)) &&
+			((this->y + this->height) > rectangleBounds.y)
 		);
 }
 

@@ -89,6 +89,7 @@ add_executable(assignment8
 ../src/engine/scene/nxn_scene_graph.cpp
 ../src/engine/scene/rectangle_bounds.cpp
 ../src/engine/scene/scene.cpp
+../src/engine/scene/scene_manager.cpp
 
 ../src/game/actors/move_to_box.cpp
 ../src/game/actors/player_controlled_box.cpp
