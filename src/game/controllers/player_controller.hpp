@@ -5,6 +5,7 @@
 #ifndef INCLUDED_PLAYER_CONTROLLER
 #define INCLUDED_PLAYER_CONTROLLER
 
+#include "../../engine/events/collision_event.hpp"
 #include "../../engine/input/input.hpp"
 #include "../../engine/scene/icontroller.hpp"
 #include "../../engine/scene/scene_manager.hpp"

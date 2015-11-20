@@ -23,6 +23,10 @@
 int main(int argc, char** argv) {
 	using namespace StevensDev;
 
+	std::cout << sizeof(int) << std::endl;
+	std::cout << sizeof(sgds::RectangleBounds) << std::endl;
+	std::cout << sizeof(mgcl::CollidableBox) << std::endl;
+
 	/* Assets. */
 	// Textures.
 	sgda::TextureManager::add("red_box", "../textures/red_box.png");
@@ -64,28 +68,14 @@ int main(int argc, char** argv) {
 
 	/* Scene. */
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
+	sgds::Scene::getInstance().addTickable(moveToBox.getEventDispatcher());
 	sgds::Scene::getInstance().addTickable(&playerController);
+	sgds::Scene::getInstance().addTickable(&moveToController);
 	sgds::Scene::getInstance().addTickable(&sceneGraph);
 
 	/* Main game loop. */
 	while (renderer.isActive()) {
 		sgds::Scene::getInstance().tick();
-
-		/*sgdc::DynamicArray< sgds::ICollidable* > playerControlledBoxCollisions =
-			std::move(
-				sceneGraph
-					.getCollisions(
-						playerControlledBox
-							.getCollidable()));
-		if (playerControlledBoxCollisions.getSize() > 0) {
-			if (playerControlledBox
-					.getCollidable()
-						->collides(
-							playerControlledBoxCollisions[0]
-								->getBounds())) {
-				std::cout << "X" << std::endl;
-			}
-		}*/
 
 		renderer.draw();
 	}

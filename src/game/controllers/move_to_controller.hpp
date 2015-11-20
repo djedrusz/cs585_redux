@@ -5,6 +5,7 @@
 #ifndef INCLUDED_MOVE_TO_CONTROLLER
 #define INCLUDED_MOVE_TO_CONTROLLER
 
+#include "../../engine/events/collision_event.hpp"
 #include "../../engine/scene/icontroller.hpp"
 
 namespace StevensDev {
@@ -24,6 +25,7 @@ class MoveToController : public sgds::IController {
 		/* Constructor(s). */
 		MoveToController();
 		/* Function(s). */
+		void onCollisionEvent(const sgde::IEvent* event);
 		/* Inherited function(s). */
 		// IController.
 		virtual void possess(sgds::IActor* actor);

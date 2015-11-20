@@ -8,7 +8,7 @@ namespace StevensDev {
 namespace mga { // My Game Actors.
 
 PlayerControlledBox::PlayerControlledBox()
-/*:	collidableBox(mgcl::CollidableBox("actor"))*/ {
+:	collidableBox(mgcl::CollidableBox(this)) {
 }
 
 void PlayerControlledBox::move(float x, float y) {

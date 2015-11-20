@@ -79,6 +79,7 @@ include_directories(${SFML_INCLUDE_DIR})
 add_executable(assignment8
 ../src/engine/assets/texture_manager.cpp
 
+../src/engine/events/collision_event.cpp
 ../src/engine/events/mapped_event_dispatcher.cpp
 
 ../src/engine/input/input.cpp

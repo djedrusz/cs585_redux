@@ -7,8 +7,7 @@
 #ifndef INCLUDED_ICOLLIDABLE
 #define INCLUDED_ICOLLIDABLE
 
-#include <string>
-
+#include "iactor.hpp"
 #include "rectangle_bounds.hpp"
 
 namespace StevensDev {
@@ -18,6 +17,7 @@ namespace sgds { // Stevens Game Development Scene.
 class ICollidable {
 	public:
 		/* Function(s). */
+		virtual IActor* getActor() = 0;
 		virtual const RectangleBounds& getBounds() const = 0;
 		virtual unsigned short getFlags() const = 0;
 		virtual bool canCollide(const unsigned short flags) const = 0;

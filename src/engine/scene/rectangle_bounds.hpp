@@ -9,6 +9,7 @@
 #define INCLUDED_RECTANGLE_BOUNDS
 
 #include <cassert>
+#include <iostream>
 
 namespace StevensDev {
 namespace sgds { // Stevens Game Development Scene.
