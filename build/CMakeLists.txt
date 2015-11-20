@@ -86,6 +86,7 @@ add_executable(assignment8
 
 ../src/engine/rendering/renderable_sprite.cpp
 ../src/engine/rendering/renderer.cpp
+../src/engine/rendering/render_manager.cpp
 
 ../src/engine/scene/nxn_scene_graph.cpp
 ../src/engine/scene/rectangle_bounds.cpp

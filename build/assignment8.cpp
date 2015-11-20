@@ -20,6 +20,7 @@
 #include "../src/game/controllers/player_controller.hpp"
 
 #include "../src/game/factories/move_to_factory.hpp"
+#include "../src/game/factories/player_controlled_factory.hpp"
 
 
 int main(int argc, char** argv) {
@@ -63,12 +64,14 @@ int main(int argc, char** argv) {
 	sceneGraph.addCollidable(playerControlledBox.getCollidable());
 
 	/* Renderer. */
-	sgdr::Renderer renderer;
-	renderer.setupWindow(
+	sgdr::RenderManager::getRenderer()
+		.setupWindow(
 			sgds::SceneManager::getSceneGraph().getLength(),
 			sgds::SceneManager::getSceneGraph().getLength());
-	renderer.addRenderableSprite(moveToBox.getRenderableSprite());
-	renderer.addRenderableSprite(playerControlledBox.getRenderableSprite());
+	sgdr::RenderManager::getRenderer()
+		.addRenderableSprite(moveToBox.getRenderableSprite());
+	sgdr::RenderManager::getRenderer()
+		.addRenderableSprite(playerControlledBox.getRenderableSprite());
 
 	/* Scene. */
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
@@ -77,11 +80,13 @@ int main(int argc, char** argv) {
 	sgds::Scene::getInstance().addTickable(&moveToController);
 	sgds::Scene::getInstance().addTickable(&sceneGraph);
 
+	mgf::MoveToFactory::createController();
+
 	/* Main game loop. */
-	while (renderer.isActive()) {
+	while (sgdr::RenderManager::getRenderer().isActive()) {
 		sgds::Scene::getInstance().tick();
 
-		renderer.draw();
+		sgdr::RenderManager::getRenderer().draw();
 	}
 
 	return 0;
