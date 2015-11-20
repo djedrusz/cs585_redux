@@ -18,6 +18,7 @@ MoveToController::MoveToController()
 }
 
 void MoveToController::onCollisionEvent(const sgde::IEvent* event) {
+	/* Avoidance. */
 	float otherX = ((sgde::CollisionEvent*)event)->getX();
 	float otherY = ((sgde::CollisionEvent*)event)->getY();
 

@@ -100,6 +100,9 @@ add_executable(assignment8
 ../src/game/controllers/move_to_controller.cpp
 ../src/game/controllers/player_controller.cpp
 
+../src/game/factories/move_to_factory.cpp
+../src/game/factories/player_controlled_factory.cpp
+
 assignment8.cpp)
 target_link_libraries(assignment8 ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(assignment8 ${SFML_LIBRARIES})

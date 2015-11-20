@@ -19,6 +19,8 @@
 #include "../src/game/controllers/move_to_controller.hpp"
 #include "../src/game/controllers/player_controller.hpp"
 
+#include "../src/game/factories/move_to_factory.hpp"
+
 
 int main(int argc, char** argv) {
 	using namespace StevensDev;
@@ -55,7 +57,7 @@ int main(int argc, char** argv) {
 	moveToController.possess(&moveToBox);
 
 	/* Scene manager/graph. */
-	sgds::SceneManager::setSceneGraph(256, 10);
+	sgds::SceneManager::setSceneGraph(1024, 10);
 	sgds::NxNSceneGraph& sceneGraph = sgds::SceneManager::getSceneGraph();
 	sceneGraph.addCollidable(moveToBox.getCollidable());
 	sceneGraph.addCollidable(playerControlledBox.getCollidable());

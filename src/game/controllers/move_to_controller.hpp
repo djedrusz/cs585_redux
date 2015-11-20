@@ -25,8 +25,8 @@ namespace mgc { // My Game Controllers.
 class MoveToController : public sgds::IController {
 	private:
 		/* Data member(s). */
-		float vectorX = 2;
-		float vectorY = 1;
+		float vectorX = .894;
+		float vectorY = .447;
 
 		mga::MoveToBox* moveToBox;
 		sgde::CollisionEvent collisionEvent;
