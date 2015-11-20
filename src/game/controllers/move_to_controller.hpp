@@ -5,8 +5,13 @@
 #ifndef INCLUDED_MOVE_TO_CONTROLLER
 #define INCLUDED_MOVE_TO_CONTROLLER
 
+#include <iostream> // Remove after testing.
+
 #include "../../engine/events/collision_event.hpp"
 #include "../../engine/scene/icontroller.hpp"
+#include "../../engine/scene/scene_manager.hpp"
+
+#include "../actors/move_to_box.hpp"
 
 namespace StevensDev {
 namespace mgc { // My Game Controllers.
@@ -20,7 +25,10 @@ namespace mgc { // My Game Controllers.
 class MoveToController : public sgds::IController {
 	private:
 		/* Data member(s). */
-		sgds::IActor* actor;
+		float vectorX = 2;
+		float vectorY = 1;
+
+		mga::MoveToBox* moveToBox;
 		sgde::CollisionEvent collisionEvent;
 		std::function< void (const sgde::IEvent*) > collisionCallback;
 	public:

@@ -129,6 +129,10 @@ NxNSceneGraph::~NxNSceneGraph() {
 	destroyGraph();
 }
 
+const float NxNSceneGraph::getLength() const {
+	return length;
+}
+
 void NxNSceneGraph::preTick() {
 	/* Update the positions of the current collidables. */
 	destroyGraph();

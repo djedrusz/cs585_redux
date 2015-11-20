@@ -20,6 +20,8 @@ class MoveToBox : public sgds::IActor {
 	public:
 		/* Constructor(s). */
 		MoveToBox();
+		/* Function(s). */
+		void move(float x, float y);
 		/* Inherited function(s). */
 		// Actor.
 		virtual sgdr::RenderableSprite* getRenderableSprite();

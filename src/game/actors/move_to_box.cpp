@@ -11,6 +11,11 @@ MoveToBox::MoveToBox()
 :	collidableBox(mgcl::CollidableBox(this)) {
 }
 
+void MoveToBox::move(float x, float y) {
+	renderableSprite.move(x, y);
+	collidableBox.moveBounds(x, y);
+}
+
 sgdr::RenderableSprite* MoveToBox::getRenderableSprite() {
 	return &renderableSprite;
 }

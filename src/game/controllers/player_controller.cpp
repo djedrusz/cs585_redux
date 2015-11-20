@@ -41,7 +41,6 @@ void PlayerController::tick(float deltaTime) {
 			sgds::SceneManager::getSceneGraph().getCollisions(
 				playerControlledBox->getCollidable()));
 	for (unsigned int i = 0; i < collisions.getSize(); i++) {
-		std::cout << "Y" << std::endl;
 		if (playerControlledBox
 				->getCollidable()
 					->collides(collisions.get(i)->getBounds())) {

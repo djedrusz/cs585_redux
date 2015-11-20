@@ -54,17 +54,19 @@ int main(int argc, char** argv) {
 	mgc::MoveToController moveToController;
 	moveToController.possess(&moveToBox);
 
-	/* Renderer. */
-	sgdr::Renderer renderer;
-	renderer.setupWindow(256, 256);
-	renderer.addRenderableSprite(moveToBox.getRenderableSprite());
-	renderer.addRenderableSprite(playerControlledBox.getRenderableSprite());
-
 	/* Scene manager/graph. */
 	sgds::SceneManager::setSceneGraph(256, 10);
 	sgds::NxNSceneGraph& sceneGraph = sgds::SceneManager::getSceneGraph();
 	sceneGraph.addCollidable(moveToBox.getCollidable());
 	sceneGraph.addCollidable(playerControlledBox.getCollidable());
+
+	/* Renderer. */
+	sgdr::Renderer renderer;
+	renderer.setupWindow(
+			sgds::SceneManager::getSceneGraph().getLength(),
+			sgds::SceneManager::getSceneGraph().getLength());
+	renderer.addRenderableSprite(moveToBox.getRenderableSprite());
+	renderer.addRenderableSprite(playerControlledBox.getRenderableSprite());
 
 	/* Scene. */
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());

@@ -13,7 +13,6 @@
 #include <functional>
 #include "../containers/dynamic_array.hpp"
 #include "../containers/map.hpp"
-#include <iostream>
 
 namespace StevensDev {
 namespace sgde { // Stevens Game Development Events.

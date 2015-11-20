@@ -153,7 +153,6 @@ void MappedEventDispatcher::removeListener(
 }
 
 void MappedEventDispatcher::dispatch(const IEvent* event) {
-	std::cout << "DISPATCHING!" << std::endl;
 	if (listeners.has(event->getType())) {
 		for (unsigned int i = 0; i < listeners.get(event->getType())->getSize(); i++) {
 			(*listeners.get(event->getType())->get(i))(event);

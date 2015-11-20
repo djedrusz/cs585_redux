@@ -12,7 +12,7 @@ PlayerControlledBox::PlayerControlledBox()
 }
 
 void PlayerControlledBox::move(float x, float y) {
-	renderableSprite.getSprite().move(x, y);
+	renderableSprite.move(x, y);
 	collidableBox.moveBounds(x, y);
 }
 

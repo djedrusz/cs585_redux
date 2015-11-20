@@ -41,6 +41,7 @@ class NxNSceneGraph : public ITickable {
 		/* Destructor(s). */
 		~NxNSceneGraph();
 		/* Function(s). */
+		const float getLength() const;
 		void preTick();
 		void tick(float deltaTime);
 		void postTick();

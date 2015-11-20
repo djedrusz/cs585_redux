@@ -18,16 +18,26 @@ MoveToController::MoveToController()
 }
 
 void MoveToController::onCollisionEvent(const sgde::IEvent* event) {
-	std::cout << "COLLISION!" << std::endl;
+	float otherX = ((sgde::CollisionEvent*)event)->getX();
+	float otherY = ((sgde::CollisionEvent*)event)->getY();
+
+	float myX = moveToBox->getRenderableSprite()->getPositionX() + 32;
+	float myY = moveToBox->getRenderableSprite()->getPositionY() + 32;
+
+	vectorX = myX - otherX;
+	vectorY = myY - otherY;
+
+	vectorX = vectorX / 10;
+	vectorY = vectorY / 10;
 }
 
 void MoveToController::possess(sgds::IActor* actor) {
-	this->actor = actor;
+	moveToBox = (mga::MoveToBox*)actor;
 
 	// I kind of messed up here with the mapped dispatcher: addListener should take 
 	// a string type, not the actual event. I'm getting around this by creating an
 	// instance of the event.
-	actor->getEventDispatcher()->addListener(&collisionEvent, &collisionCallback);
+	moveToBox->getEventDispatcher()->addListener(&collisionEvent, &collisionCallback);
 }
 
 void MoveToController::preTick() {
@@ -35,7 +45,41 @@ void MoveToController::preTick() {
 }
 
 void MoveToController::tick(float deltaTime) {
+	moveToBox->move(vectorX, vectorY);
 
+	if (moveToBox
+			->getRenderableSprite()
+				->getPositionX()
+		+ 64
+		>
+		sgds::SceneManager::getSceneGraph().getLength()) {
+		vectorX = -vectorX;
+	}
+
+	if (moveToBox
+			->getRenderableSprite()
+				->getPositionX()
+		<
+		0) {
+		vectorX = -vectorX;
+	}
+
+	if (moveToBox
+			->getRenderableSprite()
+				->getPositionY()
+		+ 64
+		>
+		sgds::SceneManager::getSceneGraph().getLength()) {
+		vectorY = -vectorY;
+	}
+
+	if (moveToBox
+			->getRenderableSprite()
+				->getPositionY()
+		<
+		0) {
+		vectorY = -vectorY;
+	}
 }
 
 void MoveToController::postTick() {
