@@ -32,7 +32,6 @@ void Scene::tick() {
 	/* Add the added tickables. */
 	for (unsigned int i = 0; i < addedTickables.getSize(); i++) {
 		tickables.append(addedTickables.get(i));
-		std::cout << "PAST HERE" << std::endl;
 	}
 	addedTickables = std::move(sgdc::DynamicArray< ITickable* >());
 

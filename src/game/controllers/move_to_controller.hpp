@@ -21,6 +21,8 @@ class MoveToController : public sgds::IController {
 	private:
 		/* Data member(s). */
 		sgds::IActor* actor;
+		sgde::CollisionEvent collisionEvent;
+		std::function< void (const sgde::IEvent*) > collisionCallback;
 	public:
 		/* Constructor(s). */
 		MoveToController();

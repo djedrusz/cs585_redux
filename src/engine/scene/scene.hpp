@@ -9,8 +9,6 @@
 #define INCLUDED_SCENE
 
 #include <ctime>
-#include <iostream> // Remove after testing.
-
 #include "itickable.hpp"
 #include "../containers/dynamic_array.hpp"
 #include "../rendering/renderer.hpp"

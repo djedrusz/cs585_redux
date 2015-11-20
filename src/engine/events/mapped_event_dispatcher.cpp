@@ -116,7 +116,6 @@ void MappedEventDispatcher::postTick() {
 		}
 		listeners.get(addedMappings.get(i).getEvent()->getType())
 			->append(addedMappings.get(i).getListener());
-			std::cout << "Added event " << addedMappings.get(i).getEvent()->getType() << std::endl;
 	}
 	addedMappings = std::move(sgdc::DynamicArray< Mapping >());
 
