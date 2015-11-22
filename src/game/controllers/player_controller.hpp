@@ -12,7 +12,7 @@
 
 #include "../actors/player_controlled_box.hpp"
 
-#define PLAYER_CONTROLLER_MOVEMENT_SPEED 0.5
+#define PLAYER_CONTROLLER_MOVEMENT_SPEED 10
 
 namespace StevensDev {
 namespace mgc { // My Game Controllers.

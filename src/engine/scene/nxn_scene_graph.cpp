@@ -463,7 +463,7 @@ sgdc::DynamicArray< ICollidable* > NxNSceneGraph::getCollisions(
 	for (int x = left; x <= right; x++) {
 		for (int y = top; y <= bottom; y++) {
 			for (unsigned int i = 0; i < graph[x][y].getSize(); i++) {
-				if (collidable->canCollide(graph[x][y].get(i)->getFlags()) &&
+				if (/*collidable->canCollide(graph[x][y].get(i)->getFlags()) &&*/
 					graph[x][y].get(i) != collidable) {
 					for (unsigned int j = 0; j < collisions.getSize(); j++) {
 						if (collisions.get(j) == graph[x][y].get(i)) {

@@ -33,7 +33,7 @@ void PlayerController::tick(float deltaTime) {
 				->getSprite()
 					.getPosition()
 						.y
-		+ 32);			
+		+ 32);		
 
 	/* Check for collisions. */
 	sgdc::DynamicArray< sgds::ICollidable* > collisions =

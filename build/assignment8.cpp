@@ -22,13 +22,14 @@
 #include "../src/game/factories/move_to_factory.hpp"
 #include "../src/game/factories/player_controlled_factory.hpp"
 
+#define NUM_BOXES 1000
+
 
 int main(int argc, char** argv) {
 	using namespace StevensDev;
 
-	std::cout << sizeof(int) << std::endl;
-	std::cout << sizeof(sgds::RectangleBounds) << std::endl;
-	std::cout << sizeof(mgcl::CollidableBox) << std::endl;
+	/* Scene Manager. */
+	sgds::SceneManager::setSceneGraph(1024, 10);
 
 	/* Assets. */
 	// Textures.
@@ -37,50 +38,33 @@ int main(int argc, char** argv) {
 
 	/* Actors. */
 	// Player box.
-	mga::PlayerControlledBox playerControlledBox;
-	playerControlledBox
-		.getRenderableSprite()
-			->getSprite()
-				.setTexture(sgda::TextureManager::get("red_box"));
-	// Move-to box.
-	mga::MoveToBox moveToBox;
-	moveToBox
-		.getRenderableSprite()
-			->getSprite()
-				.setTexture(sgda::TextureManager::get("blue_box"));
+	mga::PlayerControlledBox* playerControlledBox = mgf::PlayerControlledFactory::createActor();
+	// Move to boxes.
+	mga::MoveToBox* moveToBoxes[NUM_BOXES];
+	for (unsigned int i = 0; i < NUM_BOXES; i++) {
+		moveToBoxes[i] = mgf::MoveToFactory::createActor();
+	}
 
 	/* Controllers. */
 	// Player controller.
-	mgc::PlayerController playerController;
-	playerController.possess(&playerControlledBox);
-	// Move to controller.
-	mgc::MoveToController moveToController;
-	moveToController.possess(&moveToBox);
-
-	/* Scene manager/graph. */
-	sgds::SceneManager::setSceneGraph(1024, 10);
-	sgds::NxNSceneGraph& sceneGraph = sgds::SceneManager::getSceneGraph();
-	sceneGraph.addCollidable(moveToBox.getCollidable());
-	sceneGraph.addCollidable(playerControlledBox.getCollidable());
+	mgc::PlayerController* playerController = mgf::PlayerControlledFactory::createController();
+	playerController->possess(playerControlledBox);
+	// Move to controllers.
+	mgc::MoveToController* moveToControllers[NUM_BOXES];
+	for (unsigned int i = 0; i < NUM_BOXES; i++) {
+		moveToControllers[i] = mgf::MoveToFactory::createController();
+		moveToControllers[i]->possess(moveToBoxes[i]);
+	}
 
 	/* Renderer. */
 	sgdr::RenderManager::getRenderer()
 		.setupWindow(
 			sgds::SceneManager::getSceneGraph().getLength(),
 			sgds::SceneManager::getSceneGraph().getLength());
-	sgdr::RenderManager::getRenderer()
-		.addRenderableSprite(moveToBox.getRenderableSprite());
-	sgdr::RenderManager::getRenderer()
-		.addRenderableSprite(playerControlledBox.getRenderableSprite());
 
 	/* Scene. */
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
-	sgds::Scene::getInstance().addTickable(moveToBox.getEventDispatcher());
-	sgds::Scene::getInstance().addTickable(&playerController);
-	sgds::Scene::getInstance().addTickable(&moveToController);
-	sgds::Scene::getInstance().addTickable(&sceneGraph);
-
-	mgf::MoveToFactory::createController();
+	sgds::Scene::getInstance().addTickable(&sgds::SceneManager::getSceneGraph());
 
 	/* Main game loop. */
 	while (sgdr::RenderManager::getRenderer().isActive()) {
