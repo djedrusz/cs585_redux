@@ -5,12 +5,14 @@
 /* Includes. */
 // Local.
 #include "pacman_controller.hpp"
+#include "../factories/pacman_factory.hpp"
 
 namespace StevensDev {
 namespace mgc { // My Game Controllers. 
 
 PacmanController::PacmanController()
-:	deathEventCallback(
+:	deathEvent(PACMAN_FLAGS),
+	deathEventCallback(
 		std::bind(
 			&PacmanController::onDeathEvent,
 			this,
@@ -109,6 +111,8 @@ void PacmanController::tick(float deltaTime) {
 					->getActor()
 						->getEventDispatcher()
 							->dispatch(&deathEvent);
+				sgde::EventBus::getDispatcher()
+					.dispatch(&deathEvent);
 			}
 		}
 	}
@@ -126,8 +130,8 @@ void PacmanController::possess(sgds::IActor* actor) {
 }
 
 void PacmanController::onDeathEvent(const sgde::IEvent* event) {
-	std::cout << "PACMAN DIE" << std::endl;
-	exit(1);
+	mgf::PacmanFactory::destroyActor(pacman);
+	mgf::PacmanFactory::destroyController(this);
 }
 
 void PacmanController::onReverseEvent(const sgde::IEvent* event) {

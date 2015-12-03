@@ -141,16 +141,12 @@ void GhostFactory::destroyActor(mga::Ghost* ghost) {
 	sgds::Scene::getInstance()
 		.removeTickable(
 			ghost->getEventDispatcher());
-
-	delete ghost;
 }
 
 void GhostFactory::destroyController(mgc::GhostController* ghostController) {
 	sgds::Scene::getInstance()
 		.removeTickable(
 			ghostController);
-
-	delete ghostController;
 }
 
 }

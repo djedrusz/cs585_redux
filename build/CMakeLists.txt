@@ -137,10 +137,13 @@ add_executable(assignment9
 ../src/game/controllers/ghost_controller.cpp
 ../src/game/controllers/pacman_controller.cpp
 ../src/game/events/death_event.cpp
+../src/game/events/reset_event.cpp
 ../src/game/events/reverse_event.cpp
 ../src/game/factories/ghost_factory.cpp
 ../src/game/factories/pacman_factory.cpp
 ../src/game/factories/wall_factory.cpp
+../src/game/levels/pacman_level.cpp
+../src/game/misc/blackboard.cpp
 
 assignment9.cpp)
 target_link_libraries(assignment9 ${CMAKE_THREAD_LIBS_INIT})

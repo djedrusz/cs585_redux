@@ -34,6 +34,8 @@ class PacmanFactory {
 		/* Function(s). */
 		static mga::Pacman* createActor();
 		static mgc::PacmanController* createController();
+		static void destroyActor(mga::Pacman* pacman);
+		static void destroyController(mgc::PacmanController* pacmanController);
 };
 
 }

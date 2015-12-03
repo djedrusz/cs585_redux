@@ -14,7 +14,6 @@
 #include "../actors/ghost.hpp"
 #include "../events/death_event.hpp"
 #include "../events/reverse_event.hpp"
-//#include "../factories/ghost_factory.hpp"
 
 namespace StevensDev {
 namespace mgc { // My Game Controllers.

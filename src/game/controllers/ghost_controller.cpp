@@ -5,12 +5,14 @@
 /* Includes. */
 // Local.
 #include "ghost_controller.hpp"
+#include "../factories/ghost_factory.hpp"
 
 namespace StevensDev {
 namespace mgc { // My Game Controllers. 
 
 GhostController::GhostController()
-:	deathEventCallback(
+:	deathEvent(GHOST_FLAGS),
+	deathEventCallback(
 		std::bind(
 			&GhostController::onDeathEvent,
 			this,
@@ -53,6 +55,8 @@ void GhostController::tick(float deltaTime) {
 					->getActor()
 						->getEventDispatcher()
 							->dispatch(&deathEvent);
+				sgde::EventBus::getDispatcher()
+					.dispatch(&deathEvent);
 			}
 		}
 	}
@@ -70,9 +74,8 @@ void GhostController::possess(sgds::IActor* actor) {
 }
 
 void GhostController::onDeathEvent(const sgde::IEvent* event) {
-	std::cout << "GHOST DIE" << std::endl;
-	//mgf::GhostFactory::destroyActor(ghost);
-	//mgf::GhostFactory::destroyController(this);
+	mgf::GhostFactory::destroyController(this);
+	mgf::GhostFactory::destroyActor(ghost);
 }
 
 void GhostController::onReverseEvent(const sgde::IEvent* event) {

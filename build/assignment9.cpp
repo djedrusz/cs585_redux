@@ -12,12 +12,10 @@
 #include "../src/engine/scene/scene_manager.hpp"
 #include "../src/engine/scene/scene.hpp"
 
-#include "../src/game/actors/pacman.hpp"
 #include "../src/game/actors/wall.hpp"
-#include "../src/game/controllers/pacman_controller.hpp"
-#include "../src/game/factories/ghost_factory.hpp"
-#include "../src/game/factories/pacman_factory.hpp"
 #include "../src/game/factories/wall_factory.hpp"
+#include "../src/game/levels/pacman_level.hpp"
+#include "../src/game/misc/blackboard.hpp"
 
 /* Definitions. */
 // Scene.
@@ -31,10 +29,6 @@ int main(int argc, char** argv) {
 	/* Assets. */
 	// Textures.
 	sgda::TextureManager::add("blue_box", "../textures/blue_box.png");
-	//sgda::TextureManager::add("evil_pacman", "../textures/smiley_evil_small.png");
-	sgda::TextureManager::add("red_box", "../textures/red_box.png");
-	//sgda::TextureManager::add("pacman", "../textures/smiley_small.png");
-	sgda::TextureManager::add("yellow_box", "../textures/yellow_box.png");
 
 	sgda::TextureManager::add("pacman", "../textures/pacman_48.png");
 	sgda::TextureManager::add("evil_pacman", "../textures/pacman_evil_48.png");
@@ -55,35 +49,19 @@ int main(int argc, char** argv) {
 			sgds::SceneManager::getSceneGraph()
 				.getLength());
 
-	/* Actors. */
-	// Pacman.
-	mga::Pacman* pacman = mgf::PacmanFactory::createActor();
-	// Ghosts.
-	mga::Ghost* blueGhost = mgf::GhostFactory::createActor(mga::Ghost::Color::BLUE);
-	mga::Ghost* greenGhost = mgf::GhostFactory::createActor(mga::Ghost::Color::GREEN);
-	mga::Ghost* redGhost = mgf::GhostFactory::createActor(mga::Ghost::Color::RED);
-	mga::Ghost* yellowGhost = mgf::GhostFactory::createActor(mga::Ghost::Color::YELLOW);
-	// Walls.
-	sgdc::DynamicArray< mga::Wall* > walls =
-		std::move(
-			mgf::WallFactory::createWalls());
-
-	/* Controllers. */
-	// Pacman.
-	mgc::PacmanController* pacmanController = mgf::PacmanFactory::createController();
-	pacmanController->possess(pacman);
-	// Ghosts.
-	mgc::GhostController* blueGhostController = mgf::GhostFactory::createController();
-	blueGhostController->possess(blueGhost);
-	mgc::GhostController* greenGhostController = mgf::GhostFactory::createController();
-	greenGhostController->possess(greenGhost);
-	mgc::GhostController* redGhostController = mgf::GhostFactory::createController();
-	redGhostController->possess(redGhost);
-	mgc::GhostController* yellowGhostController = mgf::GhostFactory::createController();
-	yellowGhostController->possess(yellowGhost);
+	/* Level. */
+	mgl::PacmanLevel::init();
 
 	/* Events. */
 	mge::ReverseEvent reverseEvent;
+	mge::DeathEvent deathEvent(0);
+	std::function< void (const sgde::IEvent*) > deathEventCallback =
+		std::bind(&mgm::Blackboard::onDeathEvent, std::placeholders::_1);
+	sgde::EventBus::getDispatcher().addListener(&deathEvent, &deathEventCallback);
+	mge::ResetEvent resetEvent;
+	std::function< void (const sgde::IEvent*) > resetEventCallback =
+		std::bind(&mgm::Blackboard::onResetEvent, std::placeholders::_1);
+	sgde::EventBus::getDispatcher().addListener(&resetEvent, &resetEventCallback);
 
 	/* Scene. */
 	sgds::Scene::getInstance().addTickable(&sgde::EventBus::getDispatcher());
@@ -96,6 +74,13 @@ int main(int argc, char** argv) {
 
 		if (sgdi::Input::getInstance().wasPressed(sgdi::Input::Type::Q)) {
 			sgde::EventBus::getDispatcher().dispatch(&reverseEvent);
+		}
+		if (sgdi::Input::getInstance().wasPressed(sgdi::Input::Type::R)) {
+			mgl::PacmanLevel::reset();
+		}
+
+		if (mgm::Blackboard::getGhostCount() == 0 || mgm::Blackboard::getPacmanCount() == 0) {
+			mgl::PacmanLevel::reset();
 		}
 
 		sgdr::RenderManager::getRenderer().draw();

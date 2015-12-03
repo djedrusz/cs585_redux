@@ -2,8 +2,8 @@
 	Dominik Jedruszczak
 */
 
-#ifndef INCLUDED_DEATH_EVENT
-#define INCLUDED_DEATH_EVENT
+#ifndef INCLUDED_RESET_EVENT
+#define INCLUDED_RESET_EVENT
 
 /* Includes. */
 // Local.
@@ -12,18 +12,13 @@
 namespace StevensDev {
 namespace mge { // My Game Events.
 
-/* A death event. */
-class DeathEvent : public sgde::IEvent {
-	private:
-		/* Data members. */
-		unsigned short deathFlag;
+/* A reset event, recreate the level. */
+class ResetEvent : public sgde::IEvent {
 	public:
 		/* Constructors. */
-		DeathEvent(unsigned short deathFlag);
+		ResetEvent();
 		/* Inherited functions. */
 		virtual const std::string& getType() const;
-		/* Functions. */
-		unsigned short getDeathFlags();
 };
 
 }

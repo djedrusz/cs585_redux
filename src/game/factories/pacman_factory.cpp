@@ -45,5 +45,29 @@ mgc::PacmanController* PacmanFactory::createController() {
 	return pacmanController;
 }
 
+void PacmanFactory::destroyActor(mga::Pacman* pacman) {
+	sgds::SceneManager::getSceneGraph()
+		.removeCollidable(
+			pacman->getCollidable());
+
+	sgdr::RenderManager::getRenderer()
+			.removeRenderableSprite(
+				pacman->getRenderableSprite());
+
+	sgds::Scene::getInstance()
+		.removeTickable(
+			pacman->getEventDispatcher());
+
+	//delete pacman;
+}
+
+void PacmanFactory::destroyController(mgc::PacmanController* pacmanController) {
+	sgds::Scene::getInstance()
+		.removeTickable(
+			pacmanController);
+
+	//delete pacmanController;
+}
+
 }
 }
