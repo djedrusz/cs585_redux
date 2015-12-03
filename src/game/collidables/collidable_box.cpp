@@ -13,6 +13,13 @@ CollidableBox::CollidableBox(sgds::IActor* actor)
 	;
 }
 
+CollidableBox::CollidableBox(sgds::IActor* actor, unsigned short flags)
+:	actor(actor),
+	flags(flags),
+	rectangleBounds(0, 0, 64, 64) {
+	;
+}
+
 void CollidableBox::moveBounds(float x, float y) {
 	rectangleBounds.setPosition(
 		rectangleBounds.getX() + x,

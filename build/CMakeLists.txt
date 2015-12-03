@@ -107,3 +107,41 @@ add_executable(assignment8
 assignment8.cpp)
 target_link_libraries(assignment8 ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(assignment8 ${SFML_LIBRARIES})
+
+project(assignment9)
+set(CMAKE_MODULE_PATH "." ${CMAKE_MODULE_PATH})
+find_package(SFML 2.1.0 REQUIRED system window graphics network audio)
+include_directories(${SFML_INCLUDE_DIR})
+add_executable(assignment9
+../src/engine/assets/texture_manager.cpp
+
+../src/engine/events/collision_event.cpp
+../src/engine/events/event_bus.cpp
+../src/engine/events/mapped_event_dispatcher.cpp
+
+../src/engine/input/input.cpp
+
+../src/engine/rendering/renderable_sprite.cpp
+../src/engine/rendering/renderer.cpp
+../src/engine/rendering/render_manager.cpp
+
+../src/engine/scene/nxn_scene_graph.cpp
+../src/engine/scene/rectangle_bounds.cpp
+../src/engine/scene/scene.cpp
+../src/engine/scene/scene_manager.cpp
+
+../src/game/actors/ghost.cpp
+../src/game/actors/pacman.cpp
+../src/game/actors/wall.cpp
+../src/game/collidables/collidable_box.cpp
+../src/game/controllers/ghost_controller.cpp
+../src/game/controllers/pacman_controller.cpp
+../src/game/events/death_event.cpp
+../src/game/events/reverse_event.cpp
+../src/game/factories/ghost_factory.cpp
+../src/game/factories/pacman_factory.cpp
+../src/game/factories/wall_factory.cpp
+
+assignment9.cpp)
+target_link_libraries(assignment9 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(assignment9 ${SFML_LIBRARIES})

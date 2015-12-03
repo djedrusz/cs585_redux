@@ -10,6 +10,8 @@
 namespace StevensDev {
 namespace mgcl { // My Game Collidables.
 
+#define COLLIDABLE_BOX_SIZE 64
+
 /* A collidable box. */
 class CollidableBox : public sgds::ICollidable {
 	private:
@@ -19,6 +21,7 @@ class CollidableBox : public sgds::ICollidable {
 	public:
 		/* Constructor(s). */
 		CollidableBox(sgds::IActor* actor);
+		CollidableBox(sgds::IActor* actor, unsigned short flags);
 		/* Function(s). */
 		void moveBounds(float x, float y);
 		/* Inherited function(s). */
