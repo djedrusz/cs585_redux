@@ -24,6 +24,10 @@ GhostController::GhostController()
 	;
 }
 
+GhostController::~GhostController() {
+	sgde::EventBus::getDispatcher().removeListener(&reverseEvent, &reverseEventCallback);
+}
+
 void GhostController::preTick() {
 	;
 }
@@ -67,6 +71,8 @@ void GhostController::possess(sgds::IActor* actor) {
 
 void GhostController::onDeathEvent(const sgde::IEvent* event) {
 	std::cout << "GHOST DIE" << std::endl;
+	//mgf::GhostFactory::destroyActor(ghost);
+	//mgf::GhostFactory::destroyController(this);
 }
 
 void GhostController::onReverseEvent(const sgde::IEvent* event) {

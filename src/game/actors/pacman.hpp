@@ -14,6 +14,7 @@
 
 /* Definitions. */
 #define PACMAN_FLAGS 2
+#define PACMAN_SIZE 48
 
 namespace StevensDev {
 namespace mga {

@@ -10,7 +10,7 @@ namespace StevensDev {
 namespace mga { // My Game Actors.
 
 Ghost::Ghost(sgdc::DynamicArray< std::pair< float, float > > path)
-:	collidableBox(mgcl::CollidableBox(this, GHOST_FLAGS)),
+:	collidableBox(mgcl::CollidableBox(this, GHOST_FLAGS, GHOST_SIZE)),
 	path(path),
 	currentTarget(1) {
 	collidableBox.moveBounds(path.get(0).first, path.get(0).second);

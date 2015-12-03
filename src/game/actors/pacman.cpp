@@ -10,7 +10,7 @@ namespace StevensDev {
 namespace mga { // My Game Actors.
 
 Pacman::Pacman(float x, float y)
-:	collidableBox(mgcl::CollidableBox(this, PACMAN_FLAGS)) {
+:	collidableBox(mgcl::CollidableBox(this, PACMAN_FLAGS, PACMAN_SIZE)) {
 	collidableBox.moveBounds(x, y);
 	renderableSprite.move(x, y);
 }

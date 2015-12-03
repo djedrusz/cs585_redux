@@ -9,23 +9,86 @@
 namespace StevensDev {
 namespace mgf { // My Game Factories.
 
-/* Initialize static data members. */
-// Path 1.
-sgdc::DynamicArray< std::pair< float, float > > GhostFactory::redPath;
-
 mga::Ghost* GhostFactory::createActor(mga::Ghost::Color color) {
-	// For now, create paths because JSON parser is broken :(
-	GhostFactory::redPath.append(std::pair< float, float >(256, 256));
-	GhostFactory::redPath.append(std::pair< float, float >(512, 256));
-	GhostFactory::redPath.append(std::pair< float, float >(512, 512));
-	GhostFactory::redPath.append(std::pair< float, float >(256, 512));
+	static sgdc::DynamicArray< std::pair< float, float > > bluePath;
+	static sgdc::DynamicArray< std::pair< float, float > > greenPath;
+	static sgdc::DynamicArray< std::pair< float, float > > redPath;
+	static sgdc::DynamicArray< std::pair< float, float > > yellowPath;
+
+	static bool created = false;
+	if (created == false) {
+		// For now, create paths because JSON parser is broken :(
+		bluePath.append(std::pair< float, float >(1 * 64, 7 * 64));
+		bluePath.append(std::pair< float, float >(1 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(4 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(4 * 64, 7 * 64));
+		bluePath.append(std::pair< float, float >(6 * 64, 7 * 64));
+		bluePath.append(std::pair< float, float >(6 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(9 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(9 * 64, 7 * 64));
+		bluePath.append(std::pair< float, float >(11 * 64, 7 * 64));
+		bluePath.append(std::pair< float, float >(11 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(14 * 64, 4 * 64));
+		bluePath.append(std::pair< float, float >(14 * 64, 11 * 64));
+		bluePath.append(std::pair< float, float >(11 * 64, 11 * 64));
+		bluePath.append(std::pair< float, float >(11 * 64, 8 * 64));
+		bluePath.append(std::pair< float, float >(9 * 64, 8 * 64));
+		bluePath.append(std::pair< float, float >(9 * 64, 11 * 64));
+		bluePath.append(std::pair< float, float >(6 * 64, 11 * 64));
+		bluePath.append(std::pair< float, float >(6 * 64, 8 * 64));
+		bluePath.append(std::pair< float, float >(4 * 64, 8 * 64));
+		bluePath.append(std::pair< float, float >(4 * 64, 11 * 64));
+		bluePath.append(std::pair< float, float >(1 * 64, 11 * 64));
+
+		greenPath.append(std::pair< float, float >(4 * 64, 1 * 64));
+		greenPath.append(std::pair< float, float >(4 * 64, 14 * 64));
+		greenPath.append(std::pair< float, float >(6 * 64, 14 * 64));
+		greenPath.append(std::pair< float, float >(6 * 64, 8 * 64));
+		greenPath.append(std::pair< float, float >(9 * 64, 8 * 64));
+		greenPath.append(std::pair< float, float >(9 * 64, 14 * 64));
+		greenPath.append(std::pair< float, float >(11 * 64, 14 * 64));
+		greenPath.append(std::pair< float, float >(11 * 64, 1 * 64));
+		greenPath.append(std::pair< float, float >(9 * 64, 1 * 64));
+		greenPath.append(std::pair< float, float >(9 * 64, 7 * 64));
+		greenPath.append(std::pair< float, float >(6 * 64, 7 * 64));
+		greenPath.append(std::pair< float, float >(6 * 64, 1 * 64));
+
+		redPath.append(std::pair< float, float >(1 * 64, 1 * 64));
+		redPath.append(std::pair< float, float >(14 * 64, 1 * 64));
+		redPath.append(std::pair< float, float >(14 * 64, 14 * 64));
+		redPath.append(std::pair< float, float >(1 * 64, 14 * 64));
+
+		yellowPath.append(std::pair< float, float >(13 * 64, 8 * 64));
+		yellowPath.append(std::pair< float, float >(2 * 64, 8 * 64));
+		yellowPath.append(std::pair< float, float >(2 * 64, 7 * 64));
+		yellowPath.append(std::pair< float, float >(13 * 64, 7 * 64));
+
+		created = true;
+	}
 
 	/* Color switch. */
 	// In here we would parse the path from config file.
 	sgdc::DynamicArray< std::pair< float, float > > path;
+	std::string texture;
 	switch (color) {
+		case mga::Ghost::Color::BLUE: {
+			path = bluePath;
+			texture = "blue_ghost";
+			break;
+		}
+		case mga::Ghost::Color::GREEN: {
+			path = greenPath;
+			texture = "green_ghost";
+			break;
+		}
 		case mga::Ghost::Color::RED: {
 			path = redPath;
+			texture = "red_ghost";
+			break;
+		}
+		case mga::Ghost::Color::YELLOW: {
+			path = yellowPath;
+			texture = "yellow_ghost";
 			break;
 		}
 		default: {
@@ -38,7 +101,7 @@ mga::Ghost* GhostFactory::createActor(mga::Ghost::Color color) {
 
 	ghost->getRenderableSprite()
 		->getSprite()
-			.setTexture(sgda::TextureManager::get("yellow_box"));
+			.setTexture(sgda::TextureManager::get(texture));
 
 	sgds::SceneManager::getSceneGraph()
 		.addCollidable(
@@ -64,6 +127,30 @@ mgc::GhostController* GhostFactory::createController() {
 			ghostController);
 
 	return ghostController;
+}
+
+void GhostFactory::destroyActor(mga::Ghost* ghost) {
+	sgds::SceneManager::getSceneGraph()
+		.removeCollidable(
+			ghost->getCollidable());
+
+	sgdr::RenderManager::getRenderer()
+			.removeRenderableSprite(
+				ghost->getRenderableSprite());
+
+	sgds::Scene::getInstance()
+		.removeTickable(
+			ghost->getEventDispatcher());
+
+	delete ghost;
+}
+
+void GhostFactory::destroyController(mgc::GhostController* ghostController) {
+	sgds::Scene::getInstance()
+		.removeTickable(
+			ghostController);
+
+	delete ghostController;
 }
 
 }

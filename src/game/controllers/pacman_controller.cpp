@@ -127,6 +127,7 @@ void PacmanController::possess(sgds::IActor* actor) {
 
 void PacmanController::onDeathEvent(const sgde::IEvent* event) {
 	std::cout << "PACMAN DIE" << std::endl;
+	exit(1);
 }
 
 void PacmanController::onReverseEvent(const sgde::IEvent* event) {

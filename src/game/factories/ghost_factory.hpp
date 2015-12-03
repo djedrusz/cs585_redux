@@ -20,8 +20,6 @@ namespace mgf {
 /* A singleton factory which creates Ghosts and their controllers. */
 class GhostFactory {
 	private:
-		/* Data members. */
-		static sgdc::DynamicArray< std::pair< float, float > > redPath;
 		/* Constructor(s). */
 		GhostFactory() {};
 		GhostFactory(const GhostFactory& ghostFactory) = delete;
@@ -32,6 +30,8 @@ class GhostFactory {
 		/* Function(s). */
 		static mga::Ghost* createActor(mga::Ghost::Color color);
 		static mgc::GhostController* createController();
+		static void destroyActor(mga::Ghost* ghost);
+		static void destroyController(mgc::GhostController* ghostController);
 };
 
 }

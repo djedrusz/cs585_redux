@@ -18,6 +18,7 @@
 
 /* Definitions. */
 #define GHOST_FLAGS 4
+#define GHOST_SIZE 64
 #define GHOST_MOVEMENT_SPEED 5
 
 namespace StevensDev {
@@ -35,7 +36,10 @@ class Ghost : public sgds::IActor {
 	public:
 		/* Enums. */
 		enum Color {
-			RED
+			BLUE,
+			GREEN,
+			RED,
+			YELLOW
 		};
 		/* Contructors. */
 		Ghost(sgdc::DynamicArray< std::pair< float, float > > path);

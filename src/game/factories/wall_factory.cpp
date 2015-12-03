@@ -29,6 +29,23 @@ sgdc::DynamicArray< mga::Wall* > WallFactory::createWalls() {
 	for (unsigned int i = 1; i < 15; i++) {
 		positions.append(std::pair< float, float >(15 * 64, i * 64));
 	}
+	/* I'm so sorry... */
+	for (unsigned int z = 0; z <= 7; z += 7) {
+		for (unsigned int x = 2; x <= 12; x += 5) {
+			for (unsigned int y = 2; y <= 5; y += 3) {
+				for (unsigned int a = 0; a < 2; a++) {
+					for (unsigned int b = 0; b < 2; b++) {
+						positions.append(std::pair< float, float >(x * 64 + a * 64, z* 64 + y * 64 + b * 64));
+					}
+				}
+			}
+		}
+		for (unsigned int x = 5; x <= 10; x += 5) {
+			for (unsigned int y = 2; y <= 6; y++) {
+				positions.append(std::pair< float, float >(x * 64, z* 64 + y * 64));
+			}
+		}
+	}
 
 	sgdc::DynamicArray< mga::Wall* > walls;
 

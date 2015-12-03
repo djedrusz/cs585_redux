@@ -22,6 +22,7 @@ class CollidableBox : public sgds::ICollidable {
 		/* Constructor(s). */
 		CollidableBox(sgds::IActor* actor);
 		CollidableBox(sgds::IActor* actor, unsigned short flags);
+		CollidableBox(sgds::IActor* actor, unsigned short flags, float size);
 		/* Function(s). */
 		void moveBounds(float x, float y);
 		/* Inherited function(s). */
