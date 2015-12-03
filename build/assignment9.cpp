@@ -21,6 +21,8 @@
 // Scene.
 #define SCENE_SIZE 1024
 #define SCENE_DIVISIONS 10
+#define REVERSE_LOOP_TIME 40
+#define REVERSE_DISPATCH_TIME 30
 
 // Main.
 int main(int argc, char** argv) {
@@ -68,9 +70,25 @@ int main(int argc, char** argv) {
 	sgds::Scene::getInstance().addTickable(&sgdi::Input::getInstance());
 	sgds::Scene::getInstance().addTickable(&sgds::SceneManager::getSceneGraph());
 
+	time_t start = time(NULL);
+	time_t end;
+	bool dispatched = false;
 	/* Main game loop. */
 	while (sgdr::RenderManager::getRenderer().isActive()) {
 		sgds::Scene::getInstance().tick();
+
+		/* Trigger reverse. */
+		end = time(NULL);
+		time_t elapsed = difftime(end, start);
+		if (elapsed == REVERSE_DISPATCH_TIME && dispatched == false) {
+			sgde::EventBus::getDispatcher().dispatch(&reverseEvent);
+			dispatched = true;
+		}
+		if (elapsed > REVERSE_LOOP_TIME) {
+			sgde::EventBus::getDispatcher().dispatch(&reverseEvent);
+			start = time(NULL);
+			dispatched = false;
+		}
 
 		if (sgdi::Input::getInstance().wasPressed(sgdi::Input::Type::Q)) {
 			sgde::EventBus::getDispatcher().dispatch(&reverseEvent);
